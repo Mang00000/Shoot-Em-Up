@@ -29,10 +29,10 @@ protected:
     int mTag;
 
 public:
-	bool GoToDirection(int x, int y, float speed = -1.f);
-    bool GoToPosition(int x, int y, float speed = -1.f);
+	bool GoToDirection(int x, int y, float speed = -1.0f);
+    bool GoToPosition(int x, int y, float speed = -1.0f);
     void SetPosition(float x, float y, float ratioX = 0.5f, float ratioY = 0.5f);
-	void SetDirection(float x, float y, float speed = -1.f);
+	void SetDirection(float x, float y, float speed = -1.0f);
 	void SetSpeed(float speed) { mSpeed = speed; }
 	void SetTag(int tag) { mTag = tag; }
 	float GetRadius() const { return mShape.getRadius(); }

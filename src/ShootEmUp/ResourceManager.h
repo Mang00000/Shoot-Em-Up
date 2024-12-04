@@ -11,43 +11,45 @@
 class ResourceManager
 {
 private:
-	static std::map<std::string, sf::Texture*> mTextureMap;
-	static std::map<std::string, sf::SoundBuffer*> mSoundMap;
-	static std::map<std::string, sf::Font*> mFontMap;
+	std::map<std::string, sf::Texture*> mTextureMap;
+	std::map<std::string, sf::SoundBuffer*> mSoundMap;
+	std::map<std::string, sf::Font*> mFontMap;
 
-	const static std::string DEFAULT_INVALID_TEXTURE;
-	const static std::string DEFAULT_INVALID_SOUND;
-	const static std::string DEFAULT_INVALID_FONT;
+	std::string DEFAULT_INVALID_TEXTURE;
+	std::string DEFAULT_INVALID_SOUND;
+	std::string DEFAULT_INVALID_FONT;
 
-	static std::string mInvalidTexture;
-	static std::string mInvalidSound;
-	static std::string mInvalidFont;
+	std::string mInvalidTexture;
+	std::string mInvalidSound;
+	std::string mInvalidFont;
 
-	const static std::vector<std::filesystem::path> TEXTURE_EXTENSIONS;
-	const static std::vector<std::string> SOUND_EXTENSIONS;
-	const static std::vector<std::string> FONT_EXTENSIONS;
+	std::vector<std::filesystem::path> TEXTURE_EXTENSIONS;
+	std::vector<std::filesystem::path> SOUND_EXTENSIONS;
+	std::vector<std::filesystem::path> FONT_EXTENSIONS;
+
+	ResourceManager();
 
 public:
+	~ResourceManager();
+
+	static ResourceManager* Get();
 
 				/*******************************
 				*		     TEXTURE	   	   *
 				*******************************/
 
 
-	static sf::Texture* GetTexture(const std::string _FilePath);
+	sf::Texture* GetTexture(const std::string _FilePath);
 
-	static int GetNumberOfTextures();
+	int GetNumberOfTextures();
+
+	void LoadTexture(const std::string& filePath);
+	void LoadAllTextures(const std::string& folderPath);
 
 
-	//le paramètre recurse permet au programme de chercher dans les fichiers en dessous dans la hiérarchie
-	static void PreLoadTextures(const std::string folderPath, bool recurse = true);
+	std::string GetInvalidTexturePath();
 
-
-	static std::string GetInvalidTexturePath();
-
-	static void ClearTextures();
-
-	//TO ADDD ClearSomeTextures
+	void ClearTextures();
 
 
 				/*******************************
@@ -55,10 +57,35 @@ public:
 				*******************************/
 
 
-	//static sf::SoundBuffer* GetSound(const std::string _FilePath);
+	sf::SoundBuffer* GetSound(const std::string _FilePath);
+
+	int GetNumberOfSounds();
+
+	void LoadSound(const std::string& filePath);
+	void LoadAllSounds(const std::string& folderPath);
+		
+
+	std::string GetInvalidSoundPath();
+
+	void ClearSounds();
 
 
-	static bool Contains(std::vector<std::string> vec, std::string str);
+				/*******************************
+				*		     FONT		   	   *
+				*******************************/
+
+
+	sf::Font* GetFont(const std::string _FilePath);
+
+	int GetNumberOfFonts();
+
+	void LoadFont(const std::string& filePath);
+	void LoadAllFonts(const std::string& folderPath);
+
+
+	std::string GetInvalidFontPath();
+
+	void ClearFonts();
 };
 
 

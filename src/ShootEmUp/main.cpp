@@ -34,9 +34,14 @@ int main()
 	
 	pInstance->LaunchScene<SampleScene>();*/
 
-	std::cout << std::filesystem::current_path() << std::endl;
 
-	ResourceManager::PreLoadTextures("../../../res");
+	ResourceManager::Get()->LoadAllTextures("../../../res");
+
+	std::cout << ResourceManager::Get()->GetNumberOfTextures() << std::endl;
+
+	ResourceManager::Get()->ClearTextures();
+
+	std::cout << ResourceManager::Get()->GetNumberOfTextures() << std::endl;
 
 	return 0;
 }

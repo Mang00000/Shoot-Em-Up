@@ -1,24 +1,44 @@
 #include "ResourceManager.h"
+#include "Utils.h"
 
-const std::vector <std::filesystem::path> ResourceManager::TEXTURE_EXTENSIONS = { std::filesystem::path(".png"), std::filesystem::path(".jpg") };
-const std::vector<std::string> ResourceManager::SOUND_EXTENSIONS = { "wav" };
-const std::vector<std::string> ResourceManager::FONT_EXTENSIONS = { "ttf" };
+namespace fs = std::filesystem;
 
-std::map<std::string, sf::Texture*> ResourceManager::mTextureMap;
-std::map<std::string, sf::SoundBuffer*> ResourceManager::mSoundMap;
-std::map<std::string, sf::Font*> ResourceManager::mFontMap;
+ResourceManager::ResourceManager() {
+	TEXTURE_EXTENSIONS = { fs::path(".png"), fs::path(".jpg"), fs::path(".jpeg") };
+	SOUND_EXTENSIONS = { fs::path(".wav") };
+	FONT_EXTENSIONS = { fs::path("ttf") };
 
-const std::string ResourceManager::DEFAULT_INVALID_TEXTURE = "invalid.png";
-const std::string ResourceManager::DEFAULT_INVALID_SOUND = "invalid.wav";
-const std::string ResourceManager::DEFAULT_INVALID_FONT = "invalid.ttf";
+	std::map<std::string, sf::Texture*> mTextureMap;
+	std::map<std::string, sf::SoundBuffer*> mSoundMap;
+	std::map<std::string, sf::Font*> mFontMap;
 
-std::string ResourceManager::mInvalidTexture = ResourceManager::DEFAULT_INVALID_TEXTURE;
-std::string ResourceManager::mInvalidSound = ResourceManager::DEFAULT_INVALID_SOUND;
-std::string ResourceManager::mInvalidFont = ResourceManager::DEFAULT_INVALID_FONT;
+	std::string DEFAULT_INVALID_TEXTURE = "invalid.png";
+	std::string DEFAULT_INVALID_SOUND = "invalid.wav";
+	std::string DEFAULT_INVALID_FONT = "invalid.ttf";
 
+	std::string mInvalidTexture = DEFAULT_INVALID_TEXTURE;
+	std::string mInvalidSound = DEFAULT_INVALID_SOUND;
+	std::string mInvalidFont = DEFAULT_INVALID_FONT;
 
+}
 
+ResourceManager::~ResourceManager()
+{
+	ClearTextures();
+	ClearFonts();
+	ClearSounds();
+}
+
+ResourceManager* ResourceManager::Get()
+{
+	static ResourceManager mInstance;
+
+	return &mInstance;
+}
+
+//-----------------------------------------------------------------------
 //------------------------------- TEXTURE -------------------------------
+//-----------------------------------------------------------------------
 
 sf::Texture* ResourceManager::GetTexture(const std::string _FilePath)
 {
@@ -44,41 +64,29 @@ int ResourceManager::GetNumberOfTextures()
 	return mTextureMap.size();
 }
 
-void ResourceManager::PreLoadTextures(const std::string folderPath, bool recurse)
+void ResourceManager::LoadTexture(const std::string& filePath) 
 {
-	if (recurse) {
-		for (auto& file : std::filesystem::recursive_directory_iterator(folderPath)) {
-			std::stringstream ss;
-			ss << file;
-			std::filesystem::path path = file.path();
-			//std::cout << std::string(path.extension().c_str()) << std::endl;
-			//std::cout << TEXTURE_EXTENSIONS[0] << std::endl;
+	fs::path ImgPath = filePath;
 
-			
-			if (Contains(TEXTURE_EXTENSIONS, ss.str().substr(ss.str().length() - 4, 3))) {
-				sf::Texture* texture = new sf::Texture();
+	if (Utils::Contains(TEXTURE_EXTENSIONS, ImgPath.extension())) {
+		sf::Texture* texture = new sf::Texture();
 
-				std::string File = ss.str().substr(1, ss.str().length() - 2);
-				texture->loadFromFile(File);
-				mTextureMap[File] = texture;
-			}
-		}
+		texture->loadFromFile(ImgPath.string());
+		mTextureMap[ImgPath.string()] = texture;
 	}
-	else {
-		for (auto& file : std::filesystem::directory_iterator(folderPath)) {
-			std::stringstream ss;
-			ss << file;      
+}
 
-			//Pour enlever les " à la fin on fait -4 et pas -3
-			if (Contains(TEXTURE_EXTENSIONS, ss.str().substr(ss.str().length() - 4, 3))) {
-				sf::Texture* texture = new sf::Texture();
+void ResourceManager::LoadAllTextures(const std::string& folderPath)
+{
+	for (auto& file : fs::directory_iterator(folderPath)) {
 
-				//Pour enlever les " au début et à la fin on commence a 1 et arrête a -2 (car on a avancer de 1 -> -1 -1 = -2)
-				std::string File = ss.str().substr(1, ss.str().length() - 2);
-				texture->loadFromFile(File);
-				mTextureMap[File] = texture;
-			}
+		if (fs::is_directory(file)) 
+		{
+			LoadAllTextures(file.path().string());
+			continue;
 		}
+
+		LoadTexture(file.path().string());
 	}
 }
 
@@ -97,12 +105,143 @@ void ResourceManager::ClearTextures()
 }
 
 
+//----------------------------------------------------------------------
+//------------------------------- SOUNDS -------------------------------
+//----------------------------------------------------------------------
 
 
-bool ResourceManager::Contains(std::vector<std::string> vec, std::string str) {
-	for (std::string s : vec) {
-		if (s == str)
-			return true;
+
+sf::SoundBuffer* ResourceManager::GetSound(const std::string _FilePath)
+{
+	for (auto element : mSoundMap) {
+		if (element.first == _FilePath && element.first != mInvalidSound)
+			return element.second;
+
 	}
-	return false;
+
+	sf::SoundBuffer* Sound = new sf::SoundBuffer();
+
+	if (!Sound->loadFromFile(_FilePath)) {
+		Sound->loadFromFile(mInvalidSound);
+	}
+
+	mSoundMap[_FilePath] = Sound;
+
+	return mSoundMap[_FilePath];
+}
+
+int ResourceManager::GetNumberOfSounds()
+{
+	return mSoundMap.size();
+}
+
+void ResourceManager::LoadSound(const std::string& filePath)
+{
+	fs::path SoundPath = filePath;
+
+	if (Utils::Contains(SOUND_EXTENSIONS, SoundPath.extension())) {
+		sf::SoundBuffer* Sound = new sf::SoundBuffer();
+
+		Sound->loadFromFile(SoundPath.string());
+		mSoundMap[SoundPath.string()] = Sound;
+	}
+}
+
+void ResourceManager::LoadAllSounds(const std::string& folderPath)
+{
+	for (auto& file : fs::directory_iterator(folderPath)) {
+
+		if (fs::is_directory(file))
+		{
+			LoadAllSounds(file.path().string());
+			continue;
+		}
+
+		LoadSound(file.path().string());
+	}
+}
+
+std::string ResourceManager::GetInvalidSoundPath()
+{
+	return mInvalidSound;
+}
+
+void ResourceManager::ClearSounds()
+{
+	for (auto element : mSoundMap) {
+		delete element.second;
+	}
+
+	mSoundMap.clear();
+}
+
+
+
+
+//----------------------------------------------------------------------
+//------------------------------- FONTS --------------------------------
+//----------------------------------------------------------------------
+
+sf::Font* ResourceManager::GetFont(const std::string _FilePath)
+{
+	for (auto element : mFontMap) {
+		if (element.first == _FilePath && element.first != mInvalidFont)
+			return element.second;
+
+	}
+
+	sf::Font* CurrentFont = new sf::Font();
+
+	if (!CurrentFont->loadFromFile(_FilePath)) {
+		CurrentFont->loadFromFile(mInvalidFont);
+	}
+
+	mFontMap[_FilePath] = CurrentFont;
+
+	return mFontMap[_FilePath];
+}
+
+int ResourceManager::GetNumberOfFonts()
+{
+	return mFontMap.size();
+}
+
+void ResourceManager::LoadFont(const std::string& filePath)
+{
+	fs::path FontPath = filePath;
+
+	if (Utils::Contains(FONT_EXTENSIONS, FontPath.extension())) {
+		sf::Font* CurrentSound = new sf::Font();
+
+		CurrentSound->loadFromFile(FontPath.string());
+		mFontMap[FontPath.string()] = CurrentSound;
+	}
+}
+
+void ResourceManager::LoadAllFonts(const std::string& folderPath)
+{
+	for (auto& file : fs::directory_iterator(folderPath)) {
+
+		if (fs::is_directory(file))
+		{
+			LoadAllFonts(file.path().string());
+			continue;
+		}
+
+		LoadFont(file.path().string());
+	}
+}
+
+std::string ResourceManager::GetInvalidFontPath()
+{
+	return mInvalidFont;
+}
+
+void ResourceManager::ClearFonts()
+{
+	for (auto element : mFontMap) {
+		delete element.second;
+	}
+
+	mFontMap.clear();
 }

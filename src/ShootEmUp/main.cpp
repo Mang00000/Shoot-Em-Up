@@ -28,20 +28,12 @@ class LEText : GC::Text
 
 int main() 
 {
-  /*  GameManager* pInstance = GameManager::Get();
+  GameManager* pInstance = GameManager::Get();
 
 	pInstance->CreateWindow(1280, 720, "SampleScene");
 	
-	pInstance->LaunchScene<SampleScene>();*/
+	pInstance->LaunchScene<SampleScene>();
 
-
-	ResourceManager::Get()->LoadAllTextures("../../../res");
-
-	std::cout << ResourceManager::Get()->GetNumberOfTextures() << std::endl;
-
-	ResourceManager::Get()->ClearTextures();
-
-	std::cout << ResourceManager::Get()->GetNumberOfTextures() << std::endl;
 
 	return 0;
 }

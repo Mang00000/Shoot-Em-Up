@@ -4,6 +4,9 @@
 
 #include "Debug.h"
 
+#include <iostream>
+#include "ResourceManager.h"
+
 void SampleScene::OnInitialize()
 {
 	pEntity1 = CreateEntity<DummyEntity>(100, sf::Color::Red);
@@ -50,4 +53,5 @@ void SampleScene::OnUpdate()
 		sf::Vector2f position = pEntitySelected->GetPosition();
 		Debug::DrawCircle(position.x, position.y, 10, sf::Color::Blue);
 	}
+
 }

@@ -7,6 +7,7 @@
 #include <SFML/Window.hpp>
 
 #include <iostream>
+#include "ResourceManager.h"
 
 GameManager::GameManager()
 {
@@ -145,6 +146,12 @@ void GameManager::Draw()
 {
 	mpWindow->clear();
 	
+	sf::Texture* TestTexture = ResourceManager::Get()->GetTexture("../../../res/blursed-sitting-tiger-v0-pp4thbxfjz6d1.jpg");
+	sf::Sprite sprite;
+	sprite.setTexture(*TestTexture);
+	sprite.setPosition(sf::Vector2f(100, 50));
+	mpWindow->draw(sprite);
+
 	for (Entity* entity : mEntities)
 	{
 		mpWindow->draw(*entity->GetShape());

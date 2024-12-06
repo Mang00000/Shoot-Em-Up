@@ -21,7 +21,7 @@ T* Scene::CreateEntity(float radius, const sf::Color& color)
 }
 
 template<typename U>
-U* Scene::CreateEntity(std::string _Path)
+U* Scene::CreateEntity(std::string _Path, int Width, int Height)
 {
 	static_assert(std::is_base_of<Entity, U>::value, "U must be derived from Entity");
 
@@ -29,11 +29,7 @@ U* Scene::CreateEntity(std::string _Path)
 
 	Entity* entity = newEntity;
 
-	//if (ResourceManager::Get()->GetTexture(_Path) == ResourceManager::Get()->GetInvalidTexturePath()) {
-	//	ResourceManager::LoadTexture(_Path);
-	//}
-
-	entity->Initialize(ResourceManager::Get()->GetTexture(_Path));
+	entity->Initialize(ResourceManager::Get()->GetTexture(_Path), Width, Height);
 
 	mpGameManager->mEntitiesToAdd.push_back(newEntity);
 

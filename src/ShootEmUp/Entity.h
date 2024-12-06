@@ -42,6 +42,12 @@ public:
 	void SetSpeed(float speed) { mSpeed = speed; }
 	void SetTag(int tag) { mTag = tag; }
 
+    sf::Drawable* GetDrawable() { return pDrawable; }
+    sf::Transformable* GetTransformable() { return pTransformable; }
+
+    int GetWidth() { return mWidth; }
+    int GetHeight() { return mHeight; }
+
     sf::Vector2f GetPosition(float ratioX = 0.5f, float ratioY = 0.5f) const;
 
 	bool IsTag(int tag) const { return mTag == tag; }
@@ -74,7 +80,7 @@ protected:
 private:
     void Update();
 	void Initialize(float radius, const sf::Color& color);
-    void Initialize(sf::Texture* pTexture);
+    void Initialize(sf::Texture* pTexture, int Width, int Height);
 
     friend class GameManager;
     friend Scene;

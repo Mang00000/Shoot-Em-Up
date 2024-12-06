@@ -30,7 +30,7 @@ void Entity::Initialize(float radius, const sf::Color& color)
 	mTarget.isSet = false;
 }
 
-void Entity::Initialize(sf::Texture* pTexture)
+void Entity::Initialize(sf::Texture* pTexture, int Width, int Height)
 {
 	mDirection = sf::Vector2f(0.0f, 0.0f);
 	mSpeed = 0.0f;
@@ -43,11 +43,18 @@ void Entity::Initialize(sf::Texture* pTexture)
 	pSprite->setTexture(*pTexture);
 	pSprite->setOrigin(0.f, 0.f);
 
-	mWidth = pTexture->getSize().x;
-	mHeight = pTexture->getSize().y;
+	float RatioScaleX = pTexture->getSize().x / (float) Width;
+	float RatioScaleY = pTexture->getSize().y / (float) Height;
+
+	float FinalRatio =  1 / std::max(RatioScaleX, RatioScaleY);
+	pSprite->scale(sf::Vector2f(FinalRatio, FinalRatio));
+
+	mWidth = pTexture->getSize().x * FinalRatio;
+	mHeight = pTexture->getSize().y * FinalRatio;
 
 	pDrawable = pSprite;
 	pTransformable = pSprite;
+
 }
 
 bool Entity::IsColliding(Entity* other) const
@@ -131,6 +138,8 @@ void Entity::SetDirection(float x, float y, float speed)
 		mSpeed = speed;
 
 	mDirection = sf::Vector2f(x, y);
+
+	mTarget.isSet = false;
 }
 
 void Entity::Update()

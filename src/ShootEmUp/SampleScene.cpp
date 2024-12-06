@@ -12,8 +12,8 @@ void SampleScene::OnInitialize()
 	pEntity1 = CreateEntity<DummyEntity>(100, sf::Color::Red);
 	pEntity1->SetPosition(100, 100);
 
-	pEntity3 = CreateEntity<DummyEntity>("../../../res/blursed-sitting-tiger-v0-pp4thbxfjz6d1.jpg");
-	pEntity3->SetPosition(0, 0, 0, 0);
+	pEntity3 = CreateEntity<DummyEntity>("../../../res/blursed-sitting-tiger-v0-pp4thbxfjz6d1.jpg", 200,300);
+	pEntity3->SetPosition(500, 200);
 	
 
 	pEntitySelected = nullptr;
@@ -54,5 +54,7 @@ void SampleScene::OnUpdate()
 		sf::Vector2f position = pEntitySelected->GetPosition();
 		Debug::DrawCircle(position.x, position.y, 10, sf::Color::Blue);
 	}
+
+	//Debug::DrawRectangle(pEntity3->GetPosition(0,0).x, pEntity3->GetPosition(0,0).y, pEntity3->GetWidth(), pEntity3->GetHeight(), sf::Color::White);
 
 }

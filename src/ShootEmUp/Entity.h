@@ -10,6 +10,7 @@ namespace sf
 }
 
 class Scene;
+class EntityDesign;
 
 class Entity
 {
@@ -21,14 +22,17 @@ class Entity
     };
 
 protected:
-    sf::CircleShape mShape;
     sf::Vector2f mDirection;
-    sf::Texture* mTexture;
-    sf::Sprite mSprite;
 	Target mTarget;
     float mSpeed;
     bool mToDestroy;
     int mTag;
+
+    int mWidth;
+    int mHeight;
+
+    sf::Drawable* pDrawable;
+    sf::Transformable* pTransformable;
 
 public:
 	bool GoToDirection(int x, int y, float speed = -1.f);
@@ -36,12 +40,9 @@ public:
     void SetPosition(float x, float y, float ratioX = 0.5f, float ratioY = 0.5f);
 	void SetDirection(float x, float y, float speed = -1.f);
 	void SetSpeed(float speed) { mSpeed = speed; }
-    void SetTexture(sf::Texture* pTexture) { mTexture = pTexture; }
 	void SetTag(int tag) { mTag = tag; }
-	float GetRadius() const { return mShape.getRadius(); }
 
     sf::Vector2f GetPosition(float ratioX = 0.5f, float ratioY = 0.5f) const;
-	sf::Shape* GetShape() { return &mShape; }
 
 	bool IsTag(int tag) const { return mTag == tag; }
     bool IsColliding(Entity* other) const;

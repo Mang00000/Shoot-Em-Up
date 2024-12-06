@@ -13,7 +13,7 @@ void SampleScene::OnInitialize()
 	pEntity1->SetPosition(100, 100);
 
 	pEntity3 = CreateEntity<DummyEntity>("../../../res/blursed-sitting-tiger-v0-pp4thbxfjz6d1.jpg");
-	pEntity3->SetPosition(500, 500);
+	pEntity3->SetPosition(0, 0, 0, 0);
 	
 
 	pEntitySelected = nullptr;
@@ -27,7 +27,7 @@ void SampleScene::OnEvent(const sf::Event& event)
 	if (event.mouseButton.button == sf::Mouse::Button::Right)
 	{
 		TrySetSelectedEntity(pEntity1, event.mouseButton.x, event.mouseButton.y);
-		TrySetSelectedEntity(pEntity2, event.mouseButton.x, event.mouseButton.y);
+		TrySetSelectedEntity(pEntity3, event.mouseButton.x, event.mouseButton.y);
 	}
 
 	if (event.mouseButton.button == sf::Mouse::Button::Left)

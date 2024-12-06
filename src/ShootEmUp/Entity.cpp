@@ -13,9 +13,19 @@ void Entity::Initialize(float radius, const sf::Color& color)
 	mToDestroy = false;
 	mTag = -1;
 
-	mShape.setOrigin(0.f, 0.f);
-	mShape.setRadius(radius);
-	mShape.setFillColor(color);
+
+	mWidth = radius * 2;
+	mHeight = radius * 2;
+
+	sf::CircleShape* circle = new sf::CircleShape();
+
+	circle->setOrigin(0.f, 0.f);
+	circle->setRadius(radius);
+	circle->setFillColor(color);
+
+
+	pDrawable = circle;
+	pTransformable = circle;
 	
 	mTarget.isSet = false;
 }
@@ -28,9 +38,16 @@ void Entity::Initialize(sf::Texture* pTexture)
 	mTag = -1;
 	mTarget.isSet = false;
 
-	SetTexture(pTexture);
-	mSprite.setTexture(*mTexture);
-	mSprite.setOrigin(0.f, 0.f);
+	sf::Sprite* pSprite = new sf::Sprite();	
+
+	pSprite->setTexture(*pTexture);
+	pSprite->setOrigin(0.f, 0.f);
+
+	mWidth = pTexture->getSize().x;
+	mHeight = pTexture->getSize().y;
+
+	pDrawable = pSprite;
+	pTransformable = pSprite;
 }
 
 bool Entity::IsColliding(Entity* other) const
@@ -39,8 +56,8 @@ bool Entity::IsColliding(Entity* other) const
 
 	float sqrLength = (distance.x * distance.x) + (distance.y * distance.y);
 
-	float radius1 = mShape.getRadius();
-	float radius2 = other->mShape.getRadius();
+	float radius1 = mWidth / 2.f;
+	float radius2 = other->mWidth / 2.f;
 
 	float sqrRadius = (radius1 + radius2) * (radius1 + radius2);
 
@@ -54,38 +71,25 @@ bool Entity::IsInside(float x, float y) const
 	float dx = x - position.x;
 	float dy = y - position.y;
 
-	float radius = mShape.getRadius();
+	float radius = mWidth / 2.f;
 
 	return (dx * dx + dy * dy) < (radius * radius);
 }
 
 void Entity::SetPosition(float x, float y, float ratioX, float ratioY)
 {
-	float sizeX;
-	float sizeY;
-	if (this->mTexture != nullptr) {
-		sizeX = this->mTexture->getSize().x;
-		sizeY = this->mTexture->getSize().y;
-	}
-	else {
-		sizeX = mShape.getRadius() * 2;
-		sizeY = mShape.getRadius() * 2;
-	}
+	x -= mWidth * ratioX;
+	y -= mHeight * ratioY;
 
-	x -= sizeX * ratioX;
-	y -= sizeY * ratioY;
-
-	mShape.setPosition(x, y);
-	mSprite.setPosition(x, y);
+	pTransformable->setPosition(x, y);
 }
 
 sf::Vector2f Entity::GetPosition(float ratioX, float ratioY) const
 {
-	float size = mShape.getRadius() * 2;
-	sf::Vector2f position = mShape.getPosition();
+	sf::Vector2f position = pTransformable->getPosition();
 
-	position.x += size * ratioX;
-	position.y += size * ratioY;
+	position.x += mWidth * ratioX;
+	position.y += mHeight * ratioY;
 
 	return position;
 }
@@ -134,7 +138,7 @@ void Entity::Update()
 	float dt = GetDeltaTime();
 	float distance = dt * mSpeed;
 	sf::Vector2f translation = distance * mDirection;
-	mShape.move(translation);
+	pTransformable->move(translation);
 
 	if (mTarget.isSet) 
 	{

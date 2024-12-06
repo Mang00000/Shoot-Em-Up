@@ -154,12 +154,7 @@ void GameManager::Draw()
 
 	for (Entity* entity : mEntities)
 	{
-		if (entity->mTexture != nullptr) {
-			mpWindow->draw(entity->mSprite);
-		}
-		else {
-			mpWindow->draw(*entity->GetShape());
-		}
+		mpWindow->draw(*entity->pDrawable);
 	}
 	
 	Debug::Get()->Draw(mpWindow);

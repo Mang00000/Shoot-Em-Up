@@ -146,15 +146,20 @@ void GameManager::Draw()
 {
 	mpWindow->clear();
 	
-	sf::Texture* TestTexture = ResourceManager::Get()->GetTexture("../../../res/blursed-sitting-tiger-v0-pp4thbxfjz6d1.jpg");
-	sf::Sprite sprite;
-	sprite.setTexture(*TestTexture);
-	sprite.setPosition(sf::Vector2f(100, 50));
-	mpWindow->draw(sprite);
+	//sf::Texture* TestTexture = ResourceManager::Get()->GetTexture("../../../res/blursed-sitting-tiger-v0-pp4thbxfjz6d1.jpg");
+	//sf::Sprite sprite;
+	//sprite.setTexture(*TestTexture);
+	//sprite.setPosition(sf::Vector2f(100, 50));
+	//mpWindow->draw(sprite);
 
 	for (Entity* entity : mEntities)
 	{
-		mpWindow->draw(*entity->GetShape());
+		if (entity->mTexture != nullptr) {
+			mpWindow->draw(entity->mSprite);
+		}
+		else {
+			mpWindow->draw(*entity->GetShape());
+		}
 	}
 	
 	Debug::Get()->Draw(mpWindow);

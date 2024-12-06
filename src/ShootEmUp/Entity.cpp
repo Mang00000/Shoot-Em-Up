@@ -20,6 +20,19 @@ void Entity::Initialize(float radius, const sf::Color& color)
 	mTarget.isSet = false;
 }
 
+void Entity::Initialize(sf::Texture* pTexture)
+{
+	mDirection = sf::Vector2f(0.0f, 0.0f);
+	mSpeed = 0.0f;
+	mToDestroy = false;
+	mTag = -1;
+	mTarget.isSet = false;
+
+	SetTexture(pTexture);
+	mSprite.setTexture(*mTexture);
+	mSprite.setOrigin(0.f, 0.f);
+}
+
 bool Entity::IsColliding(Entity* other) const
 {
 	sf::Vector2f distance = GetPosition(0.5f, 0.5f) - other->GetPosition(0.5f, 0.5f);
@@ -48,12 +61,22 @@ bool Entity::IsInside(float x, float y) const
 
 void Entity::SetPosition(float x, float y, float ratioX, float ratioY)
 {
-	float size = mShape.getRadius() * 2;
+	float sizeX;
+	float sizeY;
+	if (this->mTexture != nullptr) {
+		sizeX = this->mTexture->getSize().x;
+		sizeY = this->mTexture->getSize().y;
+	}
+	else {
+		sizeX = mShape.getRadius() * 2;
+		sizeY = mShape.getRadius() * 2;
+	}
 
-	x -= size * ratioX;
-	y -= size * ratioY;
+	x -= sizeX * ratioX;
+	y -= sizeY * ratioY;
 
 	mShape.setPosition(x, y);
+	mSprite.setPosition(x, y);
 }
 
 sf::Vector2f Entity::GetPosition(float ratioX, float ratioY) const

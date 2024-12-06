@@ -12,8 +12,9 @@ void SampleScene::OnInitialize()
 	pEntity1 = CreateEntity<DummyEntity>(100, sf::Color::Red);
 	pEntity1->SetPosition(100, 100);
 
-	pEntity2 = CreateEntity<DummyEntity>(50, sf::Color::Green);
-	pEntity2->SetPosition(500, 500);
+	pEntity3 = CreateEntity<DummyEntity>("../../../res/blursed-sitting-tiger-v0-pp4thbxfjz6d1.jpg");
+	pEntity3->SetPosition(500, 500);
+	
 
 	pEntitySelected = nullptr;
 }

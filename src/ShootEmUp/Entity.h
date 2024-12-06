@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SFML/System/Vector2.hpp>
-#include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics.hpp>
 
 namespace sf 
 {
@@ -23,6 +23,8 @@ class Entity
 protected:
     sf::CircleShape mShape;
     sf::Vector2f mDirection;
+    sf::Texture* mTexture;
+    sf::Sprite mSprite;
 	Target mTarget;
     float mSpeed;
     bool mToDestroy;
@@ -34,6 +36,7 @@ public:
     void SetPosition(float x, float y, float ratioX = 0.5f, float ratioY = 0.5f);
 	void SetDirection(float x, float y, float speed = -1.f);
 	void SetSpeed(float speed) { mSpeed = speed; }
+    void SetTexture(sf::Texture* pTexture) { mTexture = pTexture; }
 	void SetTag(int tag) { mTag = tag; }
 	float GetRadius() const { return mShape.getRadius(); }
 
@@ -56,6 +59,9 @@ public:
     template<typename T>
     T* CreateEntity(float radius, const sf::Color& color);
 
+    template<typename U>
+    U* CreateEntity(sf::Texture* pTexture);
+
 protected:
     Entity() = default;
     ~Entity() = default;
@@ -67,6 +73,7 @@ protected:
 private:
     void Update();
 	void Initialize(float radius, const sf::Color& color);
+    void Initialize(sf::Texture* pTexture);
 
     friend class GameManager;
     friend Scene;

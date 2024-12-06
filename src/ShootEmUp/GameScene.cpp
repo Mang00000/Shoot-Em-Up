@@ -4,6 +4,8 @@
 #include "Projectile.h"
 #include "Player.h"
 #include "GoFast.h"
+#include "BTP.h"
+#include "Pompier.h"
 
 #include "Debug.h"
 
@@ -23,11 +25,15 @@ void GameScene::OnInitialize()
     camion = CreateEntity<Camion>(20, sf::Color::Blue);
     camion->SetPosition(200, 580);
 
-    camion2 = CreateEntity<Camion>(20, sf::Color::Blue);
-    camion2->SetPosition(500, 20);
-
     f = CreateEntity<GoFast>(60, sf::Color::Yellow);
     f->SetPosition(500, 250);
+
+    btp = CreateEntity<BTP>(30, sf::Color::Blue);
+    btp->SetPosition(300, 650);
+
+    pomp = CreateEntity<Pompier>(30, sf::Color::Blue);
+    pomp->SetPosition(800, 250);
+
 
 	pEntitySelected = nullptr;
 }
@@ -43,7 +49,12 @@ void GameScene::OnEvent(const sf::Event& event)
         bool isMovingDown = sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
         bool isMovingLeft = sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
         bool isMovingRight = sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
+
         bool isSlowed = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
+
+        bool isShooting = sf::Keyboard::isKeyPressed(sf::Keyboard::E);
+        bool isFlashing = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
+        bool isKlaxoning = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
 
         if (pEntitySelected != nullptr) {
             float speed = isSlowed ? 400.0f / 3.0f : 400.0f;
@@ -68,8 +79,7 @@ void GameScene::OnEvent(const sf::Event& event)
             }
             else {
                 pEntitySelected->SetSpeed(0); pEntitySelected->SetDirection(0, 0); // Stopper le mouvement
-            }
-            system("cls"); std::cout << "Up: " << isMovingUp << "\nDown: " << isMovingDown << "\nRight: " << isMovingRight << "\nLeft: " << isMovingLeft <<"\n" << moveY <<"\n" << moveX << std::endl; // Debug
+            }          
         }
         
     }

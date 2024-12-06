@@ -3,6 +3,7 @@
 #include "GameScene.h"
 #include <iostream>
 #include "Player.h"
+#include <random>
 
 Camion::Camion()
 {
@@ -13,37 +14,28 @@ void Camion::OnCollision(Entity* other)
 {
 }
 
-
 void Camion::OnUpdate()
 {
 	Player* pPlayer = pGM->GetPlayer();
 	int x = pPlayer->GetPosition().x;
 	int y = pPlayer->GetPosition().y;
-	if (cooldown > shotspeed) {
-		Projectile* p = GetScene()->CreateEntity<Projectile>(5, sf::Color::Red);
-		p->SetPosition(GetPosition().x, GetPosition().y);
-		p->GoToDirection(x, y, projectilespeed);
+	if (cooldown > shotspeed) {	
+		for (int i = 1; i <= shotnum; i++) {
+			std::random_device dev;
+			std::mt19937 rng(dev());
+			std::uniform_int_distribution<std::mt19937::result_type> distPos(6, 14);
 
-		Projectile* p2 = GetScene()->CreateEntity<Projectile>(5, sf::Color::Red);
-		p2->SetPosition(GetPosition().x, GetPosition().y);
-		p2->GoToDirection(x-20, y-20, projectilespeed);
+			float randPos = distPos(rng) / 10.00f;
 
-		Projectile* p3 = GetScene()->CreateEntity<Projectile>(5, sf::Color::Red);
-		p3->SetPosition(GetPosition().x, GetPosition().y);
-		p3->GoToDirection(x+20, y+20, projectilespeed);
-
-		Projectile* p4 = GetScene()->CreateEntity<Projectile>(5, sf::Color::Red);
-		p4->SetPosition(GetPosition().x, GetPosition().y);
-		p4->GoToDirection(x - 50, y - 50, projectilespeed);
-
-		Projectile* p5 = GetScene()->CreateEntity<Projectile>(5, sf::Color::Red);
-		p5->SetPosition(GetPosition().x, GetPosition().y);
-		p5->GoToDirection(x + 50, y + 50, projectilespeed);
+			Projectile* p = GetScene()->CreateEntity<Projectile>(15, sf::Color::Magenta);
+			p->SetPosition(GetPosition().x, GetPosition().y);
+			p->GoToDirection(x * randPos, y * randPos, projectilespeed);
+		}
 		cooldown = 0;
+		shotnum = rand() % 3;
 	}
 	else {
+
 		cooldown += GetDeltaTime();
 	}
-
-
 }

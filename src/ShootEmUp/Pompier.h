@@ -2,16 +2,15 @@
 #include "Entity.h"
 class GameScene;
 
-class Camion : public Entity
+class Pompier : public Entity
 {
 private:
 	float cooldown = 0;
-	float shotspeed = 2;
+	float shotspeed = 0.15;
 	float projectilespeed = 180;
-	int shotnum = 1;
 	GameScene* pGM;
 public:
-	Camion();
+	Pompier();
 	void OnCollision(Entity* other) override;
 
 	void OnUpdate() override;

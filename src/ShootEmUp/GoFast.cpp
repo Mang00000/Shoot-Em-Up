@@ -15,7 +15,6 @@ void GoFast::OnUpdate()
 {
 	if (start) {
 		SetPosition(0 - GetRadius() * 2, GetPosition().y);
-		std::cout << "start";
 		start = false;
 
 	}
@@ -30,14 +29,12 @@ void GoFast::OnUpdate()
 
 	}
 	else {
-		std::cout << "done";
 		rushing = true;
 	}
 
 
 	if (!flashlightOn && flashlightTimer > flashlightCd) {
 		flashlightTimer = 0;
-		std::cout << "flash";
 		flashlightOn = true;
 
 		Debug::DrawCircle(GetPosition().x + GetRadius() * 2, GetPosition().y, 50, sf::Color::White);
@@ -46,7 +43,6 @@ void GoFast::OnUpdate()
 
 	}
 	else if (flashlightOn && flashlightTimer > flashlightCd) {
-		std::cout << "reset";
 		flashlightOn = false;
 	}
 	else {

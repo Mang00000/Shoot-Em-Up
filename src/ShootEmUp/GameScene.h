@@ -5,6 +5,9 @@
 class Player;
 class Camion;
 class GoFast;
+class BTP;
+class Pompier;
+
 
 class GameScene : public Scene
 {
@@ -15,8 +18,12 @@ class GameScene : public Scene
 	Camion* camion2;
 
 	GoFast* f;
+
+	BTP* btp;
 		
 	Player* pEntitySelected;
+
+	Pompier* pomp;
 
 private:
 	void TrySetSelectedEntity(Player* pEntity, int x, int y);

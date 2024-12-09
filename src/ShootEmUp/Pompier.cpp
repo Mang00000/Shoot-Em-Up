@@ -4,13 +4,12 @@
 #include <iostream>
 #include "Player.h"
 
-Pompier::Pompier()
-{
-	pGM = this->GetScene<GameScene>();
-}
-
 void Pompier::OnCollision(Entity* other)
 {
+	if (other->IsTag(1)) {
+		mToDestroy = true;
+		other->Destroy();
+	}
 }
 
 
@@ -23,6 +22,7 @@ void Pompier::OnUpdate()
 		Projectile* p = GetScene()->CreateEntity<Projectile>(3, sf::Color::Blue);
 		p->SetPosition(GetPosition().x, GetPosition().y);
 		p->GoToDirection(x, y, projectilespeed);
+		p->SetTag(2);
 		cooldown = 0;
 	}
 	else {

@@ -14,37 +14,22 @@
 #include <stdlib.h>
 
 #include "Utils.h" 
-
+#include "Scene.h"
 void GameScene::OnInitialize()
 {
+    // Initialisation du joueur
+    pPlayer = CreateEntity<Player>(20, sf::Color::Green);
+    pPlayer->SetPosition(100, 500);
+    pPlayer->SetTag(1);
 
-	pEntity2 = CreateEntity<Player>(50, sf::Color::Green);
-	pEntity2->SetPosition(500, 500);
-    pEntity2->SetTag(1);
-
-    camion = CreateEntity<Camion>(20, sf::Color::Blue);
-    camion->SetPosition(200, 580);
-
-    f = CreateEntity<GoFast>(60, sf::Color::Yellow);
-    f->SetPosition(500, 250);
-
-    btp = CreateEntity<BTP>(30, sf::Color::Blue);
-    btp->SetPosition(300, 650);
-
-    pomp = CreateEntity<Pompier>(30, sf::Color::Blue);
-    pomp->SetPosition(800, 250);
-
-
-	pEntitySelected = nullptr;
+    // Générer la première vague d'ennemis
+    std::srand(static_cast<unsigned>(std::time(nullptr))); // Initialiser le générateur aléatoire
+    GenerateEnemies(5); // Première vague
 }
 
 void GameScene::OnEvent(const sf::Event& event)
 {
-    if (event.type == sf::Event::EventType::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Button::Right) {
-        TrySetSelectedEntity(pEntity2, event.mouseButton.x, event.mouseButton.y);
-    }
-
-    else if (event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased) {
+    if ((event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased) && pPlayer != nullptr) {
         bool isMovingUp = sf::Keyboard::isKeyPressed(sf::Keyboard::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
         bool isMovingDown = sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
         bool isMovingLeft = sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
@@ -52,61 +37,120 @@ void GameScene::OnEvent(const sf::Event& event)
 
         bool isSlowed = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
 
-        bool isShooting = sf::Keyboard::isKeyPressed(sf::Keyboard::E);
         bool isFlashing = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
-        bool isKlaxoning = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+        bool isKlaxoning = sf::Keyboard::isKeyPressed(sf::Keyboard::E);
 
-        if (pEntitySelected != nullptr) {
-            float speed = isSlowed ? 400.0f / 3.0f : 400.0f;
-            float deltaTime = GetDeltaTime();
+        float speed = isSlowed ? 400.0f / 3.0f : 400.0f;
+        float deltaTime = GetDeltaTime();
 
-            float moveX = 0.0f;
-            float moveY = 0.0f;
-            float radius = 0;
+        float moveX = 0.0f;
+        float moveY = 0.0f;
+        float radius = 0;
 
-            if (isMovingUp)    moveY -= 1.0f;
-            if (isMovingDown)  moveY += 1.0f;
-            if (isMovingLeft)  moveX -= 1.0f;
-            if (isMovingRight) moveX += 1.0f;
+        if (isMovingUp)    moveY -= 1.0f;
+        if (isMovingDown)  moveY += 1.0f;
+        if (isMovingLeft)  moveX -= 1.0f;
+        if (isMovingRight) moveX += 1.0f;
 
+        if (isKlaxoning) pPlayer->Klaxon();
+        if (isFlashing) pPlayer->Flashing();
 
-            if (moveX != 0.0f || moveY != 0.0f ) {
-                sf::Vector2f direction(moveX, moveY);
-                if (Utils::Normalize(direction)) {
-                    pEntitySelected->SetDirection(direction.x, direction.y, speed); // Mouvement
-                }
-                
+        if (moveX != 0.0f || moveY != 0.0f ) {
+            sf::Vector2f direction(moveX, moveY);
+            if (Utils::Normalize(direction)) {
+                pPlayer->SetDirection(direction.x, direction.y, speed); // Mouvement
             }
-            else {
-                pEntitySelected->SetSpeed(0); pEntitySelected->SetDirection(0, 0); // Stopper le mouvement
-            }          
+                
         }
-        
+        else {
+            pPlayer->SetSpeed(0); pPlayer->SetDirection(0, 0); // Stopper le mouvement
+        }                    
+    }
+}
+#include <cstdlib>
+#include <ctime>
+
+void GameScene::GenerateEnemies(int count, int maxGoFast, int maxPompier, int maxCamion, int maxBTP)
+{
+    float screenWidth = GetWindowWidth();
+    float screenHeight = GetWindowHeight();
+
+    // Vider les ennemis existants
+    for (Entity* enemy : enemies) {
+        enemy->Destroy();
+    }
+    enemies.clear();
+
+    int goFastCount = 0;
+    int pompierCount = 0;
+    int camionCount = 0;
+    int btpCount = 0;
+
+    for (int i = 0; i < count; ++i) {
+        if (goFastCount >= maxGoFast && pompierCount >= maxPompier && camionCount >= maxCamion && btpCount >= maxBTP) {
+            break; 
+        }
+
+        float x = screenWidth * 0.8f + static_cast<float>(std::rand() % static_cast<int>(screenWidth * 0.2f));
+        float y = static_cast<float>(std::rand() % static_cast<int>(screenHeight));
+
+        Entity* newEnemy = nullptr;
+        int enemyType = std::rand() % 4;
+
+        switch (enemyType) {
+        case 0:
+            if (goFastCount < maxGoFast) {
+                newEnemy = CreateEntity<GoFast>(60, sf::Color::Yellow);
+                goFastCount++;
+            }
+            break;
+        case 1:
+            if (pompierCount < maxPompier) {
+                newEnemy = CreateEntity<Pompier>(30, sf::Color::Red);
+                pompierCount++;
+            }
+            break;
+        case 2:
+            if (camionCount < maxCamion) {
+                newEnemy = CreateEntity<Camion>(40, sf::Color::Blue);
+                camionCount++;
+            }
+            break;
+        case 3:
+            if (btpCount < maxBTP) {
+                newEnemy = CreateEntity<BTP>(30, sf::Color::Green);
+                btpCount++;
+            }
+            break;
+        }
+
+        if (newEnemy) {
+            newEnemy->SetPosition(x, y);
+            newEnemy->SetTag(2);
+            enemies.push_back(newEnemy);
+        }
     }
 }
 
 
 
-
-
-void GameScene::TrySetSelectedEntity(Player* pEntity, int x, int y)
-{
-	if (pEntity->IsInside(x, y) == false)
-		return;
-
-	pEntitySelected = pEntity;
-}
-
 void GameScene::OnUpdate()
 {
-	if (pEntitySelected != nullptr)
-	{
-		sf::Vector2f position = pEntitySelected->GetPosition();
-		Debug::DrawCircle(position.x, position.y, 10, sf::Color::Blue);
-	}
+    sf::Vector2i mousePos = sf::Mouse::getPosition(*GetRenderWindow());
+    Debug::DrawCircle(mousePos.x, mousePos.y, 7, sf::Color::White);
+    enemies.erase(std::remove_if(enemies.begin(), enemies.end(),
+        [](Entity* enemy) { return enemy->ToDestroy(); }), enemies.end());
+
+    if (enemies.empty()) {
+
+        GenerateEnemies(4 + wave, 5 /*maxGoFast*/ );
+        wave++;
+    }
+
+    Debug::DrawText(50, 50, "Vague: " + std::to_string(wave), sf::Color::White);
 }
 
 Player* GameScene::GetPlayer()
 {
-    return pEntity2;
+    return pPlayer;
 }

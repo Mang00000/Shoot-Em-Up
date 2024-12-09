@@ -2,7 +2,7 @@
 
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
-
+#include "GameScene.h"
 namespace sf 
 {
 	class Shape;
@@ -10,6 +10,7 @@ namespace sf
 }
 
 class Scene;
+class GameScene;
 
 class Entity
 {
@@ -29,6 +30,7 @@ protected:
     int mTag;
 
 public:
+    GameScene* pGM;
 	bool GoToDirection(int x, int y, float speed = -1.0f);
     bool GoToPosition(int x, int y, float speed = -1.0f);
     void SetPosition(float x, float y, float ratioX = 0.5f, float ratioY = 0.5f);
@@ -52,12 +54,19 @@ public:
 
     Scene* GetScene() const;
 	float GetDeltaTime() const;
+    sf::Vector2f GetDirection() const
+    {
+        return mDirection;
+    }
+
 
     template<typename T>
     T* CreateEntity(float radius, const sf::Color& color);
 
+    void RotateDirection(float angleDegrees);
+
 protected:
-    Entity() = default;
+    Entity();
     ~Entity() = default;
 
     virtual void OnUpdate() {};
@@ -70,6 +79,7 @@ private:
 
     friend class GameManager;
     friend Scene;
+
 };
 
 #include "Entity.inl"

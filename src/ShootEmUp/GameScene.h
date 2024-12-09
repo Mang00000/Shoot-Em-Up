@@ -8,31 +8,21 @@ class GoFast;
 class BTP;
 class Pompier;
 
+#include <vector>
 
 class GameScene : public Scene
 {
+    Player* pPlayer;
 
-	Player* pEntity2;
-
-	Camion* camion;
-	Camion* camion2;
-
-	GoFast* f;
-
-	BTP* btp;
-		
-	Player* pEntitySelected;
-
-	Pompier* pomp;
-
-private:
-	void TrySetSelectedEntity(Player* pEntity, int x, int y);
+    std::vector<Entity*> enemies; // Liste des ennemis
+    int wave = 1;
 
 public:
-	void OnInitialize() override;
-	void OnEvent(const sf::Event& event) override;
-	void OnUpdate() override;
-	Player* GetPlayer();
+    void OnInitialize() override;
+    void OnEvent(const sf::Event& event) override;
+    void OnUpdate() override;
+
+    void GenerateEnemies(int count, int maxGoFast = 9999, int maxPompier = 9999, int maxCamion = 9999, int maxBTP = 9999);
+    Player* GetPlayer();
+    int GetWave() { return wave; }
 };
-
-

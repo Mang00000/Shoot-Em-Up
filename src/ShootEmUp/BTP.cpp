@@ -1,67 +1,70 @@
 #include "BTP.h"
 #include "Projectile.h"
-#include "GameScene.h"
 #include <iostream>
 #include "Player.h"
-
-BTP::BTP()
-{
-	pGM = this->GetScene<GameScene>();
-}
+#include "Utils.h" 
 
 void BTP::OnCollision(Entity* other)
 {
+    if (other->IsTag(1)) {
+        mToDestroy = true;
+        other->Destroy();
+    }
 }
-
 
 void BTP::OnUpdate()
 {
-	Player* pPlayer = pGM->GetPlayer();
-	int x = pPlayer->GetPosition().x;
-	int y = pPlayer->GetPosition().y;
-	if (cooldown > shotspeed) {
-		if (!isShooting) {
-			Projectile* p = GetScene()->CreateEntity<Projectile>(8, sf::Color::Red);
-			p->SetPosition(GetPosition().x, GetPosition().y);
-			p->GoToDirection(x, y, projectilespeed);
-			pList.push_back(p);
-			isShooting = true;
-		}
-		else {
-			projectileaimcooldown += GetDeltaTime();
-			if (pList.empty()) {
-				isShooting = false;
-				cooldown = 0;
-				std::cout << "no ball";
-				return;
-			}
-			if (projectileaimcooldown < aimcooldown) return;
-			for (auto* p : pList) {
-				if (p->ToDestroy()) {
-					pList.pop_back();
-				}
-				else {
-					float py = p->GetPosition().y;
-					float px = p->GetPosition().x;
+    float M_PI = 3.14159;
+    Player* pPlayer = pGM->GetPlayer();
+    int x = pPlayer->GetPosition().x;
+    int y = pPlayer->GetPosition().y;
 
-					if (x > px) {
-						p->GoToPosition(x, y, 200);
-					}
-					else {
-						p->GoToPosition(GetScene()->GetWindowWidth(), y, 200);
-					}
+    if (cooldown > shotspeed) {
+        Projectile* p = GetScene()->CreateEntity<Projectile>(8, sf::Color::Red);
+        p->SetPosition(GetPosition().x, GetPosition().y);
+        p->GoToDirection(x, y, projectilespeed);
+        p->SetTag(2);
+        pList.push_back(p);  
+        cooldown = 0; 
+    }
 
-					system("cls");
+    pList.erase(
+        std::remove_if(pList.begin(), pList.end(), [](Projectile* p) {
+            return p->ToDestroy(); 
+            }),
+        pList.end()
+    );
 
-				}
-			}
-			projectileaimcooldown = 0;
-		}
-	}
-	else if (!isShooting) {
-		cooldown += GetDeltaTime();
-	}
+    for (auto* p : pList) {
+        sf::Vector2f currentPos = p->GetPosition(0.5f, 0.5f);
+        sf::Vector2f targetPos = sf::Vector2f(x, y);
 
+        sf::Vector2f directionToPlayer = targetPos - currentPos;
+        Utils::Normalize(directionToPlayer); 
 
+        float angleToPlayer = atan2(directionToPlayer.y, directionToPlayer.x);
+        float currentAngle = atan2(p->GetDirection().y, p->GetDirection().x);
 
+        float angleDifference = angleToPlayer - currentAngle;
+
+        if (angleDifference > M_PI) {
+            angleDifference -= 2 * M_PI;
+        }
+        else if (angleDifference < -M_PI) {
+            angleDifference += 2 * M_PI;
+        }
+
+        if (angleDifference > maxRotationSpeed) {
+            angleDifference = maxRotationSpeed;
+        }
+        else if (angleDifference < -maxRotationSpeed) {
+            angleDifference = -maxRotationSpeed;
+        }
+
+        p->RotateDirection(angleDifference);
+    }
+
+    cooldown += GetDeltaTime();
 }
+
+

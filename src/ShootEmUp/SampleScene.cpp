@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include "ResourceManager.h"
+#include "Collider.h"
 
 void SampleScene::OnInitialize()
 {
@@ -53,6 +54,15 @@ void SampleScene::OnUpdate()
 	{
 		sf::Vector2f position = pEntitySelected->GetPosition();
 		Debug::DrawCircle(position.x, position.y, 10, sf::Color::Blue);
+		if (pEntitySelected->GetCollider()->mType == Collider::ColliderType::Circle) {
+			CircleCollider* Test = (CircleCollider*)pEntitySelected->GetCollider();
+			Debug::DrawCircle(Test->mCenter.x, Test->mCenter.y, Test->mRadius, sf::Color::White);
+		}
+		else if (pEntitySelected->GetCollider()->mType == Collider::ColliderType::AABB) {
+			RectangleCollider* Test = (RectangleCollider*)pEntitySelected->GetCollider();
+			Debug::DrawRectangle(Test->mTopLeft.x, Test->mTopLeft.y, Test->mWidth, Test->mHeight, sf::Color::White);
+		}
+
 	}
 
 	//Debug::DrawRectangle(pEntity3->GetPosition(0,0).x, pEntity3->GetPosition(0,0).y, pEntity3->GetWidth(), pEntity3->GetHeight(), sf::Color::White);

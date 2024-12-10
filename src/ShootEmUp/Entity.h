@@ -11,6 +11,7 @@ namespace sf
 
 class Scene;
 class EntityDesign;
+class Collider;
 
 class Entity
 {
@@ -34,6 +35,7 @@ protected:
     sf::Drawable* pDrawable;
     sf::Transformable* pTransformable;
 
+    Collider* mCollider;
 public:
 	bool GoToDirection(int x, int y, float speed = -1.f);
     bool GoToPosition(int x, int y, float speed = -1.f);
@@ -47,6 +49,7 @@ public:
 
     int GetWidth() { return mWidth; }
     int GetHeight() { return mHeight; }
+    Collider* GetCollider() { return mCollider; }
 
     sf::Vector2f GetPosition(float ratioX = 0.5f, float ratioY = 0.5f) const;
 

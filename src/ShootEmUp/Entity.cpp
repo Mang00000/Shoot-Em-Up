@@ -6,12 +6,15 @@
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 
+#include "Collider.h"
+
 void Entity::Initialize(float radius, const sf::Color& color)
 {
 	mDirection = sf::Vector2f(0.0f, 0.0f);
 	mSpeed = 0.0f;
 	mToDestroy = false;
 	mTag = -1;
+
 
 
 	mWidth = radius * 2;
@@ -24,9 +27,11 @@ void Entity::Initialize(float radius, const sf::Color& color)
 	circle->setFillColor(color);
 
 
+
 	pDrawable = circle;
 	pTransformable = circle;
 	
+	mCollider = new CircleCollider(this, radius);
 	mTarget.isSet = false;
 }
 
@@ -37,6 +42,7 @@ void Entity::Initialize(sf::Texture* pTexture, int Width, int Height)
 	mToDestroy = false;
 	mTag = -1;
 	mTarget.isSet = false;
+	
 
 	sf::Sprite* pSprite = new sf::Sprite();	
 
@@ -52,8 +58,11 @@ void Entity::Initialize(sf::Texture* pTexture, int Width, int Height)
 	mWidth = pTexture->getSize().x * FinalRatio;
 	mHeight = pTexture->getSize().y * FinalRatio;
 
+
 	pDrawable = pSprite;
 	pTransformable = pSprite;
+
+	mCollider = new RectangleCollider(this, mWidth, mHeight);
 
 }
 
@@ -89,6 +98,17 @@ void Entity::SetPosition(float x, float y, float ratioX, float ratioY)
 	y -= mHeight * ratioY;
 
 	pTransformable->setPosition(x, y);
+	////NEED TO MOVE COLLIDER
+	//if (this->mCollider->mType == Collider::ColliderType::Circle) {
+	//	CircleCollider* Circle = (CircleCollider*)mCollider;
+	//	Circle->mCenter.x = x;
+	//	Circle->mCenter.y = y;
+	//}
+	//else if (this->mCollider->mType == Collider::ColliderType::Circle) {
+	//	RectangleCollider* Rectangle = (RectangleCollider*)mCollider;
+	//	Rectangle->mTopLeft.x = x;
+	//	Rectangle->mTopLeft.y = y;
+	//}
 }
 
 sf::Vector2f Entity::GetPosition(float ratioX, float ratioY) const

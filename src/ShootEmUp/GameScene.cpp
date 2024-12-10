@@ -17,14 +17,12 @@
 #include "Scene.h"
 void GameScene::OnInitialize()
 {
-    // Initialisation du joueur
     pPlayer = CreateEntity<Player>(20, sf::Color::Green);
     pPlayer->SetPosition(100, 500);
     pPlayer->SetTag(1);
 
-    // Générer la première vague d'ennemis
-    std::srand(static_cast<unsigned>(std::time(nullptr))); // Initialiser le générateur aléatoire
-    GenerateEnemies(5); // Première vague
+    std::srand(static_cast<unsigned>(std::time(nullptr))); 
+    GenerateEnemies(5); 
 }
 
 void GameScene::OnEvent(const sf::Event& event)
@@ -75,7 +73,6 @@ void GameScene::GenerateEnemies(int count, int maxGoFast, int maxPompier, int ma
     float screenWidth = GetWindowWidth();
     float screenHeight = GetWindowHeight();
 
-    // Vider les ennemis existants
     for (Entity* enemy : enemies) {
         enemy->Destroy();
     }
@@ -143,7 +140,7 @@ void GameScene::OnUpdate()
 
     if (enemies.empty()) {
 
-        GenerateEnemies(4 + wave, 5 /*maxGoFast*/ );
+        GenerateEnemies(4 + wave, 4 /*maxGoFast*/ );
         wave++;
     }
 

@@ -142,13 +142,10 @@ float Entity::GetDeltaTime() const
 }
 void Entity::RotateDirection(float angleDegrees)
 {
-	// Convertir l'angle en radians
 	float angleRadians = angleDegrees * (3.14159 / 180.0f);
 
-	// Calculer la nouvelle direction après rotation
 	float newX = mDirection.x * cos(angleRadians) - mDirection.y * sin(angleRadians);
 	float newY = mDirection.x * sin(angleRadians) + mDirection.y * cos(angleRadians);
 
-	// Mettre à jour la direction de l'entité
 	mDirection = sf::Vector2f(newX, newY);
 }

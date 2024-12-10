@@ -18,7 +18,9 @@ private:
 
 	float flashCooldown = 0.0f;
 	float flashTime = 3.0f;
-	bool isFlashing = true;
+	bool isFlashing = false;
+	float flashingCooldown = 0.0f;
+	float flashingTime = 1.0f;
 
 	float klaxonCooldown = 0.0f;
 	float klaxonTime = 12.0f;

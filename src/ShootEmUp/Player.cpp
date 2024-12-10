@@ -18,7 +18,12 @@ void Player::OnCollision(Entity* other)
 }
 
 void Player::Flashing() {
-    if (flashCooldown < flashTime) {
+    if (!isFlashing && flashCooldown >= flashTime) {
+        isFlashing = true;
+        flashCooldown = 0.0f;
+        Projectile* p = GetScene()->CreateEntity<Projectile>(50, sf::Color::White);
+        p->SetPosition(GetPosition().x, GetPosition().y);
+        p->SetTag(1);
     }
 }
 void Player::Klaxon() {
@@ -33,18 +38,6 @@ void Player::OnUpdate()
 
     Debug::DrawText(50, 70, "Vie: " + std::to_string(hp), sf::Color::White);
 
-    Debug::DrawFilledRectangle(200, 50, 20, 100, sf::Color::White);
-    float redBarHeight = (cooldown / shotspeed) * 100;
-    Debug::DrawFilledRectangle(200, 50 + (100 - redBarHeight), 20, redBarHeight, sf::Color::Red);
-
-    Debug::DrawFilledRectangle(225, 50, 20, 100, sf::Color::White);
-    float yellowBarHeight = (flashCooldown / flashTime) * 100;
-    Debug::DrawFilledRectangle(225, 50 + (100 - yellowBarHeight), 20, yellowBarHeight, sf::Color::Yellow);
-
-    Debug::DrawFilledRectangle(250, 50, 20, 100, sf::Color::White);
-    float greenBarHeight = (klaxonCooldown / klaxonTime) * 100;
-    Debug::DrawFilledRectangle(250, 50 + (100 - greenBarHeight), 20, greenBarHeight, sf::Color::Green);
-
     float x = GetPosition().x;
     float y = GetPosition().y;
     float r = GetRadius();
@@ -55,6 +48,29 @@ void Player::OnUpdate()
     if (y - r < 0) SetPosition(x, r);
     if (x + r > w) SetPosition(w - r, y);
     if (y + r > h) SetPosition(x, h - r);
+
+    Debug::DrawFilledRectangle(x+20+5, y-30, 6, 25, sf::Color::White);
+    float redBarHeight = (cooldown / shotspeed) * 25;
+    Debug::DrawFilledRectangle(x + 20+5, y - 30 + (25 - redBarHeight), 6, redBarHeight, sf::Color::Red);
+
+    Debug::DrawFilledRectangle(x + 27+5, y - 30, 6, 25, sf::Color::White);
+    float yellowBarHeight = (flashCooldown / flashTime) * 25;
+    Debug::DrawFilledRectangle(x + 27+5, y - 30 + (25- yellowBarHeight), 6, yellowBarHeight, sf::Color::Yellow);
+
+    Debug::DrawFilledRectangle(x + 34+5, y - 30, 6, 25, sf::Color::White);
+    float greenBarHeight = (klaxonCooldown / klaxonTime) * 25;
+    Debug::DrawFilledRectangle(x + 34+5, y - 30 + (25 - greenBarHeight), 6, greenBarHeight, sf::Color::Green);
+
+    if (isFlashing) {
+        if (flashingCooldown < flashingTime) {
+            flashingCooldown += GetDeltaTime();
+        }
+        else {
+            flashingCooldown = 0;
+            isFlashing = false;
+            
+        }
+    }
 
     if (isInvicible) {
         invicibleCooldown += GetDeltaTime();

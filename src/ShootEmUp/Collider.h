@@ -3,41 +3,30 @@
 
 #include "Entity.h"
 
-class Collider {
-protected:
+struct Collider {
 	enum class ColliderType {
-		CircleCollider,
-		RectangleCollider
+		Circle,
+		AABB,
+
+		Count
 	};
 	Entity* mParentEntity;
 	ColliderType mType;
-public:
 	Collider(Entity* Parent);
-	virtual bool IsColliding(Collider* pOther) = 0;
-	virtual bool IsInside(Collider* pOther) = 0;
-	ColliderType GetType() { return mType; }
-	Entity* GetEntity() { return mParentEntity; }
 };
 
 
-class CircleCollider : public Collider {
-private:
+struct CircleCollider : public Collider {
 	int mRadius;
-public:
-	CircleCollider(Entity* pParent, int radius);
-	bool IsColliding(Collider* pOther) override;
-	bool IsInside(Collider* pOther) override;
+	sf::Vector2f mCenter;
+	CircleCollider(Entity* pParent, int radius, float ratioX = 0.5f, float RatioY = 0.5f);
 };
 
-class RectangleCollider : public Collider {
-private:
+struct RectangleCollider : public Collider {
 	sf::Vector2f mTopLeft;
 	float mWidth;
 	float mHeight;
-public:
-	RectangleCollider(Entity* pParent, float Width, float Height);
-	bool IsColliding(Collider* pother) override;
-	bool IsInside(Collider* pOther) override;
+	RectangleCollider(Entity* pParent, float Width, float Height, float ratioX = 0.0f, float ratioY = 0.0f);
 };
 
 #endif // !COLLIDER_H__

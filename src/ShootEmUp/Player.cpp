@@ -95,26 +95,26 @@ void Player::OnUpdate()
         sf::Vector2i mousePos = sf::Mouse::getPosition(*GetScene()->GetRenderWindow());
 
         if (mousePos.x >= 0 && mousePos.y >= 0) {
-            if (pGM->GetWave() >= 5) {
-                pGM->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, -8,projectilespeed, 1);
-                pGM->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, 8, projectilespeed, 1);
+            if (GetScene<GameScene>()->GetWave() >= 5) {
+                GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, -8,projectilespeed, 1);
+                GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, 8, projectilespeed, 1);
             }
-            if (pGM->GetWave() >= 10) {
-                pGM->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, -16, projectilespeed, 1);
-                pGM->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, 16, projectilespeed, 1);
+            if (GetScene<GameScene>()->GetWave() >= 10) {
+                GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, -16, projectilespeed, 1);
+                GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, 16, projectilespeed, 1);
             }
-            if (pGM->GetWave() == 15 && !buffSpeed) {
+            if (GetScene<GameScene>()->GetWave() == 15 && !buffSpeed) {
                 buffSpeed = true;
                 projectilespeed *= 2;
                 shotspeed /= 2;
 
             }
-            if (pGM->GetWave() == 20 && !buffSize) {
+            if (GetScene<GameScene>()->GetWave() == 20 && !buffSize) {
                 buffSize = true;
                 projectilesize *= 2;
             }
 
-            pGM->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, 0, projectilespeed, 1);
+            GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, 0, projectilespeed, 1);
 
             cooldown = 0;
         }

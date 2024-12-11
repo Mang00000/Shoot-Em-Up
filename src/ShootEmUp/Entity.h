@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/System/Vector2.hpp>
+#include "GameScene.h"
 #include <SFML/Graphics.hpp>
 
 namespace sf 
@@ -10,8 +11,10 @@ namespace sf
 }
 
 class Scene;
+class GameScene;
 class EntityDesign;
 class Collider;
+
 
 class Entity
 {
@@ -37,10 +40,11 @@ protected:
 
     Collider* mCollider;
 public:
-	bool GoToDirection(int x, int y, float speed = -1.f);
-    bool GoToPosition(int x, int y, float speed = -1.f);
+    GameScene* pGM;
+	bool GoToDirection(int x, int y, float speed = -1.0f);
+    bool GoToPosition(int x, int y, float speed = -1.0f);
     void SetPosition(float x, float y, float ratioX = 0.5f, float ratioY = 0.5f);
-	void SetDirection(float x, float y, float speed = -1.f);
+	void SetDirection(float x, float y, float speed = -1.0f);
 	void SetSpeed(float speed) { mSpeed = speed; }
 	void SetTag(int tag) { mTag = tag; }
 
@@ -69,6 +73,11 @@ public:
 
     Scene* GetScene() const;
 	float GetDeltaTime() const;
+    sf::Vector2f GetDirection() const
+    {
+        return mDirection;
+    }
+
 
     template<typename T>
     T* CreateEntity(float radius, const sf::Color& color);
@@ -76,8 +85,10 @@ public:
     template<typename U>
     U* CreateEntity(sf::Texture* pTexture);
 
+    void RotateDirection(float angleDegrees);
+
 protected:
-    Entity() = default;
+    Entity();
     ~Entity() = default;
 
     virtual void OnUpdate() {};
@@ -91,6 +102,7 @@ private:
 
     friend class GameManager;
     friend Scene;
+
 };
 
 #include "Entity.inl"

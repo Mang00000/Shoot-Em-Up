@@ -1,13 +1,17 @@
 #include "Entity.h"
-
+#include "GameScene.h"
 #include "GameManager.h"
 #include "Utils.h"
-
+#include <cmath>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
-
 #include "Collider.h"
 #include "ColliderManager.h"
+
+
+Entity::Entity() {
+	pGM = this->GetScene<GameScene>();
+}
 
 void Entity::Initialize(float radius, const sf::Color& color)
 {
@@ -173,4 +177,13 @@ Scene* Entity::GetScene() const
 float Entity::GetDeltaTime() const
 {
 	return GameManager::Get()->GetDeltaTime();
+}
+void Entity::RotateDirection(float angleDegrees)
+{
+	float angleRadians = angleDegrees * (3.14159 / 180.0f);
+
+	float newX = mDirection.x * cos(angleRadians) - mDirection.y * sin(angleRadians);
+	float newY = mDirection.x * sin(angleRadians) + mDirection.y * cos(angleRadians);
+
+	mDirection = sf::Vector2f(newX, newY);
 }

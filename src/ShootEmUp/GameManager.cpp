@@ -40,12 +40,16 @@ void GameManager::CreateWindow(unsigned int width, unsigned int height, const ch
 {
 	_ASSERT(mpWindow == nullptr);
 
-	mpWindow = new sf::RenderWindow(sf::VideoMode(width, height), title);
+	sf::ContextSettings settings;
+	settings.antialiasingLevel = 8;
+
+	mpWindow = new sf::RenderWindow(sf::VideoMode(width, height), title, sf::Style::Default, settings);
 	mpWindow->setFramerateLimit(fpsLimit);
 
 	mWindowWidth = width;
 	mWindowHeight = height;
 }
+
 
 void GameManager::Run()
 {

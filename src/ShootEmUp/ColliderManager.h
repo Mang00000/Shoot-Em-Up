@@ -13,6 +13,8 @@ protected:
 	static bool CircleRectangle(Collider* Circle, Collider* Rectangle);
 	static bool RectangleCircle(Collider* Circle, Collider* Rectangle);
 
+	static bool OOBBOOBB(Collider* OOBB1, Collider* OOBB2);
+
 	inline static std::function<bool(Collider*,Collider*)> CollisionTab[2][2] =
 	{
 		{ColliderManager::CircleCircle, ColliderManager::CircleRectangle},

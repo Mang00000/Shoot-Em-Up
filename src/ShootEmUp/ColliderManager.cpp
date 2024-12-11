@@ -5,13 +5,17 @@
 bool ColliderManager::CircleCircle(Collider* Circle1, Collider* Circle2)
 {
     CircleCollider* C1 = (CircleCollider*)Circle1;
-    float C1CenterX = C1->mCenter.x;
-    float C1CenterY = C1->mCenter.y;
+    sf::Vector2f Center1 = C1->mParentEntity->GetCenter();
+
+    float C1CenterX = Center1.x;
+    float C1CenterY = Center1.y;
     float C1Radius = C1->mRadius;
 
     CircleCollider* C2 = (CircleCollider*)Circle2;
-    float C2CenterX = C2->mCenter.x;
-    float C2CenterY = C2->mCenter.y;
+    sf::Vector2f Center2 = C2->mParentEntity->GetCenter();
+
+    float C2CenterX = Center2.x;
+    float C2CenterY = Center2.y;
     float C2Radius = C2->mRadius;
 
 
@@ -21,14 +25,17 @@ bool ColliderManager::CircleCircle(Collider* Circle1, Collider* Circle2)
 bool ColliderManager::RectangleRectangle(Collider* Rectangle1, Collider* Rectangle2)
 {
     RectangleCollider* R1 = (RectangleCollider*)Rectangle1;
-    float R1X = R1->mTopLeft.x;
-    float R1Y = R1->mTopLeft.y;
+    sf::Vector2f TopLeft1 = R1->mParentEntity->GetTopLeft();
+
+    float R1X = TopLeft1.x;
+    float R1Y = TopLeft1.y;
     float R1Width = R1->mWidth;
     float R1Height = R1->mHeight;
 
     RectangleCollider* R2 = (RectangleCollider*)Rectangle2;
-    float R2X = R2->mTopLeft.x;
-    float R2Y = R2->mTopLeft.y;
+    sf::Vector2f TopLeft2 = R2->mParentEntity->GetTopLeft();
+    float R2X = TopLeft2.x;
+    float R2Y = TopLeft2.y;
     float R2Width = R2->mWidth;
     float R2Height = R2->mHeight;
 
@@ -42,13 +49,17 @@ bool ColliderManager::RectangleRectangle(Collider* Rectangle1, Collider* Rectang
 bool ColliderManager::CircleRectangle(Collider* Circle, Collider* Rectangle)
 {
     CircleCollider* Circle1 = (CircleCollider*)Circle;
-    float C1CenterX = Circle1->mCenter.x;
-    float C1CenterY = Circle1->mCenter.y;
+    sf::Vector2f Center1 = Circle1->mParentEntity->GetCenter();
+
+    float C1CenterX = Center1.x;
+    float C1CenterY = Center1.y;
     int C1Radius = Circle1->mRadius;
 
     RectangleCollider* Rectangle1 = (RectangleCollider*)Rectangle;
-    float R1X = Rectangle1->mTopLeft.x;
-    float R1Y = Rectangle1->mTopLeft.y;
+    sf::Vector2f TopLeft1 = Rectangle1->mParentEntity->GetTopLeft();
+
+    float R1X = TopLeft1.x;
+    float R1Y = TopLeft1.y;
     float R1Width = Rectangle1->mWidth;
     float R1Height = Rectangle1->mHeight;
 
@@ -61,7 +72,7 @@ bool ColliderManager::CircleRectangle(Collider* Circle, Collider* Rectangle)
     if (C1CenterY < R1Y) TestY = R1Y;
     else if (C1CenterY > R1Y + R1Height) TestY = R1Y + R1Height;
 
-    return Utils::GetDistance(C1CenterX, C1CenterY, R1X, R1Y) <= C1Radius;
+    return Utils::GetDistance(TestX, TestY, C1CenterX, C1CenterY) <= C1Radius;
 }
 
 bool ColliderManager::RectangleCircle(Collider* Circle, Collider* Rectangle)

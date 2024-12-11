@@ -50,8 +50,12 @@ public:
     int GetWidth() { return mWidth; }
     int GetHeight() { return mHeight; }
     Collider* GetCollider() { return mCollider; }
+    
 
     sf::Vector2f GetPosition(float ratioX = 0.5f, float ratioY = 0.5f) const;
+
+    sf::Vector2f GetCenter() { return GetPosition(0.5, 0.5); }
+    sf::Vector2f GetTopLeft() { return GetPosition(0, 0); }
 
 	bool IsTag(int tag) const { return mTag == tag; }
     bool IsColliding(Entity* other) const;

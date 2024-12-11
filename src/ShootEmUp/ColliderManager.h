@@ -19,7 +19,8 @@ protected:
 		{ColliderManager::RectangleCircle, ColliderManager::RectangleRectangle}
 	};
 
-	bool ResolveCollision(Collider* pCollider1, Collider* pCollider2);
+public:
+	static bool ResolveCollision(Collider* pCollider1, Collider* pCollider2);
 
 };
 

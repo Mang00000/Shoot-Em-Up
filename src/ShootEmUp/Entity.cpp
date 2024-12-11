@@ -7,6 +7,7 @@
 #include <SFML/Graphics/CircleShape.hpp>
 
 #include "Collider.h"
+#include "ColliderManager.h"
 
 void Entity::Initialize(float radius, const sf::Color& color)
 {
@@ -68,16 +69,7 @@ void Entity::Initialize(sf::Texture* pTexture, int Width, int Height)
 
 bool Entity::IsColliding(Entity* other) const
 {
-	sf::Vector2f distance = GetPosition(0.5f, 0.5f) - other->GetPosition(0.5f, 0.5f);
-
-	float sqrLength = (distance.x * distance.x) + (distance.y * distance.y);
-
-	float radius1 = mWidth / 2.f;
-	float radius2 = other->mWidth / 2.f;
-
-	float sqrRadius = (radius1 + radius2) * (radius1 + radius2);
-
-	return sqrLength < sqrRadius;
+	return ColliderManager::ResolveCollision(this->mCollider, other->mCollider);
 }
 
 bool Entity::IsInside(float x, float y) const
@@ -98,17 +90,6 @@ void Entity::SetPosition(float x, float y, float ratioX, float ratioY)
 	y -= mHeight * ratioY;
 
 	pTransformable->setPosition(x, y);
-	////NEED TO MOVE COLLIDER
-	//if (this->mCollider->mType == Collider::ColliderType::Circle) {
-	//	CircleCollider* Circle = (CircleCollider*)mCollider;
-	//	Circle->mCenter.x = x;
-	//	Circle->mCenter.y = y;
-	//}
-	//else if (this->mCollider->mType == Collider::ColliderType::Circle) {
-	//	RectangleCollider* Rectangle = (RectangleCollider*)mCollider;
-	//	Rectangle->mTopLeft.x = x;
-	//	Rectangle->mTopLeft.y = y;
-	//}
 }
 
 sf::Vector2f Entity::GetPosition(float ratioX, float ratioY) const

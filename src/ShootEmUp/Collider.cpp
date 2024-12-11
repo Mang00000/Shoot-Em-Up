@@ -6,20 +6,16 @@ Collider::Collider(Entity* Parent)
 	mParentEntity = Parent;
 }
 
-CircleCollider::CircleCollider(Entity* mParent, int radius, float ratioX, float ratioY) : Collider(mParent)
+CircleCollider::CircleCollider(Entity* mParent, int radius) : Collider(mParent)
 {
-	mCenter = mParent->GetPosition(ratioX,ratioY);
 	mRadius = radius;
 	mType = ColliderType::Circle;
 }
 
-RectangleCollider::RectangleCollider(Entity* pParent, float Width, float Height, float ratioX, float ratioY) : Collider(pParent)
+RectangleCollider::RectangleCollider(Entity* pParent, float width, float height) : Collider(pParent)
 {
-	mWidth = Width;
-	mHeight = Height;
-	mTopLeft = pParent->GetPosition(ratioX, ratioY);
-
-
+	mWidth = width;
+	mHeight = height;
 	mType = ColliderType::AABB;
 }
 

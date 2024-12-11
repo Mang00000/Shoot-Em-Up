@@ -35,3 +35,4 @@ U* Scene::CreateEntity(std::string _Path, int Width, int Height)
 
 	return newEntity;
 }
+

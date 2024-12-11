@@ -27,6 +27,8 @@ public:
 	template<typename U>
 	U* CreateEntity(std::string _Path, int Width, int Height);
 
+
+
 	float GetDeltaTime() const;
 
 	int GetWindowWidth() const;

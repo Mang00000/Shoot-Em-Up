@@ -18,15 +18,16 @@ struct Collider {
 
 struct CircleCollider : public Collider {
 	int mRadius;
-	sf::Vector2f mCenter;
-	CircleCollider(Entity* pParent, int radius, float ratioX = 0.5f, float RatioY = 0.5f);
+	CircleCollider(Entity* pParent, int radius);
 };
 
 struct RectangleCollider : public Collider {
-	sf::Vector2f mTopLeft;
-	float mWidth;
-	float mHeight;
-	RectangleCollider(Entity* pParent, float Width, float Height, float ratioX = 0.0f, float ratioY = 0.0f);
+	int mWidth;
+	int mHeight;
+
+	int GetWidth() { return mWidth; }
+	int GetHeight() { return mHeight; }
+	RectangleCollider(Entity* pParent, float Width, float Height);
 };
 
 #endif // !COLLIDER_H__

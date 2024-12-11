@@ -43,7 +43,7 @@ void Player::OnUpdate()
     float r = GetRadius();
     float h = GetScene()->GetWindowHeight();
     float w = GetScene()->GetWindowWidth();
-
+    
     if (x - r < 0) SetPosition(r, y);
     if (y - r < 0) SetPosition(x, r);
     if (x + r > w) SetPosition(w - r, y);
@@ -95,23 +95,13 @@ void Player::OnUpdate()
         sf::Vector2i mousePos = sf::Mouse::getPosition(*GetScene()->GetRenderWindow());
 
         if (mousePos.x >= 0 && mousePos.y >= 0) {
-
-
-            auto createProjectile = [&](float rotationOffset) {
-                Projectile* p = GetScene()->CreateEntity<Projectile>(projectilesize, sf::Color::Magenta);
-                p->SetPosition(x,y);
-                p->GoToDirection(mousePos.x, mousePos.y, projectilespeed);
-                p->SetTag(1);
-                p->RotateDirection(rotationOffset);
-                };
-
             if (pGM->GetWave() >= 5) {
-                createProjectile(-8);
-                createProjectile(8);
+                pGM->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, -8,projectilespeed, 1);
+                pGM->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, 8, projectilespeed, 1);
             }
             if (pGM->GetWave() >= 10) {
-                createProjectile(-16);
-                createProjectile(16);
+                pGM->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, -16, projectilespeed, 1);
+                pGM->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, 16, projectilespeed, 1);
             }
             if (pGM->GetWave() == 15 && !buffSpeed) {
                 buffSpeed = true;
@@ -124,7 +114,7 @@ void Player::OnUpdate()
                 projectilesize *= 2;
             }
 
-            createProjectile(0);
+            pGM->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, 0, projectilespeed, 1);
 
             cooldown = 0;
         }

@@ -19,10 +19,9 @@ void Pompier::OnUpdate()
 	int x = pPlayer->GetPosition().x;
 	int y = pPlayer->GetPosition().y;
 	if (cooldown > shotspeed) {
-		Projectile* p = GetScene()->CreateEntity<Projectile>(3, sf::Color::Blue);
-		p->SetPosition(GetPosition().x, GetPosition().y);
-		p->GoToDirection(x, y, projectilespeed);
-		p->SetTag(2);
+
+		pGM->AddProjectile(3, GetPosition().x, GetPosition().y, sf::Color::Blue, x, y, 0, projectilespeed);
+
 		cooldown = 0;
 	}
 	else {

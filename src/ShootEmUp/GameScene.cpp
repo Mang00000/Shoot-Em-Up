@@ -73,10 +73,10 @@ void GameScene::GenerateEnemies(int count, int maxGoFast, int maxPompier, int ma
     float screenWidth = GetWindowWidth();
     float screenHeight = GetWindowHeight();
 
-    for (Entity* enemy : enemies) {
+    for (Entity* enemy : pEnemies) {
         enemy->Destroy();
     }
-    enemies.clear();
+    pEnemies.clear();
 
     int goFastCount = 0;
     int pompierCount = 0;
@@ -124,7 +124,7 @@ void GameScene::GenerateEnemies(int count, int maxGoFast, int maxPompier, int ma
         if (newEnemy) {
             newEnemy->SetPosition(x, y);
             newEnemy->SetTag(2);
-            enemies.push_back(newEnemy);
+            pEnemies.push_back(newEnemy);
         }
     }
 }
@@ -135,13 +135,22 @@ void GameScene::OnUpdate()
 {
     sf::Vector2i mousePos = sf::Mouse::getPosition(*GetRenderWindow());
     Debug::DrawCircle(mousePos.x, mousePos.y, 7, sf::Color::White);
-    enemies.erase(std::remove_if(enemies.begin(), enemies.end(),
-        [](Entity* enemy) { return enemy->ToDestroy(); }), enemies.end());
+    pEnemies.erase(std::remove_if(pEnemies.begin(), pEnemies.end(),
+        [](Entity* enemy) { return enemy->ToDestroy(); }), pEnemies.end());
 
-    if (enemies.empty()) {
-
+    if (pEnemies.empty()) {
+        RemoveProjectile(2);
         GenerateEnemies(4 + wave, 4 /*maxGoFast*/ );
         wave++;
+    }
+
+    for (auto it = pProjectile.begin(); it != pProjectile.end(); ) {
+        if ((*it)->ToDestroy()) {
+            it = pProjectile.erase(it); 
+        }
+        else {
+            ++it;
+        }
     }
 
     Debug::DrawText(50, 50, "Vague: " + std::to_string(wave), sf::Color::White);
@@ -150,4 +159,23 @@ void GameScene::OnUpdate()
 Player* GameScene::GetPlayer()
 {
     return pPlayer;
+}
+
+void GameScene::AddProjectile(int size, float x, float y, sf::Color color, float dx, float dy, float angle, float speed, int tag) {
+    Entity* p = nullptr;
+    p = CreateEntity<Projectile>(size, color);
+    p->SetPosition(x, y);
+    p->GoToDirection(dx, dy, speed);
+    p->SetTag(tag);
+    p->RotateDirection(angle);
+    pProjectile.push_back(p);
+}
+
+void GameScene::RemoveProjectile(int tag) {
+
+    for (Entity* projectile : pProjectile) {
+        if (projectile->IsTag(tag)) {
+            projectile->Destroy();
+        }
+    }
 }

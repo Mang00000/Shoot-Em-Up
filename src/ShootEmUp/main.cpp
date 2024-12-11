@@ -8,13 +8,18 @@
 #include <cstdlib>
 #include <crtdbg.h>
 
+#include <iostream>
+#include <filesystem>
+#include "ResourceManager.h"
+
 int main() 
 {
-    GameManager* pInstance = GameManager::Get();
+  GameManager* pInstance = GameManager::Get();
 
 	pInstance->CreateWindow(1280, 720, "SampleScene", 240);
 	
 	pInstance->LaunchScene<GameScene>();
+
 
 	return 0;
 }

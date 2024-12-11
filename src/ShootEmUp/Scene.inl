@@ -3,6 +3,7 @@
 #include "Scene.h"
 #include "GameManager.h"
 #include "Entity.h"
+#include "ResourceManager.h"
 
 template<typename T>
 T* Scene::CreateEntity(float radius, const sf::Color& color)
@@ -18,3 +19,20 @@ T* Scene::CreateEntity(float radius, const sf::Color& color)
 
 	return newEntity;
 }
+
+template<typename U>
+U* Scene::CreateEntity(std::string _Path, int Width, int Height)
+{
+	static_assert(std::is_base_of<Entity, U>::value, "U must be derived from Entity");
+
+	U* newEntity = new U();
+
+	Entity* entity = newEntity;
+
+	entity->Initialize(ResourceManager::Get()->GetTexture(_Path), Width, Height);
+
+	mpGameManager->mEntitiesToAdd.push_back(newEntity);
+
+	return newEntity;
+}
+

@@ -5,10 +5,14 @@
 #include <cmath>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
+#include "Collider.h"
+#include "ColliderManager.h"
+
 
 Entity::Entity() {
 	pGM = this->GetScene<GameScene>();
 }
+
 void Entity::Initialize(float radius, const sf::Color& color)
 {
 	mDirection = sf::Vector2f(0.0f, 0.0f);
@@ -16,25 +20,60 @@ void Entity::Initialize(float radius, const sf::Color& color)
 	mToDestroy = false;
 	mTag = -1;
 
-	mShape.setOrigin(0.f, 0.f);
-	mShape.setRadius(radius);
-	mShape.setFillColor(color);
+
+
+	mWidth = radius * 2;
+	mHeight = radius * 2;
+
+	sf::CircleShape* circle = new sf::CircleShape();
+
+	circle->setOrigin(0.f, 0.f);
+	circle->setRadius(radius);
+	circle->setFillColor(color);
+
+
+
+	pDrawable = circle;
+	pTransformable = circle;
 	
+	mCollider = new CircleCollider(this, radius);
 	mTarget.isSet = false;
+}
+
+void Entity::Initialize(sf::Texture* pTexture, int Width, int Height)
+{
+	mDirection = sf::Vector2f(0.0f, 0.0f);
+	mSpeed = 0.0f;
+	mToDestroy = false;
+	mTag = -1;
+	mTarget.isSet = false;
+	
+
+	sf::Sprite* pSprite = new sf::Sprite();	
+
+	pSprite->setTexture(*pTexture);
+	pSprite->setOrigin(0.f, 0.f);
+
+	float RatioScaleX = pTexture->getSize().x / (float) Width;
+	float RatioScaleY = pTexture->getSize().y / (float) Height;
+
+	float FinalRatio =  1 / std::max(RatioScaleX, RatioScaleY);
+	pSprite->scale(sf::Vector2f(FinalRatio, FinalRatio));
+
+	mWidth = pTexture->getSize().x * FinalRatio;
+	mHeight = pTexture->getSize().y * FinalRatio;
+
+
+	pDrawable = pSprite;
+	pTransformable = pSprite;
+
+	mCollider = new RectangleCollider(this, mWidth, mHeight);
+
 }
 
 bool Entity::IsColliding(Entity* other) const
 {
-	sf::Vector2f distance = GetPosition(0.5f, 0.5f) - other->GetPosition(0.5f, 0.5f);
-
-	float sqrLength = (distance.x * distance.x) + (distance.y * distance.y);
-
-	float radius1 = mShape.getRadius();
-	float radius2 = other->mShape.getRadius();
-
-	float sqrRadius = (radius1 + radius2) * (radius1 + radius2);
-
-	return sqrLength < sqrRadius;
+	return ColliderManager::ResolveCollision(this->mCollider, other->mCollider);
 }
 
 bool Entity::IsInside(float x, float y) const
@@ -44,28 +83,25 @@ bool Entity::IsInside(float x, float y) const
 	float dx = x - position.x;
 	float dy = y - position.y;
 
-	float radius = mShape.getRadius();
+	float radius = mWidth / 2.f;
 
 	return (dx * dx + dy * dy) < (radius * radius);
 }
 
 void Entity::SetPosition(float x, float y, float ratioX, float ratioY)
 {
-	float size = mShape.getRadius() * 2;
+	x -= mWidth * ratioX;
+	y -= mHeight * ratioY;
 
-	x -= size * ratioX;
-	y -= size * ratioY;
-
-	mShape.setPosition(x, y);
+	pTransformable->setPosition(x, y);
 }
 
 sf::Vector2f Entity::GetPosition(float ratioX, float ratioY) const
 {
-	float size = mShape.getRadius() * 2;
-	sf::Vector2f position = mShape.getPosition();
+	sf::Vector2f position = pTransformable->getPosition();
 
-	position.x += size * ratioX;
-	position.y += size * ratioY;
+	position.x += mWidth * ratioX;
+	position.y += mHeight * ratioY;
 
 	return position;
 }
@@ -107,6 +143,8 @@ void Entity::SetDirection(float x, float y, float speed)
 		mSpeed = speed;
 
 	mDirection = sf::Vector2f(x, y);
+
+	mTarget.isSet = false;
 }
 
 void Entity::Update()
@@ -114,7 +152,7 @@ void Entity::Update()
 	float dt = GetDeltaTime();
 	float distance = dt * mSpeed;
 	sf::Vector2f translation = distance * mDirection;
-	mShape.move(translation);
+	pTransformable->move(translation);
 
 	if (mTarget.isSet) 
 	{

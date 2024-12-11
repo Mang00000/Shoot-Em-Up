@@ -1,8 +1,9 @@
 #pragma once
 
 #include <SFML/System/Vector2.hpp>
-#include <SFML/Graphics/CircleShape.hpp>
 #include "GameScene.h"
+#include <SFML/Graphics.hpp>
+
 namespace sf 
 {
 	class Shape;
@@ -11,6 +12,9 @@ namespace sf
 
 class Scene;
 class GameScene;
+class EntityDesign;
+class Collider;
+
 
 class Entity
 {
@@ -22,13 +26,19 @@ class Entity
     };
 
 protected:
-    sf::CircleShape mShape;
     sf::Vector2f mDirection;
 	Target mTarget;
     float mSpeed;
     bool mToDestroy;
     int mTag;
 
+    int mWidth;
+    int mHeight;
+
+    sf::Drawable* pDrawable;
+    sf::Transformable* pTransformable;
+
+    Collider* mCollider;
 public:
     GameScene* pGM;
 	bool GoToDirection(int x, int y, float speed = -1.0f);
@@ -37,10 +47,19 @@ public:
 	void SetDirection(float x, float y, float speed = -1.0f);
 	void SetSpeed(float speed) { mSpeed = speed; }
 	void SetTag(int tag) { mTag = tag; }
-	float GetRadius() const { return mShape.getRadius(); }
+
+    sf::Drawable* GetDrawable() { return pDrawable; }
+    sf::Transformable* GetTransformable() { return pTransformable; }
+
+    int GetWidth() { return mWidth; }
+    int GetHeight() { return mHeight; }
+    Collider* GetCollider() { return mCollider; }
+    
 
     sf::Vector2f GetPosition(float ratioX = 0.5f, float ratioY = 0.5f) const;
-	sf::Shape* GetShape() { return &mShape; }
+
+    sf::Vector2f GetCenter() { return GetPosition(0.5, 0.5); }
+    sf::Vector2f GetTopLeft() { return GetPosition(0, 0); }
 
 	bool IsTag(int tag) const { return mTag == tag; }
     bool IsColliding(Entity* other) const;
@@ -63,6 +82,9 @@ public:
     template<typename T>
     T* CreateEntity(float radius, const sf::Color& color);
 
+    template<typename U>
+    U* CreateEntity(sf::Texture* pTexture);
+
     void RotateDirection(float angleDegrees);
 
 protected:
@@ -76,6 +98,7 @@ protected:
 private:
     void Update();
 	void Initialize(float radius, const sf::Color& color);
+    void Initialize(sf::Texture* pTexture, int Width, int Height);
 
     friend class GameManager;
     friend Scene;

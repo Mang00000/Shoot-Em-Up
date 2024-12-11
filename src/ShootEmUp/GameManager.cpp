@@ -7,6 +7,7 @@
 #include <SFML/Window.hpp>
 
 #include <iostream>
+#include "ResourceManager.h"
 
 GameManager::GameManager()
 {
@@ -39,12 +40,16 @@ void GameManager::CreateWindow(unsigned int width, unsigned int height, const ch
 {
 	_ASSERT(mpWindow == nullptr);
 
-	mpWindow = new sf::RenderWindow(sf::VideoMode(width, height), title);
+	sf::ContextSettings settings;
+	settings.antialiasingLevel = 8;
+
+	mpWindow = new sf::RenderWindow(sf::VideoMode(width, height), title, sf::Style::Default, settings);
 	mpWindow->setFramerateLimit(fpsLimit);
 
 	mWindowWidth = width;
 	mWindowHeight = height;
 }
+
 
 void GameManager::Run()
 {
@@ -144,10 +149,10 @@ void GameManager::Update()
 void GameManager::Draw()
 {
 	mpWindow->clear();
-	
+
 	for (Entity* entity : mEntities)
 	{
-		mpWindow->draw(*entity->GetShape());
+		mpWindow->draw(*entity->pDrawable);
 	}
 	
 	Debug::Get()->Draw(mpWindow);

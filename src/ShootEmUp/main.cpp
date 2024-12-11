@@ -3,32 +3,23 @@
 #include <iostream>
 
 #include "GameManager.h"
-#include "SampleScene.h"
+#include "GameScene.h"
 
 #include <cstdlib>
 #include <crtdbg.h>
-/*
-#define SFML
 
-#ifdef SFML
-class LEText : sf::Text 
-{
-#else
-
-class LEText : GC::Text
-{
-#endif
-
-
-}*/;
+#include <iostream>
+#include <filesystem>
+#include "ResourceManager.h"
 
 int main() 
 {
-    GameManager* pInstance = GameManager::Get();
+  GameManager* pInstance = GameManager::Get();
 
-	pInstance->CreateWindow(1280, 720, "SampleScene");
+	pInstance->CreateWindow(1280, 720, "SampleScene", 240);
 	
-	pInstance->LaunchScene<SampleScene>();
+	pInstance->LaunchScene<GameScene>();
+
 
 	return 0;
 }

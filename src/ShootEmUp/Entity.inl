@@ -18,3 +18,9 @@ T* Entity::CreateEntity(float radius, const sf::Color& color)
 {
 	return GetScene()->CreateEntity<T>(radius, color);
 }
+
+template<typename U>
+inline U* Entity::CreateEntity(sf::Texture* pTexture)
+{
+	return GetScene()->CreateEntity<U>(pTexture);
+}

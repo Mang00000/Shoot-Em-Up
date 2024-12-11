@@ -7,6 +7,7 @@
 #include <SFML/Window.hpp>
 
 #include <iostream>
+#include "ResourceManager.h"
 
 GameManager::GameManager()
 {
@@ -144,10 +145,10 @@ void GameManager::Update()
 void GameManager::Draw()
 {
 	mpWindow->clear();
-	
+
 	for (Entity* entity : mEntities)
 	{
-		mpWindow->draw(*entity->GetShape());
+		mpWindow->draw(*entity->pDrawable);
 	}
 	
 	Debug::Get()->Draw(mpWindow);

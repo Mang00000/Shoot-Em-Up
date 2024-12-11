@@ -14,7 +14,7 @@ void GoFast::OnCollision(Entity* other)
 void GoFast::OnUpdate()
 {
 	if (start) {
-		SetPosition(0 - GetRadius() * 2, GetPosition().y);
+		SetPosition(0 - GetWidth() * 2, GetPosition().y);
 		start = false;
 
 	}
@@ -22,8 +22,8 @@ void GoFast::OnUpdate()
 		time += GetDeltaTime();
 	} 
 	else if (rushing) {
-		GoToDirection(GetScene()->GetWindowWidth()+GetRadius(), GetPosition().y, 1000.0f);
-		if (GetPosition().x > GetScene()->GetWindowWidth() + GetRadius()-2) {
+		GoToDirection(GetScene()->GetWindowWidth()+ GetWidth(), GetPosition().y, 1000.0f);
+		if (GetPosition().x > GetScene()->GetWindowWidth() + GetWidth()-2) {
 			mToDestroy = true;
 		}
 
@@ -37,9 +37,9 @@ void GoFast::OnUpdate()
 		flashlightTimer = 0;
 		flashlightOn = true;
 
-		Debug::DrawCircle(GetPosition().x + GetRadius() * 2, GetPosition().y, 50, sf::Color::White);
-		Debug::DrawCircle(GetPosition().x + GetRadius() * 2.5, GetPosition().y, 45, sf::Color::White);
-		Debug::DrawCircle(GetPosition().x + GetRadius() * 3, GetPosition().y, 40, sf::Color::White);
+		Debug::DrawCircle(GetPosition().x + GetWidth() * 2, GetPosition().y, 50, sf::Color::White);
+		Debug::DrawCircle(GetPosition().x + GetWidth() * 2.5, GetPosition().y, 45, sf::Color::White);
+		Debug::DrawCircle(GetPosition().x + GetWidth() * 3, GetPosition().y, 40, sf::Color::White);
 
 	}
 	else if (flashlightOn && flashlightTimer > flashlightCd) {

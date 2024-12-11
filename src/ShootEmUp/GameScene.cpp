@@ -19,7 +19,7 @@ void GameScene::OnInitialize()
 {
     pPlayer = CreateEntity<Player>(20, sf::Color::Green);
     pPlayer->SetPosition(100, 500);
-    pPlayer->SetTag(1);
+    pPlayer->SetTag(3);
 
     std::srand(static_cast<unsigned>(std::time(nullptr))); 
     GenerateEnemies(5); 

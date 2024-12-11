@@ -13,7 +13,7 @@ void Player::OnCollision(Entity* other)
         isInvicible = true;
     }
     if (hp <= 0) {
-        mToDestroy = true;
+
     }
 }
 
@@ -40,7 +40,7 @@ void Player::OnUpdate()
 
     float x = GetPosition().x;
     float y = GetPosition().y;
-    float r = GetRadius();
+    float r = GetWidth();
     float h = GetScene()->GetWindowHeight();
     float w = GetScene()->GetWindowWidth();
     

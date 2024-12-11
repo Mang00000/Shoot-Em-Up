@@ -14,7 +14,7 @@ void Projectile::OnUpdate()
 {
 	float x = GetPosition().x;
 	float y = GetPosition().y;
-	float r = GetRadius();
+	float r = GetWidth();
 	float h = GetScene()->GetWindowHeight();
 	float w = GetScene()->GetWindowWidth();
 
@@ -43,7 +43,7 @@ void ProjectileCamion::OnUpdate()
 {
 	float x = GetPosition().x;
 	float y = GetPosition().y;
-	float r = GetRadius();
+	float r = GetWidth();
 	float h = GetScene()->GetWindowHeight();
 	float w = GetScene()->GetWindowWidth();
 

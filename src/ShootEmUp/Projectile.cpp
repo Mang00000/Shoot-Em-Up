@@ -24,6 +24,9 @@ void Projectile::OnUpdate()
 
 void GuidedProjectile::OnCollision(Entity* other)
 {
+    if (other->IsTag(2)&& this->IsTag(1)) {
+        other->Destroy();
+    }
 }
 
 void GuidedProjectile::OnUpdate()
@@ -35,10 +38,15 @@ void GuidedProjectile::OnUpdate()
 	float h = GetScene()->GetWindowHeight();
 	float w = GetScene()->GetWindowWidth();
 
-	if (x - r < 0 || y - r < 0 || x + r > w || y + r > h) mToDestroy = true;
+    if (x - r < 0 || y - r < 0 || x + r > w || y + r > h) mToDestroy = true;
 
     sf::Vector2f currentPos = GetPosition(0.5f, 0.5f);
-    sf::Vector2f targetPos = sf::Vector2f(x, y);
+
+    if (GetScene<GameScene>()->GetEntityPosition(Target).x == -1) {
+        Target = GetScene<GameScene>()->GetClosestEnemy(this);
+    }
+
+    sf::Vector2f targetPos = sf::Vector2f(GetScene<GameScene>()->GetEntityPosition(Target).x, GetScene<GameScene>()->GetEntityPosition(Target).y);
 
     sf::Vector2f directionToPlayer = targetPos - currentPos;
     Utils::Normalize(directionToPlayer);
@@ -63,4 +71,7 @@ void GuidedProjectile::OnUpdate()
     }
 
     RotateDirection(angleDifference);
+}	
+void GuidedProjectile::SetTarget(Entity* other) {
+    Target = other;
 }

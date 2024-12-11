@@ -37,6 +37,7 @@ void GameScene::OnEvent(const sf::Event& event)
 
         bool isFlashing = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
         bool isKlaxoning = sf::Keyboard::isKeyPressed(sf::Keyboard::E);
+        bool isRocketLauncher = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
 
         float speed = isSlowed ? 400.0f / 3.0f : 400.0f;
         float deltaTime = GetDeltaTime();
@@ -52,6 +53,7 @@ void GameScene::OnEvent(const sf::Event& event)
 
         if (isKlaxoning) pPlayer->Klaxon();
         if (isFlashing) pPlayer->Flashing();
+        if (isRocketLauncher) pPlayer->Rocket();
 
         if (moveX != 0.0f || moveY != 0.0f ) {
             sf::Vector2f direction(moveX, moveY);
@@ -170,10 +172,14 @@ void GameScene::AddProjectile(int size, float x, float y, sf::Color color, float
     p->RotateDirection(angle);
     pProjectile.push_back(p);
 }
-void GameScene::AddGuidedProjectile(int size, float x, float y, sf::Color color,int tag) {
-    Entity* p = nullptr;
+void GameScene::AddGuidedProjectile(int size, float x, float y, sf::Color color,float speed,int tag, Entity* target,float offsetX, float offsetY) {
+    if (offsetX == -1) offsetX = x;
+    GuidedProjectile* p = nullptr;
     p = CreateEntity<GuidedProjectile>(size, color);
+    p->SetTarget(target);
     p->SetPosition(x, y);
+    p->GoToDirection(offsetX, offsetY, speed);
+
     p->SetTag(tag);
     pProjectile.push_back(p);
 }
@@ -183,5 +189,26 @@ void GameScene::RemoveProjectile(int tag) {
         if (projectile->IsTag(tag)) {
             projectile->Destroy();
         }
+    }
+}
+Entity* GameScene::GetClosestEnemy(Entity* fromWho) {
+    float closestDistance = 99999;
+    Entity* closestEntity = nullptr;
+
+    for (Entity* enemy : pEnemies) {
+        float newDistance = Utils::GetDistance(enemy->GetPosition().x, enemy->GetPosition().y, fromWho->GetPosition().x, fromWho->GetPosition().y);
+        if (newDistance < closestDistance) {
+            closestDistance = newDistance;
+            closestEntity = enemy;
+        }
+    }
+    return closestEntity;
+}
+sf::Vector2f GameScene::GetEntityPosition(Entity* entity, float ratioX, float ratioY) const {
+    if (!entity->ToDestroy()) {
+        return entity->GetPosition(ratioX, ratioY);
+    }
+    else {
+        return { -1,-1 };
     }
 }

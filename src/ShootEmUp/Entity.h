@@ -11,7 +11,6 @@ namespace sf
 }
 
 class Scene;
-class GameScene;
 class EntityDesign;
 class Collider;
 
@@ -40,7 +39,6 @@ protected:
 
     Collider* mCollider;
 public:
-    GameScene* pGM;
 	bool GoToDirection(int x, int y, float speed = -1.0f);
     bool GoToPosition(int x, int y, float speed = -1.0f);
     void SetPosition(float x, float y, float ratioX = 0.5f, float ratioY = 0.5f);
@@ -88,7 +86,7 @@ public:
     void RotateDirection(float angleDegrees);
 
 protected:
-    Entity();
+    Entity() = default;
     ~Entity() = default;
 
     virtual void OnUpdate() {};

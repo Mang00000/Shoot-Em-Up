@@ -8,11 +8,6 @@
 #include "Collider.h"
 #include "ColliderManager.h"
 
-
-Entity::Entity() {
-	pGM = this->GetScene<GameScene>();
-}
-
 void Entity::Initialize(float radius, const sf::Color& color)
 {
 	mDirection = sf::Vector2f(0.0f, 0.0f);

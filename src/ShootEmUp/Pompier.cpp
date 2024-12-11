@@ -3,7 +3,8 @@
 #include "GameScene.h"
 #include <iostream>
 #include "Player.h"
-
+#include "Scene.h"
+#include "Entity.h"
 void Pompier::OnCollision(Entity* other)
 {
 	if (other->IsTag(1)) {
@@ -15,17 +16,24 @@ void Pompier::OnCollision(Entity* other)
 
 void Pompier::OnUpdate()
 {
-	Player* pPlayer = pGM->GetPlayer();
+	Player* pPlayer = GetScene<GameScene>()->GetPlayer();
 	int x = pPlayer->GetPosition().x;
 	int y = pPlayer->GetPosition().y;
 	if (cooldown > shotspeed) {
 
-		pGM->AddProjectile(3, GetPosition().x, GetPosition().y, sf::Color::Blue, x, y, 0, projectilespeed);
+		GetScene<GameScene>()->AddProjectile(3, GetPosition().x, GetPosition().y, sf::Color::Blue, x, y, 0, projectilespeed);
 
 		cooldown = 0;
 	}
 	else {
 		cooldown += GetDeltaTime();
+	}
+
+	if (targetY != GetPosition().y) {
+		GoToPosition(GetPosition().x, targetY,100);
+	}
+	else {
+		targetY = rand() % GetScene()->GetWindowHeight();
 	}
 
 

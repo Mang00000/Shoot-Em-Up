@@ -17,18 +17,23 @@ private:
 	bool isInvicible = true;
 
 	float flashCooldown = 0.0f;
-	float flashTime = 3.0f;
+	float flashTime = 10.0f;
 	bool isFlashing = false;
 	float flashingCooldown = 0.0f;
 	float flashingTime = 1.0f;
 
 	float klaxonCooldown = 0.0f;
 	float klaxonTime = 12.0f;
+
+	float rocketCooldown = 0.0f;
+	float rocketTime = 8.0f;
+	bool AutoMode = true;
 public:
 	void OnCollision(Entity* other) override;
 
 	void OnUpdate() override;
 	void Klaxon();
 	void Flashing();
+	void Rocket();
 };
 

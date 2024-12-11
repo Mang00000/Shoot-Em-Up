@@ -27,6 +27,8 @@ public:
     Player* GetPlayer();
     int GetWave() { return wave; }
     void AddProjectile(int size, float x, float y, sf::Color color, float dx, float dy, float angle = 0, float speed = 0, int tag = 2);
-    void AddGuidedProjectile(int size, float x, float y, sf::Color color, int tag);
+    void AddGuidedProjectile(int size, float x, float y, sf::Color color,float speed, int tag, Entity* target,float offsetX = -1,float offsetY=0);
     void RemoveProjectile(int tag);
+    Entity* GetClosestEnemy(Entity* fromWho);
+    sf::Vector2f GetEntityPosition(Entity* entity, float ratioX = 0.5f, float ratioY = 0.5f) const;
 };

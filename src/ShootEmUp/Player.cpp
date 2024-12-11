@@ -21,9 +21,9 @@ void Player::Flashing() {
     if (!isFlashing && flashCooldown >= flashTime) {
         isFlashing = true;
         flashCooldown = 0.0f;
-        Projectile* p = GetScene()->CreateEntity<Projectile>(50, sf::Color::White);
-        p->SetPosition(GetPosition().x, GetPosition().y);
-        p->SetTag(1);
+        for (int i = -180; i < 180; i += 5) {
+            GetScene<GameScene>()->AddProjectile(projectilesize, GetPosition().x, GetPosition().y, sf::Color::Yellow, 0, 0, i, projectilespeed, 1);
+        }
     }
 }
 void Player::Klaxon() {
@@ -32,6 +32,14 @@ void Player::Klaxon() {
         invicibleCooldown = 0.0f;
         klaxonCooldown = 0.0f;
     }
+}
+void Player::Rocket() {
+    if (rocketCooldown < rocketTime) return;
+    GetScene<GameScene>()->AddGuidedProjectile(7, GetPosition().x, GetPosition().y, sf::Color::White, 180, 1, GetScene<GameScene>()->GetClosestEnemy(this),-1000,500);
+    GetScene<GameScene>()->AddGuidedProjectile(7, GetPosition().x, GetPosition().y, sf::Color::White, 180, 1, GetScene<GameScene>()->GetClosestEnemy(this), 0, -1000);
+    GetScene<GameScene>()->AddGuidedProjectile(7, GetPosition().x, GetPosition().y, sf::Color::White, 180, 1, GetScene<GameScene>()->GetClosestEnemy(this), 0, 1000);
+    GetScene<GameScene>()->AddGuidedProjectile(7, GetPosition().x, GetPosition().y, sf::Color::White, 180, 1, GetScene<GameScene>()->GetClosestEnemy(this), -1000, -500);
+    rocketCooldown = 0;
 }
 void Player::OnUpdate()
 {
@@ -61,6 +69,10 @@ void Player::OnUpdate()
     float greenBarHeight = (klaxonCooldown / klaxonTime) * 25;
     Debug::DrawFilledRectangle(x + 34+5, y - 30 + (25 - greenBarHeight), 6, greenBarHeight, sf::Color::Green);
 
+    Debug::DrawFilledRectangle(x + 34 + 5+7, y - 30, 6, 25, sf::Color::White);
+    float BarHeight = (rocketCooldown / rocketTime) * 25;
+    Debug::DrawFilledRectangle(x + 34 + 5+7, y - 30 + (25 - BarHeight), 6, BarHeight, sf::Color::Blue);
+
     if (isFlashing) {
         if (flashingCooldown < flashingTime) {
             flashingCooldown += GetDeltaTime();
@@ -84,9 +96,21 @@ void Player::OnUpdate()
     if (flashCooldown < flashTime) {
         flashCooldown += GetDeltaTime();
     }
+    else {
+        if (AutoMode = true) Flashing();
+    }
+    if (rocketCooldown < rocketTime) {
+        rocketCooldown += GetDeltaTime();
+    }
+    else {
+        if (AutoMode = true) Rocket();
+    }
     if (klaxonCooldown < klaxonTime && !isInvicible) {
         klaxonCooldown += GetDeltaTime();
     }
+
+
+
 
     if (cooldown < shotspeed) {
         cooldown += GetDeltaTime();
@@ -95,26 +119,26 @@ void Player::OnUpdate()
         sf::Vector2i mousePos = sf::Mouse::getPosition(*GetScene()->GetRenderWindow());
 
         if (mousePos.x >= 0 && mousePos.y >= 0) {
-            if (pGM->GetWave() >= 5) {
-                pGM->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, -8,projectilespeed, 1);
-                pGM->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, 8, projectilespeed, 1);
+            if (GetScene<GameScene>()->GetWave() >= 5) {
+                GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, -8,projectilespeed, 1);
+                GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, 8, projectilespeed, 1);
             }
-            if (pGM->GetWave() >= 10) {
-                pGM->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, -16, projectilespeed, 1);
-                pGM->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, 16, projectilespeed, 1);
+            if (GetScene<GameScene>()->GetWave() >= 10) {
+                GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, -16, projectilespeed, 1);
+                GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, 16, projectilespeed, 1);
             }
-            if (pGM->GetWave() == 15 && !buffSpeed) {
+            if (GetScene<GameScene>()->GetWave() == 15 && !buffSpeed) {
                 buffSpeed = true;
                 projectilespeed *= 2;
                 shotspeed /= 2;
 
             }
-            if (pGM->GetWave() == 20 && !buffSize) {
+            if (GetScene<GameScene>()->GetWave() == 20 && !buffSize) {
                 buffSize = true;
                 projectilesize *= 2;
             }
 
-            pGM->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, 0, projectilespeed, 1);
+            GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, 0, projectilespeed, 1);
 
             cooldown = 0;
         }

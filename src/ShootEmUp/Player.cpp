@@ -1,146 +1,157 @@
 #include "Player.h"
-
 #include "Scene.h"
-#include <iostream>
 #include "Projectile.h"
 #include "Debug.h"
+#include <iostream>
 
-void Player::OnCollision(Entity* other)
-{
-    if (other->IsTag(2) && !isInvicible) {
-        hp--;
+Player::Player() {
+    // Reset les abilites au Init
+    flashCooldown.Reset();
+    rocketCooldown.Reset();
+    klaxonCooldown.Reset();
+}
+void Player::OnCollision(Entity* other) {
+    if (other->IsTag(2) && !isInvincible) { // Si projectile ennemi
+        stats.hp--;
         other->Destroy();
-        isInvicible = true;
+        invincibleCooldown.Reset();
     }
-    if (hp <= 0) {
-
+    if (stats.hp <= 0) {
+        // Handle player death (to be implemented)
     }
 }
 
+// Draws the cooldown bars
+void Player::DrawCooldownBars() {
+    sf::Vector2f position = GetPosition();
+    float x = position.x + 20;
+    float y = position.y - 30;
+    const float barHeight = 30.0f;
+    const float barWidth = 6.0f;
+    const float spacing = 7.0f;
+
+    struct CooldownBar {
+        const Cooldown& cooldown;
+        sf::Color color;
+        float offsetX;
+    };
+
+    CooldownBar bars[] = {
+        {shotCooldown, sf::Color::Red, 0},
+        {flashCooldown, sf::Color::Yellow, spacing},
+        {klaxonCooldown, sf::Color::Green, 2 * spacing},
+        {rocketCooldown, sf::Color::Blue, 3 * spacing}
+    };
+
+    for (const auto& bar : bars) {
+        Debug::DrawFilledRectangle(x + bar.offsetX, y, barWidth, barHeight, sf::Color::White);
+        float filledHeight = (bar.cooldown.currentTime / bar.cooldown.maxTime) * barHeight;
+        Debug::DrawFilledRectangle(x + bar.offsetX, y + (barHeight - filledHeight), barWidth, filledHeight, bar.color);
+    }
+}
+
+void Player::Shoot() {
+    sf::Vector2i mousePos = sf::Mouse::getPosition(*GetScene()->GetRenderWindow());
+    if (mousePos.x >= 0 && mousePos.y >= 0 && shotCooldown.IsReady()) {
+        auto* scene = GetScene<GameScene>();
+        int wave = scene->GetWave();
+
+        ApplyBuff(wave);
+
+        scene->AddProjectile(stats.projectileSize, GetPosition().x, GetPosition().y, sf::Color::Magenta, mousePos.x, mousePos.y, 0, stats.projectileSpeed, 1);
+
+        if (wave >= 5) {
+            scene->AddProjectile(stats.projectileSize, GetPosition().x, GetPosition().y, sf::Color::Magenta, mousePos.x, mousePos.y, -8, stats.projectileSpeed, 1);
+            scene->AddProjectile(stats.projectileSize, GetPosition().x, GetPosition().y, sf::Color::Magenta, mousePos.x, mousePos.y, 8, stats.projectileSpeed, 1);
+        }
+        if (wave >= 10) {
+            scene->AddProjectile(stats.projectileSize, GetPosition().x, GetPosition().y, sf::Color::Magenta, mousePos.x, mousePos.y, -16, stats.projectileSpeed, 1);
+            scene->AddProjectile(stats.projectileSize, GetPosition().x, GetPosition().y, sf::Color::Magenta, mousePos.x, mousePos.y, 16, stats.projectileSpeed, 1);
+        }
+
+        shotCooldown.Reset();
+    }
+}
+
+void Player::HandleCooldowns() {
+    float deltaTime = GetDeltaTime();
+    shotCooldown.Update(deltaTime);
+    flashCooldown.Update(deltaTime);
+    rocketCooldown.Update(deltaTime);
+    klaxonCooldown.Update(deltaTime);
+    invincibleCooldown.Update(deltaTime);
+}
+
+void Player::OnUpdate() {
+    Debug::DrawText(50, 70, "Vie: " + std::to_string(stats.hp), sf::Color::White);
+    sf::Vector2f position = GetPosition();
+    float radius = GetWidth();
+    float windowWidth = GetScene()->GetWindowWidth();
+    float windowHeight = GetScene()->GetWindowHeight();
+
+    // Show invincible debug
+    if (invincibleCooldown.isActive) {
+        Debug::DrawCircle(position.x, position.y, 15, sf::Color::Red);
+    }
+
+    // Window Collision
+    if (position.x - radius < 0) SetPosition(radius, position.y);
+    if (position.y - radius < 0) SetPosition(position.x, radius);
+    if (position.x + radius > windowWidth) SetPosition(windowWidth - radius, position.y);
+    if (position.y + radius > windowHeight) SetPosition(position.x, windowHeight - radius);
+
+    // Auto Mode
+    if (autoMode) {
+        Flashing();
+        Rocket();
+    }
+    // Handler
+    Shoot();
+    HandleCooldowns();
+    DrawCooldownBars();
+}
+
+// Applies buffs based on wave
+void Player::ApplyBuff(int wave) {
+    if (wave == 3 && !buffSpeed) {
+        buffSpeed = true;
+        stats.projectileSpeed *= 2;
+        stats.shotSpeed *= 2;
+        shotCooldown.maxTime /= stats.shotSpeed;
+    }
+    if (wave == 20 && !buffSize) {
+        buffSize = true;
+        stats.projectileSize *= 2;
+    }
+}
+
+// Abilities (Flashing, Klaxon, Rocket)
 void Player::Flashing() {
-    if (!isFlashing && flashCooldown >= flashTime) {
-        isFlashing = true;
-        flashCooldown = 0.0f;
+    if (!flashCooldown.isActive && flashCooldown.IsReady()) {
+        flashCooldown.Reset();
         for (int i = -180; i < 180; i += 5) {
-            GetScene<GameScene>()->AddProjectile(projectilesize, GetPosition().x, GetPosition().y, sf::Color::Yellow, 0, 0, i, projectilespeed, 1);
+            GetScene<GameScene>()->AddProjectile(stats.projectileSize, GetPosition().x, GetPosition().y, sf::Color::Yellow, 0, 0, i, stats.projectileSpeed, 1);
         }
     }
 }
+
 void Player::Klaxon() {
-    if (!isInvicible && klaxonCooldown >= klaxonTime) {
-        isInvicible = true;
-        invicibleCooldown = 0.0f;
-        klaxonCooldown = 0.0f;
+    if (!invincibleCooldown.isActive && klaxonCooldown.IsReady()) {
+        invincibleCooldown.Reset();
+        klaxonCooldown.Reset();
     }
 }
+
 void Player::Rocket() {
-    if (rocketCooldown < rocketTime) return;
-    GetScene<GameScene>()->AddGuidedProjectile(7, GetPosition().x, GetPosition().y, sf::Color::White, 180, 1, GetScene<GameScene>()->GetClosestEnemy(this),-1000,500);
-    GetScene<GameScene>()->AddGuidedProjectile(7, GetPosition().x, GetPosition().y, sf::Color::White, 180, 1, GetScene<GameScene>()->GetClosestEnemy(this), 0, -1000);
-    GetScene<GameScene>()->AddGuidedProjectile(7, GetPosition().x, GetPosition().y, sf::Color::White, 180, 1, GetScene<GameScene>()->GetClosestEnemy(this), 0, 1000);
-    GetScene<GameScene>()->AddGuidedProjectile(7, GetPosition().x, GetPosition().y, sf::Color::White, 180, 1, GetScene<GameScene>()->GetClosestEnemy(this), -1000, -500);
-    rocketCooldown = 0;
-}
-void Player::OnUpdate()
-{
+    if (rocketCooldown.IsReady()) {
+        auto* scene = GetScene<GameScene>();
+        sf::Vector2f position = GetPosition();
 
-    Debug::DrawText(50, 70, "Vie: " + std::to_string(hp), sf::Color::White);
+        scene->AddGuidedProjectile(7, position.x, position.y, sf::Color::White, 180, 1, scene->GetClosestEnemy(this), -1000, 500);
+        scene->AddGuidedProjectile(7, position.x, position.y, sf::Color::White, 180, 1, scene->GetClosestEnemy(this), 0, -1000);
+        scene->AddGuidedProjectile(7, position.x, position.y, sf::Color::White, 180, 1, scene->GetClosestEnemy(this), 0, 1000);
+        scene->AddGuidedProjectile(7, position.x, position.y, sf::Color::White, 180, 1, scene->GetClosestEnemy(this), -1000, -500);
 
-    float x = GetPosition().x;
-    float y = GetPosition().y;
-    float r = GetWidth();
-    float h = GetScene()->GetWindowHeight();
-    float w = GetScene()->GetWindowWidth();
-    
-    if (x - r < 0) SetPosition(r, y);
-    if (y - r < 0) SetPosition(x, r);
-    if (x + r > w) SetPosition(w - r, y);
-    if (y + r > h) SetPosition(x, h - r);
-
-    Debug::DrawFilledRectangle(x+20+5, y-30, 6, 25, sf::Color::White);
-    float redBarHeight = (cooldown / shotspeed) * 25;
-    Debug::DrawFilledRectangle(x + 20+5, y - 30 + (25 - redBarHeight), 6, redBarHeight, sf::Color::Red);
-
-    Debug::DrawFilledRectangle(x + 27+5, y - 30, 6, 25, sf::Color::White);
-    float yellowBarHeight = (flashCooldown / flashTime) * 25;
-    Debug::DrawFilledRectangle(x + 27+5, y - 30 + (25- yellowBarHeight), 6, yellowBarHeight, sf::Color::Yellow);
-
-    Debug::DrawFilledRectangle(x + 34+5, y - 30, 6, 25, sf::Color::White);
-    float greenBarHeight = (klaxonCooldown / klaxonTime) * 25;
-    Debug::DrawFilledRectangle(x + 34+5, y - 30 + (25 - greenBarHeight), 6, greenBarHeight, sf::Color::Green);
-
-    Debug::DrawFilledRectangle(x + 34 + 5+7, y - 30, 6, 25, sf::Color::White);
-    float BarHeight = (rocketCooldown / rocketTime) * 25;
-    Debug::DrawFilledRectangle(x + 34 + 5+7, y - 30 + (25 - BarHeight), 6, BarHeight, sf::Color::Blue);
-
-    if (isFlashing) {
-        if (flashingCooldown < flashingTime) {
-            flashingCooldown += GetDeltaTime();
-        }
-        else {
-            flashingCooldown = 0;
-            isFlashing = false;
-            
-        }
-    }
-
-    if (isInvicible) {
-        invicibleCooldown += GetDeltaTime();
-        Debug::DrawCircle(x, y, 15, sf::Color::White);
-        if (invicibleCooldown >= invicibleTime) {
-            isInvicible = false;
-            invicibleCooldown = 0.0f;
-        }
-    }
-
-    if (flashCooldown < flashTime) {
-        flashCooldown += GetDeltaTime();
-    }
-    else {
-        if (AutoMode = true) Flashing();
-    }
-    if (rocketCooldown < rocketTime) {
-        rocketCooldown += GetDeltaTime();
-    }
-    else {
-        if (AutoMode = true) Rocket();
-    }
-    if (klaxonCooldown < klaxonTime && !isInvicible) {
-        klaxonCooldown += GetDeltaTime();
-    }
-
-
-
-
-    if (cooldown < shotspeed) {
-        cooldown += GetDeltaTime();
-    }
-    else {
-        sf::Vector2i mousePos = sf::Mouse::getPosition(*GetScene()->GetRenderWindow());
-
-        if (mousePos.x >= 0 && mousePos.y >= 0) {
-            if (GetScene<GameScene>()->GetWave() >= 5) {
-                GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, -8,projectilespeed, 1);
-                GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, 8, projectilespeed, 1);
-            }
-            if (GetScene<GameScene>()->GetWave() >= 10) {
-                GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, -16, projectilespeed, 1);
-                GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, 16, projectilespeed, 1);
-            }
-            if (GetScene<GameScene>()->GetWave() == 15 && !buffSpeed) {
-                buffSpeed = true;
-                projectilespeed *= 2;
-                shotspeed /= 2;
-
-            }
-            if (GetScene<GameScene>()->GetWave() == 20 && !buffSize) {
-                buffSize = true;
-                projectilesize *= 2;
-            }
-
-            GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, 0, projectilespeed, 1);
-
-            cooldown = 0;
-        }
+        rocketCooldown.Reset();
     }
 }

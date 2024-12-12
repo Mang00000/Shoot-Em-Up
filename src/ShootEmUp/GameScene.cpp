@@ -142,7 +142,7 @@ void GameScene::OnUpdate()
 
     if (pEnemies.empty()) {
         RemoveProjectile(2);
-        GenerateEnemies(4 + wave, 0 /*maxGoFast*/ );
+        GenerateEnemies(4 + wave, 4 /*maxGoFast*/ );
         wave++;
     }
 
@@ -172,13 +172,13 @@ void GameScene::AddProjectile(int size, float x, float y, sf::Color color, float
     p->RotateDirection(angle);
     pProjectile.push_back(p);
 }
-void GameScene::AddGuidedProjectile(int size, float x, float y, sf::Color color,float speed,int tag, Entity* target,float offsetX, float offsetY) {
-    if (offsetX == -1) offsetX = x;
+void GameScene::AddGuidedProjectile(int size, float x, float y, sf::Color color,float speed,int tag, Entity* target,float Vx0, float Vy0) {
+    if (Vx0 == -1) Vx0 = x;
     GuidedProjectile* p = nullptr;
     p = CreateEntity<GuidedProjectile>(size, color);
     p->SetTarget(target);
     p->SetPosition(x, y);
-    p->GoToDirection(offsetX, offsetY, speed);
+    p->GoToDirection(Vx0, Vy0, speed);
 
     p->SetTag(tag);
     pProjectile.push_back(p);

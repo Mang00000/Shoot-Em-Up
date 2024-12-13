@@ -17,12 +17,16 @@
 #include "Scene.h"
 void GameScene::OnInitialize()
 {
-    pPlayer = CreateEntity<Player>(20, sf::Color::Green);
-    pPlayer->SetPosition(100, 500);
-    pPlayer->SetTag(3);
+    if (isGameStart == true)
+    {
+        pPlayer = CreateEntity<Player>(20, sf::Color::Green);
+        pPlayer->SetPosition(100, 500);
+        pPlayer->SetTag(3);
 
-    std::srand(static_cast<unsigned>(std::time(nullptr))); 
-    GenerateEnemies(5); 
+        std::srand(static_cast<unsigned>(std::time(nullptr)));
+        GenerateEnemies(5);
+    }
+    
 }
 
 void GameScene::OnEvent(const sf::Event& event)
@@ -32,6 +36,7 @@ void GameScene::OnEvent(const sf::Event& event)
         bool isMovingDown = sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
         bool isMovingLeft = sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
         bool isMovingRight = sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
+        bool isPausedMenu = sf::Keyboard::isKeyPressed(sf::Keyboard::Escape);
 
         bool isSlowed = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
 
@@ -45,6 +50,12 @@ void GameScene::OnEvent(const sf::Event& event)
         float moveY = 0.0f;
         float radius = 0;
 
+
+        if (isPausedMenu)
+        {
+            if (IsPaused == false) pausedState();
+            else unpausedState();
+        }
         if (isMovingUp)    moveY -= 1.0f;
         if (isMovingDown)  moveY += 1.0f;
         if (isMovingLeft)  moveX -= 1.0f;
@@ -133,27 +144,45 @@ void GameScene::GenerateEnemies(int count, int maxGoFast, int maxPompier, int ma
 
 void GameScene::OnUpdate()
 {
-    sf::Vector2i mousePos = sf::Mouse::getPosition(*GetRenderWindow());
-    Debug::DrawCircle(mousePos.x, mousePos.y, 7, sf::Color::White);
-    pEnemies.erase(std::remove_if(pEnemies.begin(), pEnemies.end(),
-        [](Entity* enemy) { return enemy->ToDestroy(); }), pEnemies.end());
+    if (IsPaused == false)
+    {
+        sf::Vector2i mousePos = sf::Mouse::getPosition(*GetRenderWindow());
+        Debug::DrawCircle(mousePos.x, mousePos.y, 7, sf::Color::White);
+        pEnemies.erase(std::remove_if(pEnemies.begin(), pEnemies.end(),
+            [](Entity* enemy) { return enemy->ToDestroy(); }), pEnemies.end());
 
-    if (pEnemies.empty()) {
-        RemoveProjectile(2);
-        GenerateEnemies(4 + wave, 4 /*maxGoFast*/ );
-        wave++;
-    }
-
-    for (auto it = pProjectile.begin(); it != pProjectile.end(); ) {
-        if ((*it)->ToDestroy()) {
-            it = pProjectile.erase(it); 
+        if (pEnemies.empty()) {
+            RemoveProjectile(2);
+            GenerateEnemies(4 + wave, 4 /*maxGoFast*/);
+            wave++;
         }
-        else {
-            ++it;
-        }
-    }
 
-    Debug::DrawText(50, 50, "Vague: " + std::to_string(wave), sf::Color::White);
+        for (auto it = pProjectile.begin(); it != pProjectile.end(); ) {
+            if ((*it)->ToDestroy()) {
+                it = pProjectile.erase(it);
+            }
+            else {
+                ++it;
+            }
+        }
+
+        Debug::DrawText(50, 50, "Vague: " + std::to_string(wave), sf::Color::White);
+    }
+    else
+    {
+        pmenu = new PauseMenu(this->GetRenderWindow());
+        pmenu->update();
+    }
+}
+
+void GameScene::pausedState()
+{
+    this->IsPaused = true;
+}
+
+void GameScene::unpausedState()
+{
+    this->IsPaused = false;
 }
 
 Player* GameScene::GetPlayer()

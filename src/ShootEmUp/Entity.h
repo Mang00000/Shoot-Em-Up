@@ -35,6 +35,13 @@ protected:
     int mWidth;
     int mHeight;
 
+    float mRatioX = 0;
+    float mRatioY = 0;
+
+    sf::Vector2f mCenter;
+
+    float mAngle = 0;
+
     sf::Drawable* pDrawable;
     sf::Transformable* pTransformable;
 
@@ -52,6 +59,8 @@ public:
 
     int GetWidth() { return mWidth; }
     int GetHeight() { return mHeight; }
+
+    float GetAngle() { return mAngle; }
     Collider* GetCollider() { return mCollider; }
     
 
@@ -81,6 +90,9 @@ public:
     template<typename T>
     T* CreateEntity(float radius, const sf::Color& color);
 
+    template<typename T>
+    T* CreateEntity(float x, float y, int width, int height, float angle = 0.f, const sf::Color& color = sf::Color::White);
+
     template<typename U>
     U* CreateEntity(sf::Texture* pTexture);
 
@@ -98,6 +110,7 @@ private:
     void Update();
 	void Initialize(float radius, const sf::Color& color);
     void Initialize(sf::Texture* pTexture, int Width, int Height);
+    void Initialize(int width, int height, float angle, const sf::Color& color);
 
     friend class GameManager;
     friend Scene;

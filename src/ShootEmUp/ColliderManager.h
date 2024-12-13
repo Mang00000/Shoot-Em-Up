@@ -15,10 +15,11 @@ protected:
 
 	static bool OOBBOOBB(Collider* OOBB1, Collider* OOBB2);
 
-	inline static std::function<bool(Collider*,Collider*)> CollisionTab[2][2] =
+	inline static std::function<bool(Collider*,Collider*)> CollisionTab[3][3] =
 	{
-		{ColliderManager::CircleCircle, ColliderManager::CircleRectangle},
-		{ColliderManager::RectangleCircle, ColliderManager::RectangleRectangle}
+		{ColliderManager::CircleCircle, ColliderManager::CircleRectangle , ColliderManager::OOBBOOBB},
+		{ColliderManager::RectangleCircle, ColliderManager::RectangleRectangle, ColliderManager::OOBBOOBB},
+		{ColliderManager::OOBBOOBB, ColliderManager::OOBBOOBB, ColliderManager::OOBBOOBB},
 	};
 
 public:

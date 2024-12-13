@@ -91,7 +91,7 @@ bool ColliderManager::OOBBOOBB(Collider* OOBB1, Collider* OOBB2)
         float O2Min;
         float O2Max;
         Utils::SATTest(O1->mNormals[i], O1->mPoints, O1Min, O1Max);
-        Utils::SATTest(O1->mNormals[i], O1->mPoints, O2Min, O2Max);
+        Utils::SATTest(O1->mNormals[i], O2->mPoints, O2Min, O2Max);
         if (!Utils::Overlaps(O1Min, O1Max, O2Min, O2Max)) {
             return false;
         }
@@ -102,7 +102,7 @@ bool ColliderManager::OOBBOOBB(Collider* OOBB1, Collider* OOBB2)
         float O1Max;
         float O2Min;
         float O2Max;
-        Utils::SATTest(O2->mNormals[i], O2->mPoints, O1Min, O1Max);
+        Utils::SATTest(O2->mNormals[i], O1->mPoints, O1Min, O1Max);
         Utils::SATTest(O2->mNormals[i], O2->mPoints, O2Min, O2Max);
         if (!Utils::Overlaps(O1Min, O1Max, O2Min, O2Max)) {
             return false;

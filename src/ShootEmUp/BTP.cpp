@@ -14,7 +14,7 @@ void BTP::OnCollision(Entity* other)
 
 void BTP::OnUpdate()
 {
-    float M_PI = 3.14159;
+    float M_PI = std::numbers::pi_v<float>;
     Player* pPlayer = GetScene<GameScene>()->GetPlayer();
     int x = pPlayer->GetPosition().x;
     int y = pPlayer->GetPosition().y;

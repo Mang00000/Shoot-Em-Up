@@ -2,6 +2,7 @@
 
 #include <SFML/System/Vector2.hpp>
 #include <vector>
+#include <numbers>
 
 namespace Utils
 {
@@ -18,6 +19,8 @@ namespace Utils
 	sf::Vector2f Normalize2(sf::Vector2f vec);
 
 	void SATTest(const sf::Vector2f& axis, const std::vector<sf::Vector2f>& points, float& minAlong, float& maxAlong);
+
+	//float ConvertRadians(float angle) { return angle * std::numbers::pi / 180; } //DOESNT COMPILE FOR NO REASON TF U MEAN DEJA DEFINI AAAAAAAH
 
 	template <typename T>
 	bool Contains(std::vector<T> container, T value) {

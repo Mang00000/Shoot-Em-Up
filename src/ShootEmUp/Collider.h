@@ -8,6 +8,7 @@ struct Collider {
 	enum class ColliderType {
 		Circle,
 		AABB,
+		OOBB,
 
 		Count
 	};
@@ -39,11 +40,13 @@ struct OOBBCollider : public Collider {
 	int mHeight;
 	float mAngle;
 
+	sf::Vector2f mTrueWidth;
+	sf::Vector2f mTrueHeight;
+
 	int GetWidth() { return mWidth; }
 	int GetHeight() { return mHeight; }
-
-
-	OOBBCollider(Entity* pParent, int width, int height, sf::Vector2f startpos, float angle);
+	
+	OOBBCollider(Entity* pParent, int width, int height, sf::Vector2f center, float angle);
 
 };
 

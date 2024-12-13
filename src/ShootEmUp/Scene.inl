@@ -20,6 +20,21 @@ T* Scene::CreateEntity(float radius, const sf::Color& color)
 	return newEntity;
 }
 
+template<typename T>
+T* Scene::CreateEntity(int width, int height, float angle, const sf::Color& color)
+{
+	static_assert(std::is_base_of<Entity, T>::value, "T must be derived from Entity");
+
+	T* newEntity = new T();
+
+	Entity* entity = newEntity;
+	entity->Initialize(width, height, angle, color);
+
+	mpGameManager->mEntitiesToAdd.push_back(newEntity);
+
+	return newEntity;
+}
+
 template<typename U>
 U* Scene::CreateEntity(std::string _Path, int Width, int Height)
 {

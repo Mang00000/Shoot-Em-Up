@@ -21,6 +21,7 @@ void Entity::Initialize(float radius, const sf::Color& color)
 	mWidth = radius * 2;
 	mHeight = radius * 2;
 
+
 	sf::CircleShape* circle = new sf::CircleShape();
 
 	circle->setOrigin(0.f, 0.f);
@@ -67,6 +68,55 @@ void Entity::Initialize(sf::Texture* pTexture, int Width, int Height)
 
 }
 
+void Entity::Initialize(int width, int height, float angle, const sf::Color& color)
+{
+	mDirection = sf::Vector2f(0.0f, 0.0f);
+	mSpeed = 0.0f;
+	mToDestroy = false;
+	mTag = -1;
+	mTarget.isSet = false;
+
+	if (angle == 0) { //RECTANGLE CASE
+		std::cout << "rectangle case" << std::endl;
+		mWidth = width;
+		mHeight = height;
+
+		sf::RectangleShape* rectangle = new sf::RectangleShape();
+
+		rectangle->setOrigin(0, 0);
+		rectangle->setFillColor(color);
+		rectangle->setSize(sf::Vector2f(mWidth, mHeight));
+
+		pDrawable = rectangle;
+		pTransformable = rectangle;
+
+		mCollider = new RectangleCollider(this, mWidth, mHeight);
+	}
+	else { //OOBB CASE
+		std::cout << "OOBB case" << std::endl;
+		mWidth = width;
+		mHeight = height;
+		mAngle = angle;
+		mCenter = sf::Vector2f(mWidth / 2, mHeight / 2);
+
+		mRatioX = 0.5f;
+		mRatioY = 0.5f;
+
+		sf::RectangleShape* rectangle = new sf::RectangleShape();
+
+		rectangle->setSize(sf::Vector2f(mWidth, mHeight));
+		rectangle->setOrigin(mWidth * mRatioX, mHeight * mRatioY);
+		rectangle->setFillColor(color);
+		rectangle->setRotation(mAngle);
+
+		pDrawable = rectangle;
+		pTransformable = rectangle;
+
+		mCollider = new OOBBCollider(this, mWidth, mHeight, sf::Vector2f(mWidth / 2, mHeight / 2), mAngle);
+	}
+
+}
+
 bool Entity::IsColliding(Entity* other) const
 {
 	return ColliderManager::ResolveCollision(this->mCollider, other->mCollider);
@@ -86,8 +136,8 @@ bool Entity::IsInside(float x, float y) const
 
 void Entity::SetPosition(float x, float y, float ratioX, float ratioY)
 {
-	x -= mWidth * ratioX;
-	y -= mHeight * ratioY;
+	x -= mWidth * (ratioX - mRatioX);
+	y -= mHeight * (ratioY - mRatioY);
 
 	pTransformable->setPosition(x, y);
 }
@@ -96,8 +146,8 @@ sf::Vector2f Entity::GetPosition(float ratioX, float ratioY) const
 {
 	sf::Vector2f position = pTransformable->getPosition();
 
-	position.x += mWidth * ratioX;
-	position.y += mHeight * ratioY;
+	position.x += (mRatioX - ratioX);
+	position.y += (mRatioY - ratioY);
 
 	return position;
 }

@@ -34,30 +34,6 @@ void Boss::OnUpdate()
                 GetScene<GameScene>()->AddProjectile(13, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, 20, 150*3);
                 GetScene<GameScene>()->AddProjectile(13, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, -20, 150*3);
 
-                GetScene<GameScene>()->AddProjectile(13, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, 0, 150 * 3, 90);
-                GetScene<GameScene>()->AddProjectile(13, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, 10, 150 * 3,90);
-                GetScene<GameScene>()->AddProjectile(13, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, -10, 150 * 3,90);
-                GetScene<GameScene>()->AddProjectile(13, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, 20, 150 * 3,90);
-                GetScene<GameScene>()->AddProjectile(13, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, -20, 150 * 3,90);
-
-                GetScene<GameScene>()->AddProjectile(13, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, 0, 150 * 3,-90);
-                GetScene<GameScene>()->AddProjectile(13, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, 10, 150 * 3,-90);
-                GetScene<GameScene>()->AddProjectile(13, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, -10, 150 * 3,-90);
-                GetScene<GameScene>()->AddProjectile(13, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, 20, 150 * 3,-90);
-                GetScene<GameScene>()->AddProjectile(13, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, -20, 150 * 3,-90);
-
-                GetScene<GameScene>()->AddProjectile(13, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, 0, 150 * 3, 45);
-                GetScene<GameScene>()->AddProjectile(13, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, 10, 150 * 3, 45);
-                GetScene<GameScene>()->AddProjectile(13, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, -10, 150 * 3, 45);
-                GetScene<GameScene>()->AddProjectile(13, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, 20, 150 * 3, 45);
-                GetScene<GameScene>()->AddProjectile(13, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, -20, 150 * 3, 45);
-
-                GetScene<GameScene>()->AddProjectile(13, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, 0, 150 * 3, -45);
-                GetScene<GameScene>()->AddProjectile(13, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, 10, 150 * 3, -45);
-                GetScene<GameScene>()->AddProjectile(13, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, -10, 150 * 3, -45);
-                GetScene<GameScene>()->AddProjectile(13, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, 20, 150 * 3, -45);
-                GetScene<GameScene>()->AddProjectile(13, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, -20, 150 * 3, -45);
-
         }
         else if (randomAtk == 2) {
 
@@ -104,7 +80,7 @@ void Boss::OnUpdate()
         }
         else {
 
-                GetScene<GameScene>()->AddProjectile(90, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, 0, 180*4);
+                GetScene<GameScene>()->AddProjectile(90, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, 0, 220);
 
         }
 

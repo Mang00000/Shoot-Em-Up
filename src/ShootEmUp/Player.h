@@ -11,7 +11,7 @@ private:
     struct Stats {
         int hp = 30;
         float projectileSpeed = 580.0f;
-        float shotSpeed = 5.2f;
+        float shotSpeed = 1.2f;
         int projectileSize = 3;
     } stats;
 

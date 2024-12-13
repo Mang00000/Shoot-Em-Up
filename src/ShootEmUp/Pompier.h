@@ -11,6 +11,7 @@ private:
     int targetY = rand() % GetScene()->GetWindowHeight(); // Cible aléatoire pour Y
     float targetX = 0; // Cible pour X
     float movementSpeed = 100; // Vitesse de base
+    int hp = 5;
 
 public:
     void OnCollision(Entity* other) override;

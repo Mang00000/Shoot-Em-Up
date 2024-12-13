@@ -6,6 +6,7 @@
 #include "GoFast.h"
 #include "BTP.h"
 #include "Pompier.h"
+#include "Boss.h"
 
 #include "Debug.h"
 
@@ -34,7 +35,7 @@ void GameScene::OnEvent(const sf::Event& event)
         bool isMovingRight = sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
 
         bool isSlowed = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
-
+        bool isClear = sf::Keyboard::isKeyPressed(sf::Keyboard::Enter);
         bool isFlashing = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
         bool isKlaxoning = sf::Keyboard::isKeyPressed(sf::Keyboard::E);
         bool isRocketLauncher = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
@@ -54,6 +55,7 @@ void GameScene::OnEvent(const sf::Event& event)
         if (isKlaxoning) pPlayer->Klaxon();
         if (isFlashing) pPlayer->Flashing();
         if (isRocketLauncher) pPlayer->Rocket();
+        if (isClear) ClearEntity(2);
 
         if (moveX != 0.0f || moveY != 0.0f ) {
             sf::Vector2f direction(moveX, moveY);
@@ -75,15 +77,23 @@ void GameScene::GenerateEnemies(int count, int maxGoFast, int maxPompier, int ma
     float screenWidth = GetWindowWidth();
     float screenHeight = GetWindowHeight();
 
-    for (Entity* enemy : pEnemies) {
-        enemy->Destroy();
-    }
-    pEnemies.clear();
+    ClearEntity(2);
 
     int goFastCount = 0;
     int pompierCount = 0;
     int camionCount = 0;
     int btpCount = 0;
+
+    if (wave == 2) {
+        Entity* boss= nullptr;
+        boss = CreateEntity<Boss>(90, sf::Color::White);
+        pEnemies.push_back(boss);
+        float x = 800;
+        float y = 400;
+        boss->SetPosition(x, y);
+        boss->SetTag(2);
+        return;
+    }
 
     for (int i = 0; i < count; ++i) {
         if (goFastCount >= maxGoFast && pompierCount >= maxPompier && camionCount >= maxCamion && btpCount >= maxBTP) {
@@ -135,12 +145,24 @@ void GameScene::GenerateEnemies(int count, int maxGoFast, int maxPompier, int ma
 
 void GameScene::OnUpdate()
 {
+
+    Debug::DrawText(50, 50, "Vague: " + std::to_string(wave), sf::Color::White);
+    if (pPlayer->GetIsDead()) {
+        running = false;
+        RemoveProjectile(2);
+        RemoveProjectile(1);
+        ClearEntity(2);
+        ClearEntity(1);
+        Debug::DrawText(GetWindowWidth() / 2, GetWindowHeight() / 2, "PERDU", sf::Color::White);
+    }
+
     sf::Vector2i mousePos = sf::Mouse::getPosition(*GetRenderWindow());
     Debug::DrawCircle(mousePos.x, mousePos.y, 7, sf::Color::White);
+
     pEnemies.erase(std::remove_if(pEnemies.begin(), pEnemies.end(),
         [](Entity* enemy) { return enemy->ToDestroy(); }), pEnemies.end());
 
-    if (pEnemies.empty()) {
+    if (pEnemies.empty() && running) {
         RemoveProjectile(2);
         GenerateEnemies(4 + wave, 4 /*maxGoFast*/ );
         wave++;
@@ -154,8 +176,6 @@ void GameScene::OnUpdate()
             ++it;
         }
     }
-
-    Debug::DrawText(50, 50, "Vague: " + std::to_string(wave), sf::Color::White);
 }
 
 Player* GameScene::GetPlayer()
@@ -211,4 +231,16 @@ sf::Vector2f GameScene::GetEntityPosition(Entity* entity, float ratioX, float ra
     else {
         return { -1,-1 };
     }
+}
+void GameScene::ClearEntity(int team) {
+    if (team == 2) {
+        for (Entity* enemy : pEnemies) {
+            enemy->Destroy();
+        }
+        pEnemies.clear();
+    }
+    else if (team == 1) {
+
+    }
+
 }

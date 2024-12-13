@@ -17,7 +17,7 @@ void Player::OnCollision(Entity* other) {
         invincibleCooldown.Reset();
     }
     if (stats.hp <= 0) {
-        // Handle player death (to be implemented)
+        isDead = true;
     }
 }
 
@@ -83,6 +83,7 @@ void Player::HandleCooldowns() {
 }
 
 void Player::OnUpdate() {
+    if (isDead) return;
     Debug::DrawText(50, 70, "Vie: " + std::to_string(stats.hp), sf::Color::White);
     sf::Vector2f position = GetPosition();
     float radius = GetWidth() / 2;
@@ -106,8 +107,8 @@ void Player::OnUpdate() {
         Rocket();
     }
     // Handler
-    Shoot();
     HandleCooldowns();
+    Shoot();
     DrawCooldownBars();
 }
 
@@ -154,4 +155,11 @@ void Player::Rocket() {
 
         rocketCooldown.Reset();
     }
+}
+
+bool Player::GetIsDead() {
+    return isDead;
+}
+void Player::SetIsDead(bool value) {
+    isDead = value;
 }

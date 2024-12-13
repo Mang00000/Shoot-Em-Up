@@ -9,6 +9,7 @@ private:
 	float projectilespeed = 180;
 	int shotnum = 1;
 	float speed=100.0f;
+	int hp = 8;
 
 public:
 	void OnCollision(Entity* other) override;

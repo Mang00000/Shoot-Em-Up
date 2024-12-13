@@ -17,6 +17,7 @@ class GameScene : public Scene
     std::vector<Entity*> pEnemies; // Liste des ennemis
     std::vector<Entity*> pProjectile; // Liste des projectiles
     int wave = 1;
+    bool running = true;
 
 public:
     void OnInitialize() override;
@@ -31,4 +32,5 @@ public:
     void RemoveProjectile(int tag);
     Entity* GetClosestEnemy(Entity* fromWho);
     sf::Vector2f GetEntityPosition(Entity* entity, float ratioX = 0.5f, float ratioY = 0.5f) const;
+    void ClearEntity(int team);
 };

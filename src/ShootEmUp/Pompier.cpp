@@ -10,8 +10,11 @@
 void Pompier::OnCollision(Entity* other)
 {
     if (other->IsTag(1)) {
-        mToDestroy = true;
+        hp--;
         other->Destroy();
+    }
+    if (hp < 1) {
+        mToDestroy = true;
     }
 }
 

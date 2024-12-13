@@ -6,7 +6,7 @@ class GoFast : public Entity
 private:
 	bool start = true;
 	bool rushing = false;
-	float rushmoment = 3.0f;
+	float rushmoment = 3.0f + rand() % 3;
 	float time = 0.0f;
 
 	bool flashlightOn = false;

@@ -9,14 +9,14 @@ class Player : public Entity {
 private:
     // Stats
     struct Stats {
-        int hp = 3;
+        int hp = 30;
         float projectileSpeed = 580.0f;
-        float shotSpeed = 1.0f;
+        float shotSpeed = 5.2f;
         int projectileSize = 3;
     } stats;
 
     // Cooldowns
-    Cooldown shotCooldown{ 1.0f };
+    Cooldown shotCooldown{ 1.0f / stats.shotSpeed };
     Cooldown flashCooldown{ 5.0f };
     Cooldown klaxonCooldown{ 10.0f };
     Cooldown rocketCooldown{ 15.0f };
@@ -27,7 +27,10 @@ private:
     bool buffSize = false;
 
     // Auto mode (Joue automatiquement les Abilities quand elles sont prête)
-    bool autoMode = !true;
+    bool autoMode = true;
+
+    // End Game
+    bool isDead = false;
 
     void DrawCooldownBars();
     void HandleCooldowns();
@@ -48,6 +51,9 @@ public:
 
     // Apply buffs
     void ApplyBuff(int wave);
+
+    bool GetIsDead();
+    void SetIsDead(bool value);
 
 };
 

@@ -7,10 +7,13 @@
 #include "Scene.h"
 void Camion::OnCollision(Entity* other)
 {
-	if (other->IsTag(1)) {
-		mToDestroy = true;
-		other->Destroy();
-	}
+    if (other->IsTag(1)) {
+        hp--;
+        other->Destroy();
+    }
+    if (hp < 1) {
+        mToDestroy = true;
+    }
 }
 
 void Camion::OnUpdate()

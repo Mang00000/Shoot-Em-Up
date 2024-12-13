@@ -19,7 +19,7 @@ void BTP::OnUpdate()
     int y = pPlayer->GetPosition().y;
 
     if (cooldown > shotspeed) {
-        GetScene<GameScene>()->AddGuidedProjectile(7, GetPosition().x, GetPosition().y, sf::Color::Red,projectilespeed, 2, GetScene<GameScene>()->GetPlayer());
+        GetScene<GameScene>()->AddGuidedProjectile(7, GetPosition().x, GetPosition().y, sf::Color::Red,projectilespeed, 2, GetScene<GameScene>()->GetPlayer(),x,y);
         cooldown = 0; 
     }
     cooldown += GetDeltaTime();

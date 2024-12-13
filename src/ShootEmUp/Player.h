@@ -27,13 +27,11 @@ private:
     bool buffSize = false;
 
     // Auto mode (Joue automatiquement les Abilities quand elles sont prête)
-    bool autoMode = false;
+    bool autoMode = !true;
 
     void DrawCooldownBars();
     void HandleCooldowns();
 
-    // Ignore Damage
-    bool isInvincible = false;
 
 public:
     // Reset les cooldowns

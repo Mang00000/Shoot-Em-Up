@@ -21,7 +21,6 @@ void Pompier::OnUpdate()
     float playerX = pPlayer->GetPosition().x;
     float playerY = pPlayer->GetPosition().y;
 
-    // Gestion des tirs
     if (cooldown > shotspeed) {
         GetScene<GameScene>()->AddProjectile(3, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, 0, projectilespeed);
         cooldown = 0;
@@ -30,29 +29,23 @@ void Pompier::OnUpdate()
         cooldown += GetDeltaTime();
     }
 
-    // Largeur de la fenêtre
     float windowWidth = GetScene()->GetWindowWidth();
 
-    // Vérifier si on est proche de la cible actuelle en X
     if (std::abs(targetX - GetPosition().x) < 5.0f) {
-        targetX = windowWidth * (0.8f + static_cast<float>(rand()) / RAND_MAX * 0.2f); // Nouvelle cible entre 4/5 et 5/5
+        targetX = windowWidth * (0.8f + static_cast<float>(rand()) / RAND_MAX * 0.2f); 
     }
 
-    // Calcul d'un mouvement fluide en X avec un ralentissement progressif
     float xDelta = targetX - GetPosition().x;
-    float xSpeed = std::clamp(std::abs(xDelta) * 0.1f, 10.0f, 50.0f); // Vitesse ajustée selon la distance
-    float newX = GetPosition().xq;
+    float xSpeed = std::clamp(std::abs(xDelta) * 2.0f, 10.0f, 50.0f); 
+    float newX = GetPosition().x;
 
-    // Vérifier si on est proche de la cible actuelle en Y
     if (std::abs(targetY - GetPosition().y) < 5.0f) {
-        targetY = rand() % GetScene()->GetWindowHeight(); // Nouvelle cible aléatoire pour Y
+        targetY = rand() % GetScene()->GetWindowHeight(); 
     }
 
-    // Calcul d'un mouvement fluide en Y avec un ralentissement progressif
     float yDelta = targetY - GetPosition().y;
-    float ySpeed = std::clamp(std::abs(yDelta) * 0.01f, 10.0f, 50.0f); // Vitesse ajustée selon la distance
+    float ySpeed = std::clamp(std::abs(yDelta) * 2.0f, 10.0f, 50.0f);
     float newY = GetPosition().y + (yDelta > 0 ? ySpeed : -ySpeed) * GetDeltaTime();
 
-    // Appliquer les nouvelles positions
     SetPosition(newX, newY);
 }

@@ -30,4 +30,7 @@ void Camion::OnUpdate()
     else {
         cooldown += GetDeltaTime();
     }
+    speed = abs(GetScene<GameScene>()->GetPlayer()->GetPosition().y - GetPosition().y)/2;
+
+    GoToDirection(GetPosition().x, GetScene<GameScene>()->GetPlayer()->GetPosition().y, speed);
 }

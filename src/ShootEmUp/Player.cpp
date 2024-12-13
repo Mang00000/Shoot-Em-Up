@@ -11,7 +11,7 @@ Player::Player() {
     klaxonCooldown.Reset();
 }
 void Player::OnCollision(Entity* other) {
-    if (other->IsTag(2) && !isInvincible) { // Si projectile ennemi
+    if (other->IsTag(2) && !invincibleCooldown.isActive) { // Si projectile ennemi
         stats.hp--;
         other->Destroy();
         invincibleCooldown.Reset();
@@ -85,7 +85,7 @@ void Player::HandleCooldowns() {
 void Player::OnUpdate() {
     Debug::DrawText(50, 70, "Vie: " + std::to_string(stats.hp), sf::Color::White);
     sf::Vector2f position = GetPosition();
-    float radius = GetWidth();
+    float radius = GetWidth() / 2;
     float windowWidth = GetScene()->GetWindowWidth();
     float windowHeight = GetScene()->GetWindowHeight();
 

@@ -15,7 +15,7 @@ void Projectile::OnUpdate()
 {
 	float x = GetPosition().x;
 	float y = GetPosition().y;
-	float r = GetWidth();
+	float r = GetWidth() / 2;
 	float h = GetScene()->GetWindowHeight();
 	float w = GetScene()->GetWindowWidth();
 
@@ -34,7 +34,7 @@ void GuidedProjectile::OnUpdate()
     float M_PI = 3.14159;
 	float x = GetPosition().x;
 	float y = GetPosition().y;
-	float r = GetWidth();
+	float r = GetWidth()/2;
 	float h = GetScene()->GetWindowHeight();
 	float w = GetScene()->GetWindowWidth();
 

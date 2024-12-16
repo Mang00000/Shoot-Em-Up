@@ -2,6 +2,7 @@
 
 #include "Scene.h"
 #include "PauseMenu.h"
+#include "Menu.h"
 
 class Player;
 class Camion;
@@ -14,6 +15,7 @@ class Pompier;
 class GameScene : public Scene
 {
     PauseMenu* pmenu;
+    Menu* menu;
 
     Player* pPlayer;
 
@@ -21,11 +23,11 @@ class GameScene : public Scene
     std::vector<Entity*> pProjectile; // Liste des projectiles
     int wave = 1;
 
-    bool IsPaused = false;
     bool Quit = false;
-    bool isGameStart = true;
+    bool isGameStart = false;
 
 public:
+    inline static bool IsPaused = false;
     void OnInitialize() override;
     void OnEvent(const sf::Event& event) override;
     void OnUpdate() override;
@@ -37,4 +39,5 @@ public:
     int GetWave() { return wave; }
     void AddProjectile(int size, float x, float y, sf::Color color, float dx, float dy, float angle = 0, float speed = 0, int tag = 2);
     void RemoveProjectile(int tag);
+
 };

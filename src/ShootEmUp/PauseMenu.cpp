@@ -9,14 +9,14 @@ PauseMenu::PauseMenu(sf::RenderWindow* window)
     
     float containerWidth = windowWidth / 4.f;
     float containerHeight = windowHeight / 2.f;
-
     
     float containerX = (windowWidth - containerWidth) / 2.f;
     float containerY = (windowHeight - containerHeight) / 2.f;
 
     // Dessiner le conteneur
-    Debug::DrawRectangle(0, 0, windowWidth, windowHeight, sf::Color(255, 255, 255, 100));
-    Debug::DrawRectangle(containerX, containerY,containerWidth, containerHeight,sf::Color(255, 255, 255, 200));
+    Debug::DrawFilledRectangle(containerX, containerY,containerWidth, containerHeight,sf::Color(255, 255, 255, 200));
+
+
    
 }
 

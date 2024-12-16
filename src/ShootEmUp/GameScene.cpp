@@ -1,24 +1,25 @@
-#include "GameScene.h"
+#include <iostream>
+#include <stdlib.h>
+#include <cstdlib>
+#include <ctime>
 
+#include "GameScene.h"
 #include "Camion.h"
 #include "Projectile.h"
 #include "Player.h"
 #include "GoFast.h"
 #include "BTP.h"
 #include "Pompier.h"
-
 #include "Debug.h"
-
-#include <iostream>
-
-#include <stdlib.h>
-
 #include "Utils.h" 
 #include "Scene.h"
+
+
 void GameScene::OnInitialize()
 {
     if (isGameStart == true)
     {
+        delete menu;
         pPlayer = CreateEntity<Player>(20, sf::Color::Green);
         pPlayer->SetPosition(100, 500);
         pPlayer->SetTag(3);
@@ -26,7 +27,11 @@ void GameScene::OnInitialize()
         std::srand(static_cast<unsigned>(std::time(nullptr)));
         GenerateEnemies(5);
     }
-    
+    else
+    {
+        menu = new Menu(this->GetRenderWindow());
+        menu->update();
+    }
 }
 
 void GameScene::OnEvent(const sf::Event& event)
@@ -36,6 +41,12 @@ void GameScene::OnEvent(const sf::Event& event)
         bool isMovingDown = sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
         bool isMovingLeft = sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
         bool isMovingRight = sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
+        bool startGame = false;
+        if (isGameStart == false)
+        {
+            startGame = sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+        }
+
         bool isPausedMenu = sf::Keyboard::isKeyPressed(sf::Keyboard::Escape);
 
         bool isSlowed = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
@@ -50,6 +61,10 @@ void GameScene::OnEvent(const sf::Event& event)
         float moveY = 0.0f;
         float radius = 0;
 
+        if (startGame == true)
+        {
+            isGameStart = true;
+        }
 
         if (isPausedMenu)
         {
@@ -76,8 +91,7 @@ void GameScene::OnEvent(const sf::Event& event)
         }                    
     }
 }
-#include <cstdlib>
-#include <ctime>
+
 
 void GameScene::GenerateEnemies(int count, int maxGoFast, int maxPompier, int maxCamion, int maxBTP)
 {
@@ -140,38 +154,39 @@ void GameScene::GenerateEnemies(int count, int maxGoFast, int maxPompier, int ma
     }
 }
 
-
-
 void GameScene::OnUpdate()
 {
-    if (IsPaused == false)
+    if (isGameStart == true)
     {
-        sf::Vector2i mousePos = sf::Mouse::getPosition(*GetRenderWindow());
-        Debug::DrawCircle(mousePos.x, mousePos.y, 7, sf::Color::White);
-        pEnemies.erase(std::remove_if(pEnemies.begin(), pEnemies.end(),
-            [](Entity* enemy) { return enemy->ToDestroy(); }), pEnemies.end());
+        if (IsPaused == false)
+        {
+            sf::Vector2i mousePos = sf::Mouse::getPosition(*GetRenderWindow());
+            Debug::DrawCircle(mousePos.x, mousePos.y, 7, sf::Color::White);
+            pEnemies.erase(std::remove_if(pEnemies.begin(), pEnemies.end(),
+                [](Entity* enemy) { return enemy->ToDestroy(); }), pEnemies.end());
 
-        if (pEnemies.empty()) {
-            RemoveProjectile(2);
-            GenerateEnemies(4 + wave, 4 /*maxGoFast*/);
-            wave++;
-        }
-
-        for (auto it = pProjectile.begin(); it != pProjectile.end(); ) {
-            if ((*it)->ToDestroy()) {
-                it = pProjectile.erase(it);
+            if (pEnemies.empty()) {
+                RemoveProjectile(2);
+                GenerateEnemies(4 + wave, 4 /*maxGoFast*/);
+                wave++;
             }
-            else {
-                ++it;
-            }
-        }
 
-        Debug::DrawText(50, 50, "Vague: " + std::to_string(wave), sf::Color::White);
-    }
-    else
-    {
-        pmenu = new PauseMenu(this->GetRenderWindow());
-        pmenu->update();
+            for (auto it = pProjectile.begin(); it != pProjectile.end(); ) {
+                if ((*it)->ToDestroy()) {
+                    it = pProjectile.erase(it);
+                }
+                else {
+                    ++it;
+                }
+            }
+
+            Debug::DrawText(50, 50, "Vague: " + std::to_string(wave), sf::Color::White);
+        }
+        else
+        {
+            pmenu = new PauseMenu(this->GetRenderWindow());
+            pmenu->update();
+        }
     }
 }
 

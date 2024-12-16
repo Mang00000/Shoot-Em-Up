@@ -149,24 +149,28 @@ void Entity::SetDirection(float x, float y, float speed)
 
 void Entity::Update()
 {
+
 	float dt = GetDeltaTime();
 	float distance = dt * mSpeed;
 	sf::Vector2f translation = distance * mDirection;
 	pTransformable->move(translation);
-
-	if (mTarget.isSet) 
+	if (pGM->IsPaused == false)
 	{
-		mTarget.distance -= distance;
-
-		if (mTarget.distance <= 0.f)
+		if (mTarget.isSet)
 		{
-			SetPosition(mTarget.position.x, mTarget.position.y, 0.5f, 0.5f);
-			mDirection = sf::Vector2f(0.f, 0.f);
-			mTarget.isSet = false;
-		}
-	}
+			mTarget.distance -= distance;
 
-	OnUpdate();
+			if (mTarget.distance <= 0.f)
+			{
+				SetPosition(mTarget.position.x, mTarget.position.y, 0.5f, 0.5f);
+				mDirection = sf::Vector2f(0.f, 0.f);
+				mTarget.isSet = false;
+			}
+		}
+
+		OnUpdate();
+	}
+	
 }
 
 Scene* Entity::GetScene() const

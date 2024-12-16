@@ -14,6 +14,7 @@ class Scene;
 class GameScene;
 class EntityDesign;
 class Collider;
+class Animator;
 
 
 class Entity
@@ -41,6 +42,8 @@ protected:
     sf::Vector2f mCenter;
 
     float mAngle = 0;
+
+    Animator* mAnimator;
 
     sf::Drawable* pDrawable;
     sf::Transformable* pTransformable;
@@ -104,12 +107,13 @@ protected:
 
     virtual void OnUpdate() {};
     virtual void OnCollision(Entity* collidedWith) {};
-	virtual void OnInitialize() {};
+	virtual void OnInitialize(int tag = -1);
 	
 private:
     void Update();
 	void Initialize(float radius, const sf::Color& color);
     void Initialize(sf::Texture* pTexture, int Width, int Height);
+    void Initialize(sf::Texture* pTexture, int Width, int Height, int nbImage, float duration);
     void Initialize(int width, int height, float angle, const sf::Color& color);
 
     friend class GameManager;

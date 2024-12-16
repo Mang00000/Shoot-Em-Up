@@ -35,6 +35,22 @@ T* Scene::CreateEntity(int width, int height, float angle, const sf::Color& colo
 	return newEntity;
 }
 
+template<typename T>
+inline T* Scene::CreateEntity(std::string _Path, int Width, int Height, int nbImage, float duration)
+{
+	static_assert(std::is_base_of<Entity, T>::value, "T must be derived from Entity");
+
+	T* newEntity = new T();
+
+	Entity* entity = newEntity;
+
+	entity->Initialize(ResourceManager::Get()->GetTexture(_Path), Width, Height, nbImage, duration);
+
+	mpGameManager->mEntitiesToAdd.push_back(newEntity);
+
+	return newEntity;
+}
+
 template<typename U>
 U* Scene::CreateEntity(std::string _Path, int Width, int Height)
 {

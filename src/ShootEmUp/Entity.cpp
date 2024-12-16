@@ -7,15 +7,12 @@
 #include <SFML/Graphics/CircleShape.hpp>
 #include "Collider.h"
 #include "ColliderManager.h"
+#include "Animator.h"
 
 
 void Entity::Initialize(float radius, const sf::Color& color)
 {
-	mDirection = sf::Vector2f(0.0f, 0.0f);
-	mSpeed = 0.0f;
-	mToDestroy = false;
-	mTag = -1;
-
+	OnInitialize();
 
 
 	mWidth = radius * 2;
@@ -24,7 +21,6 @@ void Entity::Initialize(float radius, const sf::Color& color)
 
 	sf::CircleShape* circle = new sf::CircleShape();
 
-	circle->setOrigin(0.f, 0.f);
 	circle->setRadius(radius);
 	circle->setFillColor(color);
 
@@ -34,27 +30,20 @@ void Entity::Initialize(float radius, const sf::Color& color)
 	pTransformable = circle;
 	
 	mCollider = new CircleCollider(this, radius);
-	mTarget.isSet = false;
 }
 
 void Entity::Initialize(sf::Texture* pTexture, int Width, int Height)
 {
-	mDirection = sf::Vector2f(0.0f, 0.0f);
-	mSpeed = 0.0f;
-	mToDestroy = false;
-	mTag = -1;
-	mTarget.isSet = false;
-	
+	OnInitialize();
 
-	sf::Sprite* pSprite = new sf::Sprite();	
+	sf::Sprite* pSprite = new sf::Sprite();
 
 	pSprite->setTexture(*pTexture);
-	pSprite->setOrigin(0.f, 0.f);
 
-	float RatioScaleX = pTexture->getSize().x / (float) Width;
-	float RatioScaleY = pTexture->getSize().y / (float) Height;
+	float RatioScaleX = pTexture->getSize().x / (float)Width;
+	float RatioScaleY = pTexture->getSize().y / (float)Height;
 
-	float FinalRatio =  1 / std::max(RatioScaleX, RatioScaleY);
+	float FinalRatio = 1 / std::max(RatioScaleX, RatioScaleY);
 	pSprite->scale(sf::Vector2f(FinalRatio, FinalRatio));
 
 	mWidth = pTexture->getSize().x * FinalRatio;
@@ -65,25 +54,36 @@ void Entity::Initialize(sf::Texture* pTexture, int Width, int Height)
 	pTransformable = pSprite;
 
 	mCollider = new RectangleCollider(this, mWidth, mHeight);
+}
 
+void Entity::Initialize(sf::Texture* pTexture, int Width, int Height, int nbImage, float duration)
+{
+	OnInitialize();
+
+	sf::Sprite* pSprite = new sf::Sprite();
+	mAnimator = new Animator(pTexture, sf::Vector2f(Width / nbImage, Height / nbImage), pSprite);
+
+	mAnimator->SetAnimation(nbImage, duration, sf::Vector2f(pTexture->getSize().x / nbImage, pTexture->getSize().y / nbImage));
+
+	mWidth =  Width / nbImage;
+	mHeight = Height / nbImage;
+
+	pDrawable = pSprite;
+	pTransformable = pSprite;
+
+	mCollider = new RectangleCollider(this, mWidth, mHeight);
 }
 
 void Entity::Initialize(int width, int height, float angle, const sf::Color& color)
 {
-	mDirection = sf::Vector2f(0.0f, 0.0f);
-	mSpeed = 0.0f;
-	mToDestroy = false;
-	mTag = -1;
-	mTarget.isSet = false;
+	OnInitialize();
 
 	if (angle == 0) { //RECTANGLE CASE
-		std::cout << "rectangle case" << std::endl;
 		mWidth = width;
 		mHeight = height;
 
 		sf::RectangleShape* rectangle = new sf::RectangleShape();
 
-		rectangle->setOrigin(0, 0);
 		rectangle->setFillColor(color);
 		rectangle->setSize(sf::Vector2f(mWidth, mHeight));
 
@@ -93,7 +93,6 @@ void Entity::Initialize(int width, int height, float angle, const sf::Color& col
 		mCollider = new RectangleCollider(this, mWidth, mHeight);
 	}
 	else { //OOBB CASE
-		std::cout << "OOBB case" << std::endl;
 		mWidth = width;
 		mHeight = height;
 		mAngle = angle;
@@ -136,8 +135,8 @@ bool Entity::IsInside(float x, float y) const
 
 void Entity::SetPosition(float x, float y, float ratioX, float ratioY)
 {
-	x -= mWidth * (ratioX - mRatioX);
-	y -= mHeight * (ratioY - mRatioY);
+	x -= (mWidth * 0.5f) + (mWidth * ratioX);
+	y -= (mHeight * 0.5f) + (mHeight * ratioY);
 
 	pTransformable->setPosition(x, y);
 }
@@ -146,8 +145,8 @@ sf::Vector2f Entity::GetPosition(float ratioX, float ratioY) const
 {
 	sf::Vector2f position = pTransformable->getPosition();
 
-	position.x += (mRatioX - ratioX);
-	position.y += (mRatioY - ratioY);
+	position.x += (mWidth * 0.5f) + (mWidth * ratioX);
+	position.y += (mHeight * 0.5f) + (mHeight * ratioY);
 
 	return position;
 }
@@ -193,12 +192,24 @@ void Entity::SetDirection(float x, float y, float speed)
 	mTarget.isSet = false;
 }
 
+void Entity::OnInitialize(int tag)
+{
+	mDirection = sf::Vector2f(0.0f, 0.0f);
+	mSpeed = 0.0f;
+	mToDestroy = false;
+	mTag = tag;
+	mTarget.isSet = false;
+}
+
 void Entity::Update()
 {
 	float dt = GetDeltaTime();
 	float distance = dt * mSpeed;
 	sf::Vector2f translation = distance * mDirection;
 	pTransformable->move(translation);
+	if (mAnimator != nullptr) {
+		mAnimator->Update(dt);
+	}
 
 	if (mTarget.isSet) 
 	{

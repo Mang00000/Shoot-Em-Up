@@ -28,6 +28,9 @@ public:
     template<typename T>
     T* CreateEntity(int width, int height, float angle, const sf::Color& color);
 
+    template<typename T>
+    T* CreateEntity(std::string _Path, int Width, int Height, int nbImage, float duration);
+
     template<typename U>
     U* CreateEntity(std::string _Path, int Width, int Height);
 

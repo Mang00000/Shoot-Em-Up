@@ -26,6 +26,16 @@ class Entity
 		bool isSet;
     };
 
+    enum class EntityType {
+        Player,
+        Enemy,
+        AllyProjectile,
+        EnemyProjectile,
+
+
+        Count
+    };
+
 protected:
     sf::Vector2f mDirection;
 	Target mTarget;

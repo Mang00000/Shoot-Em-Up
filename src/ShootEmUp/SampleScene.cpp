@@ -21,8 +21,6 @@ void SampleScene::OnInitialize()
 	//pEntity1 = CreateEntity<DummyEntity>(100, 60, 50, sf::Color::White);
 	//pEntity1->SetPosition(100, 100);
 
-
-
 	//pEntity3 = CreateEntity<DummyEntity>(100, 60, 20, sf::Color::White);
 	//pEntity3->SetPosition(500, 500);
 

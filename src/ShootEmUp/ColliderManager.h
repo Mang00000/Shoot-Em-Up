@@ -15,6 +15,15 @@ protected:
 
 	static bool OOBBOOBB(Collider* OOBB1, Collider* OOBB2);
 
+	inline static int AllowCollision[4][4] =
+	{
+		//Player  Enemy	 AllyProjectile	  EnemyProjectile
+		{0,		    1,		    0,		        1}, // Player
+		{1,			0,			1,				0}, // Enemy
+		{0,			1,			0,				0}, //AllyProjectile
+		{1,			0,			1,				0}, //EnemyProjectile
+	};
+
 	inline static std::function<bool(Collider*,Collider*)> CollisionTab[3][3] =
 	{
 		{ColliderManager::CircleCircle, ColliderManager::CircleRectangle , ColliderManager::OOBBOOBB},

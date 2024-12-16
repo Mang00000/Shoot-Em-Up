@@ -114,5 +114,9 @@ bool ColliderManager::OOBBOOBB(Collider* OOBB1, Collider* OOBB2)
 
 bool ColliderManager::ResolveCollision(Collider* pCollider1, Collider* pCollider2)
 {
+    /*if (AllowCollision[(int)pCollider1->mParentEntity->GetType()][(int)pCollider2->mParentEntity->GetType()] == 0) {
+        return false;
+    }*/
+
     return CollisionTab[(int)pCollider1->mType][(int)pCollider2->mType](pCollider1, pCollider2);
 }

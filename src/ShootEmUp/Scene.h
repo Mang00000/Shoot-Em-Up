@@ -1,10 +1,13 @@
 #pragma once
 
 class GameManager;
+class EntityType;
 
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Color.hpp>
+
+
 
 class Scene
 {

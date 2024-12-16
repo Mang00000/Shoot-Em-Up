@@ -36,9 +36,6 @@ protected:
     int mWidth;
     int mHeight;
 
-    float mRatioX = 0;
-    float mRatioY = 0;
-
     sf::Vector2f mCenter;
 
     float mAngle = 0;

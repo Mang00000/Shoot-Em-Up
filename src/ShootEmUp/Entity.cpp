@@ -21,6 +21,7 @@ void Entity::Initialize(float radius, const sf::Color& color)
 
 	sf::CircleShape* circle = new sf::CircleShape();
 
+	circle->setOrigin(0.5f * mWidth, 0.5f * mHeight);
 	circle->setRadius(radius);
 	circle->setFillColor(color);
 
@@ -48,6 +49,7 @@ void Entity::Initialize(sf::Texture* pTexture, int Width, int Height)
 
 	mWidth = pTexture->getSize().x * FinalRatio;
 	mHeight = pTexture->getSize().y * FinalRatio;
+	pSprite->setOrigin(0.5f * mWidth, 0.5f * mHeight);
 
 
 	pDrawable = pSprite;
@@ -67,6 +69,7 @@ void Entity::Initialize(sf::Texture* pTexture, int Width, int Height, int nbImag
 
 	mWidth =  Width / nbImage;
 	mHeight = Height / nbImage;
+	pSprite->setOrigin(0.5f * mWidth, 0.5f * mHeight);
 
 	pDrawable = pSprite;
 	pTransformable = pSprite;
@@ -86,6 +89,7 @@ void Entity::Initialize(int width, int height, float angle, const sf::Color& col
 
 		rectangle->setFillColor(color);
 		rectangle->setSize(sf::Vector2f(mWidth, mHeight));
+		rectangle->setOrigin(0.5f * mWidth, 0.5f * mHeight);
 
 		pDrawable = rectangle;
 		pTransformable = rectangle;
@@ -98,13 +102,10 @@ void Entity::Initialize(int width, int height, float angle, const sf::Color& col
 		mAngle = angle;
 		mCenter = sf::Vector2f(mWidth / 2, mHeight / 2);
 
-		mRatioX = 0.5f;
-		mRatioY = 0.5f;
-
 		sf::RectangleShape* rectangle = new sf::RectangleShape();
 
 		rectangle->setSize(sf::Vector2f(mWidth, mHeight));
-		rectangle->setOrigin(mWidth * mRatioX, mHeight * mRatioY);
+		rectangle->setOrigin(0.5f * mWidth, 0.5f * mHeight);
 		rectangle->setFillColor(color);
 		rectangle->setRotation(mAngle);
 
@@ -135,8 +136,8 @@ bool Entity::IsInside(float x, float y) const
 
 void Entity::SetPosition(float x, float y, float ratioX, float ratioY)
 {
-	x -= (mWidth * 0.5f) + (mWidth * ratioX);
-	y -= (mHeight * 0.5f) + (mHeight * ratioY);
+	x += (mWidth * 0.5f) - (mWidth * ratioX);
+	y += (mHeight * 0.5f) - (mHeight * ratioY);
 
 	pTransformable->setPosition(x, y);
 }
@@ -145,8 +146,8 @@ sf::Vector2f Entity::GetPosition(float ratioX, float ratioY) const
 {
 	sf::Vector2f position = pTransformable->getPosition();
 
-	position.x += (mWidth * 0.5f) + (mWidth * ratioX);
-	position.y += (mHeight * 0.5f) + (mHeight * ratioY);
+	position.x -= (mWidth * 0.5f) - (mWidth * ratioX);
+	position.y -= (mHeight * 0.5f) - (mHeight * ratioY);
 
 	return position;
 }

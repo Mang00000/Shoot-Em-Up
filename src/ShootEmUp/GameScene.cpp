@@ -20,7 +20,7 @@ void GameScene::OnInitialize()
 {
     pPlayer = CreateEntity<Player>(20, sf::Color::Green);
     pPlayer->SetPosition(100, 500);
-    pPlayer->SetTag(3);
+    pPlayer->SetTag("Player");
 
     std::srand(static_cast<unsigned>(std::time(nullptr))); 
     GenerateEnemies(5); 
@@ -91,7 +91,23 @@ void GameScene::GenerateEnemies(int count, int maxGoFast, int maxPompier, int ma
         float x = 800;
         float y = 400;
         boss->SetPosition(x, y);
-        boss->SetTag(2);
+        boss->SetTag("Enemy");
+
+        Entity* bos2s = nullptr;
+        bos2s = CreateEntity<Boss>(90, sf::Color::White);
+        pEnemies.push_back(bos2s);
+        x = 700;
+
+        bos2s->SetPosition(x, y);
+        bos2s->SetTag("Enemy");
+
+        Entity* b1os2s = nullptr;
+        b1os2s = CreateEntity<Boss>(90, sf::Color::White);
+        pEnemies.push_back(b1os2s);
+        x = 700;
+
+        b1os2s->SetPosition(x, y);
+        b1os2s->SetTag("Enemy");
         return;
     }
 
@@ -111,7 +127,7 @@ void GameScene::GenerateEnemies(int count, int maxGoFast, int maxPompier, int ma
             if (goFastCount < maxGoFast) {
                 newEnemy = CreateEntity<GoFast>(60, sf::Color::Yellow);
                 goFastCount++;
-            }
+            } 
             break;
         case 1:
             if (pompierCount < maxPompier) {
@@ -135,7 +151,7 @@ void GameScene::GenerateEnemies(int count, int maxGoFast, int maxPompier, int ma
 
         if (newEnemy) {
             newEnemy->SetPosition(x, y);
-            newEnemy->SetTag(2);
+            newEnemy->SetTag("Enemy");
             pEnemies.push_back(newEnemy);
         }
     }
@@ -149,11 +165,12 @@ void GameScene::OnUpdate()
     Debug::DrawText(50, 50, "Vague: " + std::to_string(wave), sf::Color::White);
     if (pPlayer->GetIsDead()) {
         running = false;
-        RemoveProjectile(2);
-        RemoveProjectile(1);
+        RemoveProjectile("PlayerProj");
+        RemoveProjectile("EnemyProj");
         ClearEntity(2);
         ClearEntity(1);
         Debug::DrawText(GetWindowWidth() / 2, GetWindowHeight() / 2, "PERDU", sf::Color::White);
+        pPlayer->Destroy();
     }
 
     sf::Vector2i mousePos = sf::Mouse::getPosition(*GetRenderWindow());
@@ -163,9 +180,10 @@ void GameScene::OnUpdate()
         [](Entity* enemy) { return enemy->ToDestroy(); }), pEnemies.end());
 
     if (pEnemies.empty() && running) {
-        RemoveProjectile(2);
+        RemoveProjectile("EnemyProj");
         GenerateEnemies(4 + wave, 4 /*maxGoFast*/ );
         wave++;
+        pPlayer->SetFlashed(false);
     }
 
     for (auto it = pProjectile.begin(); it != pProjectile.end(); ) {
@@ -183,7 +201,7 @@ Player* GameScene::GetPlayer()
     return pPlayer;
 }
 
-void GameScene::AddProjectile(int size, float x, float y, sf::Color color, float dx, float dy, float angle, float speed, int tag) {
+void GameScene::AddProjectile(int size, float x, float y, sf::Color color, float dx, float dy, float angle, float speed, std::string tag) {
     Entity* p = nullptr;
     p = CreateEntity<Projectile>(size, color);
     p->SetPosition(x, y);
@@ -192,7 +210,7 @@ void GameScene::AddProjectile(int size, float x, float y, sf::Color color, float
     p->RotateDirection(angle);
     pProjectile.push_back(p);
 }
-void GameScene::AddGuidedProjectile(int size, float x, float y, sf::Color color,float speed,int tag, Entity* target,float Vx0, float Vy0) {
+void GameScene::AddGuidedProjectile(int size, float x, float y, sf::Color color,float speed,std::string tag, Entity* target,float Vx0, float Vy0) {
     if (Vx0 == -1) Vx0 = x;
     GuidedProjectile* p = nullptr;
     p = CreateEntity<GuidedProjectile>(size, color);
@@ -203,7 +221,7 @@ void GameScene::AddGuidedProjectile(int size, float x, float y, sf::Color color,
     p->SetTag(tag);
     pProjectile.push_back(p);
 }
-void GameScene::RemoveProjectile(int tag) {
+void GameScene::RemoveProjectile(std::string tag) {
 
     for (Entity* projectile : pProjectile) {
         if (projectile->IsTag(tag)) {

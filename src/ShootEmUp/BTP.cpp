@@ -6,7 +6,7 @@
 
 void BTP::OnCollision(Entity* other)
 {
-    if (other->IsTag(1)) {
+    if (other->IsTag("PlayerProj")) {
         hp--;
         other->Destroy();
     }
@@ -22,7 +22,7 @@ void BTP::OnUpdate()
     int y = pPlayer->GetPosition().y;
 
     if (cooldown > shotspeed) {
-        GetScene<GameScene>()->AddGuidedProjectile(7, GetPosition().x, GetPosition().y, sf::Color::Red,projectilespeed, 2, GetScene<GameScene>()->GetPlayer(),x,y);
+        GetScene<GameScene>()->AddGuidedProjectile(7, GetPosition().x, GetPosition().y, sf::Color::Red,projectilespeed, "EnemyProj", GetScene<GameScene>()->GetPlayer(),x,y);
         cooldown = 0; 
     }
     cooldown += GetDeltaTime();

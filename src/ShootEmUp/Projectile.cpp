@@ -24,7 +24,9 @@ void Projectile::OnUpdate()
 
 void GuidedProjectile::OnCollision(Entity* other)
 {
-
+    if (this->IsTag("PlayerProj") && other->IsTag("EnemyProj")) {
+        other->Destroy(); 
+    }
 }
 
 void GuidedProjectile::OnUpdate()

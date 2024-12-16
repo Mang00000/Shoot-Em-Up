@@ -32,6 +32,9 @@ private:
     // End Game
     bool isDead = false;
 
+    //Player Status / Debuff
+    bool isFlashed = false;
+
     void DrawCooldownBars();
     void HandleCooldowns();
 
@@ -54,6 +57,7 @@ public:
 
     bool GetIsDead();
     void SetIsDead(bool value);
+    void SetFlashed(bool value);
 
 };
 

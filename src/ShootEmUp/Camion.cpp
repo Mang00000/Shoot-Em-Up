@@ -7,7 +7,7 @@
 #include "Scene.h"
 void Camion::OnCollision(Entity* other)
 {
-    if (other->IsTag(1)) {
+    if (other->IsTag("PlayerProj")) {
         hp--;
         other->Destroy();
     }

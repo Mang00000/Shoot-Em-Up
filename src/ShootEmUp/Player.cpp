@@ -11,9 +11,11 @@ Player::Player() {
     klaxonCooldown.Reset();
 }
 void Player::OnCollision(Entity* other) {
-    if (other->IsTag(2) && !invincibleCooldown.isActive) { // Si projectile ennemi
+    if ((other->IsTag("EnemyProj") || other->IsTag("Enemy")) && !invincibleCooldown.isActive) { // Si projectile ennemi
         stats.hp--;
-        other->Destroy();
+        if (other->IsTag("EnemyProj")) {
+            other->Destroy();
+        }
         invincibleCooldown.Reset();
     }
     if (stats.hp <= 0) {
@@ -58,15 +60,15 @@ void Player::Shoot() {
 
         ApplyBuff(wave);
 
-        scene->AddProjectile(stats.projectileSize, GetPosition().x, GetPosition().y, sf::Color::Magenta, mousePos.x, mousePos.y, 0, stats.projectileSpeed, 1);
+        scene->AddProjectile(stats.projectileSize, GetPosition().x, GetPosition().y, sf::Color::Magenta, mousePos.x, mousePos.y, 0, stats.projectileSpeed, "PlayerProj");
 
         if (wave >= 5) {
-            scene->AddProjectile(stats.projectileSize, GetPosition().x, GetPosition().y, sf::Color::Magenta, mousePos.x, mousePos.y, -8, stats.projectileSpeed, 1);
-            scene->AddProjectile(stats.projectileSize, GetPosition().x, GetPosition().y, sf::Color::Magenta, mousePos.x, mousePos.y, 8, stats.projectileSpeed, 1);
+            scene->AddProjectile(stats.projectileSize, GetPosition().x, GetPosition().y, sf::Color::Magenta, mousePos.x, mousePos.y, -8, stats.projectileSpeed, "PlayerProj");
+            scene->AddProjectile(stats.projectileSize, GetPosition().x, GetPosition().y, sf::Color::Magenta, mousePos.x, mousePos.y, 8, stats.projectileSpeed, "PlayerProj");
         }
         if (wave >= 10) {
-            scene->AddProjectile(stats.projectileSize, GetPosition().x, GetPosition().y, sf::Color::Magenta, mousePos.x, mousePos.y, -16, stats.projectileSpeed, 1);
-            scene->AddProjectile(stats.projectileSize, GetPosition().x, GetPosition().y, sf::Color::Magenta, mousePos.x, mousePos.y, 16, stats.projectileSpeed, 1);
+            scene->AddProjectile(stats.projectileSize, GetPosition().x, GetPosition().y, sf::Color::Magenta, mousePos.x, mousePos.y, -16, stats.projectileSpeed, "PlayerProj");
+            scene->AddProjectile(stats.projectileSize, GetPosition().x, GetPosition().y, sf::Color::Magenta, mousePos.x, mousePos.y, 16, stats.projectileSpeed, "PlayerProj");
         }
 
         shotCooldown.Reset();
@@ -101,6 +103,7 @@ void Player::OnUpdate() {
     if (position.x + radius > windowWidth) SetPosition(windowWidth - radius, position.y);
     if (position.y + radius > windowHeight) SetPosition(position.x, windowHeight - radius);
 
+    if (isFlashed) return;
     // Auto Mode
     if (autoMode) {
         Flashing();
@@ -131,7 +134,7 @@ void Player::Flashing() {
     if (!flashCooldown.isActive && flashCooldown.IsReady()) {
         flashCooldown.Reset();
         for (int i = -180; i < 180; i += 5) {
-            GetScene<GameScene>()->AddProjectile(stats.projectileSize, GetPosition().x, GetPosition().y, sf::Color::Yellow, 0, 0, i, stats.projectileSpeed, 1);
+            GetScene<GameScene>()->AddProjectile(stats.projectileSize, GetPosition().x, GetPosition().y, sf::Color::Yellow, 0, 0, i, stats.projectileSpeed, "PlayerProj");
         }
     }
 }
@@ -148,18 +151,20 @@ void Player::Rocket() {
         auto* scene = GetScene<GameScene>();
         sf::Vector2f position = GetPosition();
 
-        scene->AddGuidedProjectile(7, position.x, position.y, sf::Color::White, 180, 1, scene->GetClosestEnemy(this), -1000, 500);
-        scene->AddGuidedProjectile(7, position.x, position.y, sf::Color::White, 180, 1, scene->GetClosestEnemy(this), 0, -1000);
-        scene->AddGuidedProjectile(7, position.x, position.y, sf::Color::White, 180, 1, scene->GetClosestEnemy(this), 0, 1000);
-        scene->AddGuidedProjectile(7, position.x, position.y, sf::Color::White, 180, 1, scene->GetClosestEnemy(this), -1000, -500);
+        scene->AddGuidedProjectile(7, position.x, position.y, sf::Color::White, 180, "PlayerProj", scene->GetClosestEnemy(this), -1000, 500);
+        scene->AddGuidedProjectile(7, position.x, position.y, sf::Color::White, 180, "PlayerProj", scene->GetClosestEnemy(this), 0, -1000);
+        scene->AddGuidedProjectile(7, position.x, position.y, sf::Color::White, 180, "PlayerProj", scene->GetClosestEnemy(this), 0, 1000);
+        scene->AddGuidedProjectile(7, position.x, position.y, sf::Color::White, 180, "PlayerProj", scene->GetClosestEnemy(this), -1000, -500);
 
         rocketCooldown.Reset();
     }
 }
-
 bool Player::GetIsDead() {
     return isDead;
 }
 void Player::SetIsDead(bool value) {
     isDead = value;
+}
+void Player::SetFlashed(bool value) {
+    isFlashed = value;
 }

@@ -29,7 +29,7 @@ protected:
 	Target mTarget;
     float mSpeed;
     bool mToDestroy;
-    int mTag;
+    std::string mTag;
 
     int mWidth;
     int mHeight;
@@ -44,7 +44,7 @@ public:
     void SetPosition(float x, float y, float ratioX = 0.5f, float ratioY = 0.5f);
 	void SetDirection(float x, float y, float speed = -1.0f);
 	void SetSpeed(float speed) { mSpeed = speed; }
-	void SetTag(int tag) { mTag = tag; }
+	void SetTag(std::string tag) { mTag = tag; }
 
     sf::Drawable* GetDrawable() { return pDrawable; }
     sf::Transformable* GetTransformable() { return pTransformable; }
@@ -59,7 +59,7 @@ public:
     sf::Vector2f GetCenter() { return GetPosition(0.5, 0.5); }
     sf::Vector2f GetTopLeft() { return GetPosition(0, 0); }
 
-	bool IsTag(int tag) const { return mTag == tag; }
+	bool IsTag(std::string tag) const { return mTag == tag; }
     bool IsColliding(Entity* other) const;
 	bool IsInside(float x, float y) const;
 

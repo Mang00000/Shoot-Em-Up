@@ -5,6 +5,9 @@
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Text.hpp>
 
+#include "Menu.h"
+
+
 class Entity;
 class Scene;
 class Debug;
@@ -17,6 +20,7 @@ namespace sf
 
 class GameManager
 {
+	Menu* menu;
 	std::list<Entity*> mEntities;
 	std::list<Entity*> mEntitiesToDestroy;
 	std::list<Entity*> mEntitiesToAdd;

@@ -73,7 +73,18 @@ void GameManager::Run()
 		HandleInput();
 
 		Update();
-		
+		/*while (isGameStart == false)
+		{
+			menu = new Menu(this->GetRenderWindow());
+			bool startGame = false;
+			startGame = sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+			if (startGame == true)
+			{
+				isGameStart = true;
+			}
+			menu->update();
+		}
+		delete menu;*/
 		Draw();
 	}
 }

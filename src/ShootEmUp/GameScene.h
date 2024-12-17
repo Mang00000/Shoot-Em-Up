@@ -24,9 +24,9 @@ class GameScene : public Scene
     int wave = 1;
 
     bool Quit = false;
-    bool isGameStart = false;
-
+    
 public:
+    inline static bool isGameStart = false;
     inline static bool IsPaused = false;
     void OnInitialize() override;
     void OnEvent(const sf::Event& event) override;

@@ -17,40 +17,26 @@
 
 void GameScene::OnInitialize()
 {
-    if (isGameStart == true)
-    {
-        delete menu;
-        pPlayer = CreateEntity<Player>(20, sf::Color::Green);
-        pPlayer->SetPosition(100, 500);
-        pPlayer->SetTag(3);
+    pPlayer = CreateEntity<Player>(20, sf::Color::Green);
+    pPlayer->SetPosition(100, 500);
+    pPlayer->SetTag(3);
 
-        std::srand(static_cast<unsigned>(std::time(nullptr)));
-        GenerateEnemies(5);
-    }
-    else
-    {
-        menu = new Menu(this->GetRenderWindow());
-        menu->update();
-    }
+    std::srand(static_cast<unsigned>(std::time(nullptr)));
+    GenerateEnemies(5);
 }
 
 void GameScene::OnEvent(const sf::Event& event)
 {
     if ((event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased) && pPlayer != nullptr) {
+       
         bool isMovingUp = sf::Keyboard::isKeyPressed(sf::Keyboard::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
         bool isMovingDown = sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
         bool isMovingLeft = sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
         bool isMovingRight = sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
-        bool startGame = false;
-        if (isGameStart == false)
-        {
-            startGame = sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
-        }
 
         bool isPausedMenu = sf::Keyboard::isKeyPressed(sf::Keyboard::Escape);
-
+       
         bool isSlowed = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
-
         bool isFlashing = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
         bool isKlaxoning = sf::Keyboard::isKeyPressed(sf::Keyboard::E);
 
@@ -61,10 +47,7 @@ void GameScene::OnEvent(const sf::Event& event)
         float moveY = 0.0f;
         float radius = 0;
 
-        if (startGame == true)
-        {
-            isGameStart = true;
-        }
+       
 
         if (isPausedMenu)
         {

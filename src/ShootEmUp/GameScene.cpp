@@ -16,6 +16,13 @@
 
 #include "Utils.h" 
 #include "Scene.h"
+
+#include <fstream>
+#include <unordered_map>
+#include <functional>
+#include <vector>
+#include <tuple>
+
 void GameScene::OnInitialize()
 {
     pPlayer = CreateEntity<Player>(20, sf::Color::Green);
@@ -23,8 +30,53 @@ void GameScene::OnInitialize()
     pPlayer->SetTag("Player");
 
     std::srand(static_cast<unsigned>(std::time(nullptr))); 
-    GenerateEnemies(5); 
+    LoadWave("level.txt");
 }
+
+
+
+void GameScene::LoadWave(const std::string& filename) {
+    std::ifstream inFile(filename);
+    if (!inFile.is_open()) {
+        std::cerr << "Erreur d'ouverture du fichier : " << filename << std::endl;
+        return;
+    }
+
+
+    std::unordered_map<int, std::tuple<std::function<Entity* ()>, sf::Color>> enemyMap;
+
+    enemyMap[1] = { [this]() { return CreateEntity<GoFast>(60, sf::Color::Yellow); }, sf::Color::Yellow };
+    enemyMap[2] = { [this]() { return CreateEntity<BTP>(30, sf::Color::Green); }, sf::Color::Green };
+    enemyMap[3] = { [this]() { return CreateEntity<Camion>(40, sf::Color::Blue); }, sf::Color::Blue };
+    enemyMap[4] = { [this]() { return CreateEntity<Pompier>(30, sf::Color::Red); }, sf::Color::Red };
+    enemyMap[5] = { [this]() { return CreateEntity<Boss>(90, sf::Color::White); }, sf::Color::White };
+
+    std::vector<int> positions = { 100, 300, 500, 700 };
+
+    int e1, e2, e3, e4;
+    while (inFile >> e1 >> e2 >> e3 >> e4) {
+        std::vector<int> enemies = { e1, e2, e3, e4 };
+        for (size_t i = 0; i < enemies.size(); ++i) {
+            if (enemies[i] == -1) {
+                return;
+            }
+            if (enemies[i] != 0) {
+                auto it = enemyMap.find(enemies[i]);
+                if (it != enemyMap.end()) {
+                    auto [enemyCreator, color] = it->second;
+                    Entity* newEnemy = enemyCreator();
+                    newEnemy->SetPosition(1000, positions[i]); 
+                    newEnemy->SetTag("Enemy");
+                    pEnemies.push_back(newEnemy);
+                }
+            }
+        }
+    }
+
+    inFile.close();
+}
+
+
 
 void GameScene::OnEvent(const sf::Event& event)
 {
@@ -165,7 +217,7 @@ void GameScene::OnUpdate()
 
     if (pEnemies.empty() && running) {
         RemoveProjectile("EnemyProj");
-        GenerateEnemies(4 + wave, 4 /*maxGoFast*/ );
+        LoadWave("level.txt");
         wave++;
         pPlayer->SetFlashed(false);
     }

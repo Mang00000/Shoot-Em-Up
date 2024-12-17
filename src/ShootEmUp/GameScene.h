@@ -24,7 +24,7 @@ class GameScene : public Scene
     int wave = 1;
 
     bool Quit = false;
-    
+
 public:
     inline static bool isGameStart = false;
     inline static bool IsPaused = false;

@@ -26,7 +26,7 @@ void Projectile::OnUpdate()
 
 ProjectileCamion::ProjectileCamion() 
 {
-	if (GameScene::IsPaused == false) 
+	if (GameScene::IsPaused == false || GameScene::isGameStart == true) 
 	{
 		Player* pPlayer = pGM->GetPlayer();
 		int x = pPlayer->GetPosition().x;

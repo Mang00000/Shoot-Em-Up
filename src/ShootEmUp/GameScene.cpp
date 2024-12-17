@@ -141,6 +141,7 @@ void GameScene::OnUpdate()
 {
     if (isGameStart == true)
     {
+        
         if (IsPaused == false)
         {
             sf::Vector2i mousePos = sf::Mouse::getPosition(*GetRenderWindow());
@@ -170,6 +171,17 @@ void GameScene::OnUpdate()
             pmenu = new PauseMenu(this->GetRenderWindow());
             pmenu->update();
         }
+    }
+    else
+    {
+        menu = new Menu(this->GetRenderWindow());
+        bool startGame = false;
+        startGame = sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+        if (startGame == true)
+        {
+            isGameStart = true;
+        }
+        menu->update();
     }
 }
 

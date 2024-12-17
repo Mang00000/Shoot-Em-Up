@@ -25,6 +25,8 @@ private:
 
 public:
 	Menu(sf::RenderWindow* window);
+	void Vmenu(sf::RenderWindow* window);
+	void Dmenu(sf::RenderWindow* window);
 	virtual ~Menu();
 
 	void update();

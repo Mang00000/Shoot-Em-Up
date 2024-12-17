@@ -92,22 +92,6 @@ void GameScene::GenerateEnemies(int count, int maxGoFast, int maxPompier, int ma
         float y = 400;
         boss->SetPosition(x, y);
         boss->SetTag("Enemy");
-
-        Entity* bos2s = nullptr;
-        bos2s = CreateEntity<Boss>(90, sf::Color::White);
-        pEnemies.push_back(bos2s);
-        x = 700;
-
-        bos2s->SetPosition(x, y);
-        bos2s->SetTag("Enemy");
-
-        Entity* b1os2s = nullptr;
-        b1os2s = CreateEntity<Boss>(90, sf::Color::White);
-        pEnemies.push_back(b1os2s);
-        x = 700;
-
-        b1os2s->SetPosition(x, y);
-        b1os2s->SetTag("Enemy");
         return;
     }
 

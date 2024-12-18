@@ -11,7 +11,6 @@ namespace sf
 }
 
 class Scene;
-class GameScene;
 class EntityDesign;
 class Collider;
 class Animator;
@@ -42,7 +41,7 @@ protected:
 	Target mTarget;
     float mSpeed;
     bool mToDestroy;
-    int mTag;
+    std::string mTag;
 
     EntityType mType;
 
@@ -93,7 +92,7 @@ public:
 	bool IsInside(float x, float y) const;
 
 	void Destroy() { mToDestroy = true; }
-	bool ToDestroy() const { return mToDestroy; }
+    bool ToDestroy() const { return mToDestroy; }
 	
 	template<typename T>
 	T* GetScene() const;

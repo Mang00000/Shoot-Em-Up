@@ -4,19 +4,26 @@
 #include <iostream>
 #include "Player.h"
 #include "Utils.h"
+#include "Scene.h"
 void Camion::OnCollision(Entity* other)
 {
-	if (other->IsTag(1)) {
-		mToDestroy = true;
-		other->Destroy();
-	}
+    if (other->IsTag("PlayerProj")) {
+        hp--;
+        other->Destroy();
+    }
+    if (hp < 1) {
+        mToDestroy = true;
+        pPlayer->AddScore(5);
+    }
 }
 
 void Camion::OnUpdate()
 {
+    float windowWidth = GetScene()->GetWindowWidth();
     if (cooldown > shotspeed) {
         for (int i = 1; i <= shotnum; i++) {
             int randangle = (rand() % 180) - 90;
+
             GetScene<GameScene>()->AddProjectile(15, GetPosition().x, GetPosition().y, sf::Color::Magenta, 0, GetPosition().y, EntityType::EnemyProjectile, randangle, projectilespeed);
 
         }
@@ -29,4 +36,7 @@ void Camion::OnUpdate()
     else {
         cooldown += GetDeltaTime();
     }
+    speed = abs(pPlayer->GetPosition().y - GetPosition().y)/2;
+
+    GoToDirection(windowWidth*randomX, pPlayer->GetPosition().y, speed);
 }

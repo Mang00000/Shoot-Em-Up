@@ -9,11 +9,14 @@ public:
 	void OnUpdate() override;
 };
 
-class ProjectileCamion : public Projectile
-{
+class GuidedProjectile : public Entity {
+private:
+	const float maxRotationSpeed = 0.3f;
+	Entity* Target;
 public:
-	ProjectileCamion();
 	void OnCollision(Entity* other) override;
 
 	void OnUpdate() override;
+
+	void SetTarget(Entity* other);
 };

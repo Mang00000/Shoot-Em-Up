@@ -8,13 +8,14 @@ class BTP : public Entity
 {
 private:
 	float cooldown = 0;
-	float shotspeed = 2.0;
+	float shotspeed = 5.0;
 	float projectilespeed = 180;
 	bool isShooting = false;
+	int hp = 10;
+	float randomX = (rand() % 30) / 100.0f + 0.6f;
 
-	const float maxRotationSpeed = 0.3f;
 public:
-	std::vector<Projectile*> pList;
+	Player* pPlayer = GetScene<GameScene>()->GetPlayer();
 	void OnCollision(Entity* other) override;
 
 	void OnUpdate() override;

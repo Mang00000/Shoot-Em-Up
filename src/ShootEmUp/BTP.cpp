@@ -14,13 +14,13 @@ void BTP::OnCollision(Entity* other)
 
 void BTP::OnUpdate()
 {
-    float M_PI = 3.14159;
-    Player* pPlayer = pGM->GetPlayer();
+    float M_PI = std::numbers::pi_v<float>;
+    Player* pPlayer = GetScene<GameScene>()->GetPlayer();
     int x = pPlayer->GetPosition().x;
     int y = pPlayer->GetPosition().y;
 
     if (cooldown > shotspeed) {
-        Projectile* p = GetScene()->CreateEntity<Projectile>(8, sf::Color::Red);
+        Projectile* p = GetScene()->CreateEntity<Projectile>(8, sf::Color::Red, EntityType::EnemyProjectile);
         p->SetPosition(GetPosition().x, GetPosition().y);
         p->GoToDirection(x, y, projectilespeed);
         p->SetTag(2);

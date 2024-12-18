@@ -15,12 +15,12 @@ void Pompier::OnCollision(Entity* other)
 
 void Pompier::OnUpdate()
 {
-	Player* pPlayer = pGM->GetPlayer();
+	Player* pPlayer = GetScene<GameScene>()->GetPlayer();
 	int x = pPlayer->GetPosition().x;
 	int y = pPlayer->GetPosition().y;
 	if (cooldown > shotspeed) {
 
-		pGM->AddProjectile(3, GetPosition().x, GetPosition().y, sf::Color::Blue, x, y, 0, projectilespeed);
+		GetScene<GameScene>()->AddProjectile(3, GetPosition().x, GetPosition().y, sf::Color::Blue, x, y, EntityType::EnemyProjectile, 0, projectilespeed);
 
 		cooldown = 0;
 	}

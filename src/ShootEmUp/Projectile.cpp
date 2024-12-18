@@ -22,7 +22,7 @@ void Projectile::OnUpdate()
 }
 
 ProjectileCamion::ProjectileCamion() {
-	Player* pPlayer = pGM->GetPlayer();
+	Player* pPlayer = GetScene<GameScene>()->GetPlayer();
 	int x = pPlayer->GetPosition().x;
 	int y = pPlayer->GetPosition().y;
 

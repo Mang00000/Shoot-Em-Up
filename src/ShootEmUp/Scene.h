@@ -1,6 +1,9 @@
 #pragma once
 
+
+
 class GameManager;
+enum class EntityType;
 
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -23,10 +26,16 @@ protected:
 
 public:
     template<typename T>
-    T* CreateEntity(float radius, const sf::Color& color);
+    T* CreateEntity(float radius, const sf::Color& color, EntityType type, int layer = 0);
+
+    template<typename T>
+    T* CreateEntity(int width, int height, float angle, const sf::Color& color, EntityType type, int layer = 0);
+
+    template<typename T>
+    T* CreateEntity(std::string _Path, int Width, int Height, int nbImage, float duration, EntityType type, int layer = 0);
 
     template<typename U>
-    U* CreateEntity(std::string _Path, int Width, int Height);
+    U* CreateEntity(std::string _Path, int Width, int Height, EntityType type, int layer = 0);
 
     float GetDeltaTime() const;
 

@@ -29,13 +29,13 @@ public:
     T* CreateEntity(float radius, const sf::Color& color, EntityType type);
 
     template<typename T>
-    T* CreateEntity(int width, int height, float angle, const sf::Color& color);
+    T* CreateEntity(int width, int height, float angle, const sf::Color& color, EntityType type);
 
     template<typename T>
-    T* CreateEntity(std::string _Path, int Width, int Height, int nbImage, float duration);
+    T* CreateEntity(std::string _Path, int Width, int Height, int nbImage, float duration, EntityType type);
 
     template<typename U>
-    U* CreateEntity(std::string _Path, int Width, int Height);
+    U* CreateEntity(std::string _Path, int Width, int Height, EntityType type);
 
     float GetDeltaTime() const;
 

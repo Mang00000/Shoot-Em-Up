@@ -107,7 +107,7 @@ public:
     T* CreateEntity(float radius, const sf::Color& color, EntityType type);
 
     template<typename T>
-    T* CreateEntity(float x, float y, int width, int height, float angle = 0.f, const sf::Color& color = sf::Color::White);
+    T* CreateEntity(float x, float y, int width, int height, float angle = 0.f, const sf::Color& color = sf::Color::White, EntityType type = EntityType::Count);
 
     template<typename U>
     U* CreateEntity(sf::Texture* pTexture);
@@ -120,14 +120,14 @@ protected:
 
     virtual void OnUpdate() {};
     virtual void OnCollision(Entity* collidedWith) {};
-	virtual void OnInitialize(int tag = -1);
+	virtual void OnInitialize(EntityType type);
 	
 private:
     void Update();
 	void Initialize(float radius, const sf::Color& color, EntityType type);
-    void Initialize(sf::Texture* pTexture, int Width, int Height);
-    void Initialize(sf::Texture* pTexture, int Width, int Height, int nbImage, float duration);
-    void Initialize(int width, int height, float angle, const sf::Color& color);
+    void Initialize(sf::Texture* pTexture, int Width, int Height, EntityType type);
+    void Initialize(sf::Texture* pTexture, int Width, int Height, int nbImage, float duration, EntityType type);
+    void Initialize(int width, int height, float angle, const sf::Color& color, EntityType type);
 
     friend class GameManager;
     friend Scene;

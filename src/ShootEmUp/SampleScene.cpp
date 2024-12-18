@@ -15,8 +15,9 @@ void SampleScene::OnInitialize()
 	pEntity1 = CreateEntity<DummyEntity>(100, sf::Color::Red, EntityType::Player);
 	pEntity1->SetPosition(500, 400);
 
-	pEntity2 = CreateEntity<DummyEntity>("../../../res/TestAnim/monkey.png", 250, 417,4,1);
+	pEntity2 = CreateEntity<DummyEntity>("../../../res/TestAnim/monkey.png", 250, 417,4,1, EntityType::Enemy);
 	pEntity2->SetPosition(500, 200);
+
 
 	//pEntity1 = CreateEntity<DummyEntity>(100, 60, 50, sf::Color::White);
 	//pEntity1->SetPosition(100, 100);

@@ -12,7 +12,7 @@
 
 void Entity::Initialize(float radius, const sf::Color& color, EntityType type)
 {
-	OnInitialize();
+	OnInitialize(type);
 
 
 	mWidth = radius * 2;
@@ -33,9 +33,9 @@ void Entity::Initialize(float radius, const sf::Color& color, EntityType type)
 	mCollider = new CircleCollider(this, radius);
 }
 
-void Entity::Initialize(sf::Texture* pTexture, int Width, int Height)
+void Entity::Initialize(sf::Texture* pTexture, int Width, int Height, EntityType type)
 {
-	OnInitialize();
+	OnInitialize(type);
 
 	sf::Sprite* pSprite = new sf::Sprite();
 
@@ -58,9 +58,9 @@ void Entity::Initialize(sf::Texture* pTexture, int Width, int Height)
 	mCollider = new RectangleCollider(this, mWidth, mHeight);
 }
 
-void Entity::Initialize(sf::Texture* pTexture, int Width, int Height, int nbImage, float duration)
+void Entity::Initialize(sf::Texture* pTexture, int Width, int Height, int nbImage, float duration, EntityType type)
 {
-	OnInitialize();
+	OnInitialize(type);
 
 	sf::Sprite* pSprite = new sf::Sprite();
 	mAnimator = new Animator(pTexture, sf::Vector2f(Width / nbImage, Height / nbImage), pSprite);
@@ -77,9 +77,9 @@ void Entity::Initialize(sf::Texture* pTexture, int Width, int Height, int nbImag
 	mCollider = new RectangleCollider(this, mWidth, mHeight);
 }
 
-void Entity::Initialize(int width, int height, float angle, const sf::Color& color)
+void Entity::Initialize(int width, int height, float angle, const sf::Color& color, EntityType type)
 {
-	OnInitialize();
+	OnInitialize(type);
 
 	if (angle == 0) { //RECTANGLE CASE
 		mWidth = width;
@@ -193,12 +193,12 @@ void Entity::SetDirection(float x, float y, float speed)
 	mTarget.isSet = false;
 }
 
-void Entity::OnInitialize(int tag)
+void Entity::OnInitialize(EntityType type)
 {
 	mDirection = sf::Vector2f(0.0f, 0.0f);
 	mSpeed = 0.0f;
 	mToDestroy = false;
-	mTag = tag;
+	mType = type;
 	mTarget.isSet = false;
 }
 

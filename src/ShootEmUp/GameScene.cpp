@@ -25,7 +25,7 @@
 
 void GameScene::OnInitialize()
 {
-    pPlayer = CreateEntity<Player>(20, sf::Color::Green);
+    pPlayer = CreateEntity<Player>(20, sf::Color::Green, EntityType::Player);
     pPlayer->SetPosition(100, 500);
     pPlayer->SetTag("Player");
 
@@ -165,25 +165,25 @@ void GameScene::GenerateEnemies(int count, int maxGoFast, int maxPompier, int ma
         switch (enemyType) {
         case 0:
             if (goFastCount < maxGoFast) {
-                newEnemy = CreateEntity<GoFast>(60, sf::Color::Yellow);
+                newEnemy = CreateEntity<GoFast>(60, sf::Color::Yellow, EntityType::Enemy);
                 goFastCount++;
             } 
             break;
         case 1:
             if (pompierCount < maxPompier) {
-                newEnemy = CreateEntity<Pompier>(30, sf::Color::Red);
+                newEnemy = CreateEntity<Pompier>(30, sf::Color::Red, EntityType::Enemy);
                 pompierCount++;
             }
             break;
         case 2:
             if (camionCount < maxCamion) {
-                newEnemy = CreateEntity<Camion>(40, sf::Color::Blue);
+                newEnemy = CreateEntity<Camion>(40, sf::Color::Blue, EntityType::Enemy);
                 camionCount++;
             }
             break;
         case 3:
             if (btpCount < maxBTP) {
-                newEnemy = CreateEntity<BTP>(30, sf::Color::Green);
+                newEnemy = CreateEntity<BTP>(30, sf::Color::Green, EntityType::Enemy);
                 btpCount++;
             }
             break;
@@ -251,9 +251,11 @@ Player* GameScene::GetPlayer()
     return pPlayer;
 }
 
-void GameScene::AddProjectile(int size, float x, float y, sf::Color color, float dx, float dy, float angle, float speed, std::string tag) {
+
+//void GameScene::AddProjectile(int size, float x, float y, sf::Color color, float dx, float dy, float angle, float speed, std::string tag) {
+void GameScene::AddProjectile(int size, float x, float y, sf::Color color, float dx, float dy, EntityType type, float angle, float speed, int tag) {
     Entity* p = nullptr;
-    p = CreateEntity<Projectile>(size, color);
+    p = CreateEntity<Projectile>(size, color, type);
     p->SetPosition(x, y);
     p->GoToDirection(dx, dy, speed);
     p->SetTag(tag);

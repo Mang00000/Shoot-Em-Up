@@ -23,6 +23,7 @@ void Player::OnCollision(Entity* other) {
     }
 }
 
+
 // Draws the cooldown bars
 void Player::DrawCooldownBars() {
     sf::Vector2f position = GetPosition();
@@ -49,6 +50,21 @@ void Player::DrawCooldownBars() {
         Debug::DrawFilledRectangle(x + bar.offsetX, y, barWidth, barHeight, sf::Color::White);
         float filledHeight = (bar.cooldown.currentTime / bar.cooldown.maxTime) * barHeight;
         Debug::DrawFilledRectangle(x + bar.offsetX, y + (barHeight - filledHeight), barWidth, filledHeight, bar.color);
+
+void Player::Flashing() {
+    if (!isFlashing && flashCooldown >= flashTime) {
+        isFlashing = true;
+        flashCooldown = 0.0f;
+        Projectile* p = GetScene()->CreateEntity<Projectile>(50, sf::Color::White, EntityType::AllyProjectile);
+        p->SetPosition(GetPosition().x, GetPosition().y);
+        p->SetTag(1);
+    }
+}
+void Player::Klaxon() {
+    if (!isInvicible && klaxonCooldown >= klaxonTime) {
+        isInvicible = true;
+        invicibleCooldown = 0.0f;
+        klaxonCooldown = 0.0f;
     }
 }
 
@@ -136,6 +152,32 @@ void Player::Flashing() {
         flashCooldown.Reset();
         for (int i = -180; i < 180; i += 5) {
             GetScene<GameScene>()->AddProjectile(stats.projectileSize, GetPosition().x, GetPosition().y, sf::Color::Yellow, 0, 0, i, stats.projectileSpeed, "PlayerProj");
+    else {
+        sf::Vector2i mousePos = sf::Mouse::getPosition(*GetScene()->GetRenderWindow());
+
+        if (mousePos.x >= 0 && mousePos.y >= 0) {
+            if (GetScene<GameScene>()->GetWave() >= 5) {
+                GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, EntityType::AllyProjectile, -8,projectilespeed, 1);
+                GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, EntityType::AllyProjectile, 8, projectilespeed, 1);
+            }
+            if (GetScene<GameScene>()->GetWave() >= 10) {
+                GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, EntityType::AllyProjectile, -16, projectilespeed, 1);
+                GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, EntityType::AllyProjectile, 16, projectilespeed, 1);
+            }
+            if (GetScene<GameScene>()->GetWave() == 15 && !buffSpeed) {
+                buffSpeed = true;
+                projectilespeed *= 2;
+                shotspeed /= 2;
+
+            }
+            if (GetScene<GameScene>()->GetWave() == 20 && !buffSize) {
+                buffSize = true;
+                projectilesize *= 2;
+            }
+
+            GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, EntityType::AllyProjectile, 0, projectilespeed, 1);
+
+            cooldown = 0;
         }
     }
 }

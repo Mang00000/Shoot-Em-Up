@@ -23,7 +23,8 @@ void Camion::OnUpdate()
     if (cooldown > shotspeed) {
         for (int i = 1; i <= shotnum; i++) {
             int randangle = (rand() % 180) - 90;
-            GetScene<GameScene>()->AddProjectile(15, GetPosition().x, GetPosition().y, sf::Color::Magenta, 0, GetPosition().y, randangle, projectilespeed);
+
+            GetScene<GameScene>()->AddProjectile(15, GetPosition().x, GetPosition().y, sf::Color::Magenta, 0, GetPosition().y, EntityType::EnemyProjectile, randangle, projectilespeed);
 
         }
 

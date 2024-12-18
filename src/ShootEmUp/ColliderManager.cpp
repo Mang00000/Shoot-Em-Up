@@ -80,7 +80,43 @@ bool ColliderManager::RectangleCircle(Collider* Circle, Collider* Rectangle)
     return CircleRectangle(Rectangle, Circle);
 }
 
+bool ColliderManager::OOBBOOBB(Collider* OOBB1, Collider* OOBB2)
+{
+    OOBBCollider* O1 = (OOBBCollider*)OOBB1;
+    OOBBCollider* O2 = (OOBBCollider*)OOBB2;
+
+    for (int i = 0; i < O1->mNormals.size(); i++) {
+        float O1Min;
+        float O1Max;
+        float O2Min;
+        float O2Max;
+        Utils::SATTest(O1->mNormals[i], O1->mPoints, O1Min, O1Max);
+        Utils::SATTest(O1->mNormals[i], O2->mPoints, O2Min, O2Max);
+        if (!Utils::Overlaps(O1Min, O1Max, O2Min, O2Max)) {
+            return false;
+        }
+    }
+
+    for (int i = 0; i < O2->mNormals.size(); i++) {
+        float O1Min;
+        float O1Max;
+        float O2Min;
+        float O2Max;
+        Utils::SATTest(O2->mNormals[i], O1->mPoints, O1Min, O1Max);
+        Utils::SATTest(O2->mNormals[i], O2->mPoints, O2Min, O2Max);
+        if (!Utils::Overlaps(O1Min, O1Max, O2Min, O2Max)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 bool ColliderManager::ResolveCollision(Collider* pCollider1, Collider* pCollider2)
 {
+    if (AllowCollision[(int)pCollider1->mParentEntity->GetType()][(int)pCollider2->mParentEntity->GetType()] == 0) {
+        return false;
+    }
+
     return CollisionTab[(int)pCollider1->mType][(int)pCollider2->mType](pCollider1, pCollider2);
 }

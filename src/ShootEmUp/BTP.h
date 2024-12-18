@@ -1,6 +1,7 @@
 #include "Entity.h"
 #include <vector>
-#include "Projectile.h"
+
+class Projectile;
 
 
 class BTP : public Entity

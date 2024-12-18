@@ -22,7 +22,24 @@ void Projectile::OnUpdate()
 	if (x - r < 0 || y - r < 0 || x + r > w || y + r > h) mToDestroy = true;
 }
 
-void GuidedProjectile::OnCollision(Entity* other)
+
+ProjectileCamion::ProjectileCamion() {
+	Player* pPlayer = GetScene<GameScene>()->GetPlayer();
+	int x = pPlayer->GetPosition().x;
+	int y = pPlayer->GetPosition().y;
+
+	std::random_device dev;
+	std::mt19937 rng(dev());
+	std::uniform_real_distribution<float> distAngle(-90.0f, 90.0f);
+
+	float randomAngleDegrees = distAngle(rng);
+
+	GoToDirection(x, y, 180);
+	SetTag(2);
+	RotateDirection(randomAngleDegrees);
+}
+
+void ProjectileCamion::OnCollision(Entity* other)
 {
     if (this->IsTag("PlayerProj") && other->IsTag("EnemyProj")) {
         other->Destroy(); 

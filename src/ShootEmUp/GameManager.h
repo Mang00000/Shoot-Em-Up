@@ -17,7 +17,7 @@ namespace sf
 
 class GameManager
 {
-	std::list<Entity*> mEntities;
+	std::vector<std::list<Entity*>> mEntities;
 	std::list<Entity*> mEntitiesToDestroy;
 	std::list<Entity*> mEntitiesToAdd;
 

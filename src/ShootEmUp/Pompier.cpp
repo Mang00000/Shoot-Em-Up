@@ -21,12 +21,12 @@ void Pompier::OnCollision(Entity* other)
 void Pompier::OnUpdate()
 {
     float windowWidth = GetScene()->GetWindowWidth();
-    float playerX = pPlayer->GetPosition().x;
-    float playerY = pPlayer->GetPosition().y;
-
+    Player* pPlayer = GetScene<GameScene>()->GetPlayer();
+	  int x = pPlayer->GetPosition().x;
+	  int y = pPlayer->GetPosition().y;
     if (cooldown > shotspeed) {
-        GetScene<GameScene>()->AddProjectile(3, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, 0, projectilespeed);
-        cooldown = 0;
+
+      GetScene<GameScene>()->AddProjectile(3, GetPosition().x, GetPosition().y, sf::Color::Blue, x, y, EntityType::EnemyProjectile, 0, projectilespeed);
     }
     else {
         cooldown += GetDeltaTime();
@@ -36,6 +36,7 @@ void Pompier::OnUpdate()
         targetX = 0.8f + static_cast<float>(rand()) / RAND_MAX * 0.2f; 
         targetX *= windowWidth; 
     }
+
 
     float xDelta = targetX - GetPosition().x;
     float xSpeed = std::clamp(std::abs(xDelta) * 2.0f, 10.0f, 50.0f); 

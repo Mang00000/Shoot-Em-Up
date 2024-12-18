@@ -41,7 +41,6 @@ protected:
 	Target mTarget;
     float mSpeed;
     bool mToDestroy;
-    int mTag;
 
     EntityType mType;
 
@@ -66,7 +65,6 @@ public:
     void SetPosition(float x, float y, float ratioX = 0.5f, float ratioY = 0.5f);
 	void SetDirection(float x, float y, float speed = -1.0f);
 	void SetSpeed(float speed) { mSpeed = speed; }
-	void SetTag(int tag) { mTag = tag; }
     void SetType(EntityType type) { mType = type; }
     void SetLayer(int layer) { mLayer = layer; }
 
@@ -85,8 +83,8 @@ public:
     sf::Vector2f GetCenter() { return GetPosition(0.5, 0.5); }
     sf::Vector2f GetTopLeft() { return GetPosition(0, 0); }
 
-	bool IsTag(int tag) const { return mTag == tag; }
     EntityType GetType() { return mType; }
+    bool IsType(EntityType type) { return mType == type; }
     int GetLayer() { return mLayer; }
     bool IsColliding(Entity* other) const;
 	bool IsInside(float x, float y) const;

@@ -254,7 +254,6 @@ void GameScene::AddProjectile(int size, float x, float y, sf::Color color, float
     p = CreateEntity<Projectile>(size, color, type);
     p->SetPosition(x, y);
     p->GoToDirection(dx, dy, speed);
-    p->SetTag(tag);
     p->RotateDirection(angle);
     pProjectile.push_back(p);
 }

@@ -20,8 +20,8 @@ protected:
 		//Player  Enemy	 AllyProjectile	  EnemyProjectile
 		{0,		    1,		    0,		        1}, // Player
 		{1,			0,			1,				0}, // Enemy
-		{0,			1,			0,				0}, //AllyProjectile
-		{1,			0,			1,				0}, //EnemyProjectile
+		{0,			1,			0,				1}, //AllyProjectile
+		{1,			0,			0,				0}, //EnemyProjectile
 	};
 
 	inline static std::function<bool(Collider*,Collider*)> CollisionTab[3][3] =

@@ -21,7 +21,7 @@ void Player::Flashing() {
     if (!isFlashing && flashCooldown >= flashTime) {
         isFlashing = true;
         flashCooldown = 0.0f;
-        Projectile* p = GetScene()->CreateEntity<Projectile>(50, sf::Color::White);
+        Projectile* p = GetScene()->CreateEntity<Projectile>(50, sf::Color::White, EntityType::AllyProjectile);
         p->SetPosition(GetPosition().x, GetPosition().y);
         p->SetTag(1);
     }
@@ -96,12 +96,12 @@ void Player::OnUpdate()
 
         if (mousePos.x >= 0 && mousePos.y >= 0) {
             if (GetScene<GameScene>()->GetWave() >= 5) {
-                GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, -8,projectilespeed, 1);
-                GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, 8, projectilespeed, 1);
+                GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, EntityType::AllyProjectile, -8,projectilespeed, 1);
+                GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, EntityType::AllyProjectile, 8, projectilespeed, 1);
             }
             if (GetScene<GameScene>()->GetWave() >= 10) {
-                GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, -16, projectilespeed, 1);
-                GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, 16, projectilespeed, 1);
+                GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, EntityType::AllyProjectile, -16, projectilespeed, 1);
+                GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, EntityType::AllyProjectile, 16, projectilespeed, 1);
             }
             if (GetScene<GameScene>()->GetWave() == 15 && !buffSpeed) {
                 buffSpeed = true;
@@ -114,7 +114,7 @@ void Player::OnUpdate()
                 projectilesize *= 2;
             }
 
-            GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, 0, projectilespeed, 1);
+            GetScene<GameScene>()->AddProjectile(projectilesize, x, y, sf::Color::Magenta, mousePos.x, mousePos.y, EntityType::AllyProjectile, 0, projectilespeed, 1);
 
             cooldown = 0;
         }

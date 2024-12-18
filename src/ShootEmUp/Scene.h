@@ -1,13 +1,13 @@
 #pragma once
 
+
+
 class GameManager;
-class EntityType;
+enum class EntityType;
 
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Color.hpp>
-
-
 
 class Scene
 {
@@ -26,7 +26,7 @@ protected:
 
 public:
     template<typename T>
-    T* CreateEntity(float radius, const sf::Color& color);
+    T* CreateEntity(float radius, const sf::Color& color, EntityType type);
 
     template<typename T>
     T* CreateEntity(int width, int height, float angle, const sf::Color& color);

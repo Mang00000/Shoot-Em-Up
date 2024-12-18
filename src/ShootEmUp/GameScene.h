@@ -26,6 +26,6 @@ public:
     void GenerateEnemies(int count, int maxGoFast = 9999, int maxPompier = 9999, int maxCamion = 9999, int maxBTP = 9999);
     Player* GetPlayer();
     int GetWave() { return wave; }
-    void AddProjectile(int size, float x, float y, sf::Color color, float dx, float dy, float angle = 0, float speed = 0, int tag = 2);
+    void AddProjectile(int size, float x, float y, sf::Color color, float dx, float dy, EntityType type, float angle = 0, float speed = 0, int tag = 2);
     void RemoveProjectile(int tag);
 };

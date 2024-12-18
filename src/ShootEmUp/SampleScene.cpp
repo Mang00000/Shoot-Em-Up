@@ -12,7 +12,7 @@
 
 void SampleScene::OnInitialize()
 {
-	pEntity1 = CreateEntity<DummyEntity>(100, sf::Color::Red);
+	pEntity1 = CreateEntity<DummyEntity>(100, sf::Color::Red, EntityType::Player);
 	pEntity1->SetPosition(500, 400);
 
 	pEntity2 = CreateEntity<DummyEntity>("../../../res/TestAnim/monkey.png", 250, 417,4,1);
@@ -23,8 +23,6 @@ void SampleScene::OnInitialize()
 
 	//pEntity3 = CreateEntity<DummyEntity>(100, 60, 20, sf::Color::White);
 	//pEntity3->SetPosition(500, 500);
-
-
 
 	pEntitySelected = nullptr;
 }

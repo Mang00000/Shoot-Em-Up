@@ -10,7 +10,7 @@
 #include "Animator.h"
 
 
-void Entity::Initialize(float radius, const sf::Color& color)
+void Entity::Initialize(float radius, const sf::Color& color, EntityType type)
 {
 	OnInitialize();
 

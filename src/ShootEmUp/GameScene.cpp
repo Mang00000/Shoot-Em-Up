@@ -1,5 +1,5 @@
 #include "GameScene.h"
-
+#include "GameManager.h"
 #include "Camion.h"
 #include "Projectile.h"
 #include "Player.h"
@@ -85,6 +85,7 @@ void GameScene::OnEvent(const sf::Event& event)
         bool isMovingDown = sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
         bool isMovingLeft = sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
         bool isMovingRight = sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
+        bool pause = sf::Keyboard::isKeyPressed(sf::Keyboard::Escape);
 
         bool isSlowed = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
         bool isClear = sf::Keyboard::isKeyPressed(sf::Keyboard::Enter);
@@ -94,11 +95,14 @@ void GameScene::OnEvent(const sf::Event& event)
         bool ENDING = sf::Keyboard::isKeyPressed(sf::Keyboard::X);
 
         float speed = isSlowed ? 400.0f / 3.0f : 400.0f;
-        float deltaTime = GetDeltaTime();
 
         float moveX = 0.0f;
         float moveY = 0.0f;
         float radius = 0;
+
+        if (pause) {
+            GameManager::Pause();
+        }
 
         if (isMovingUp)    moveY -= 1.0f;
         if (isMovingDown)  moveY += 1.0f;

@@ -86,7 +86,14 @@ void GameManager::Run()
 		Draw();
 	}
 }
-
+float GameManager::GetDeltaTime() {
+	if (isPaused) {
+		return 0;
+	}
+	else {
+		return mDeltaTime;
+	}
+}
 void GameManager::HandleInput()
 {
 	sf::Event event;
@@ -113,7 +120,7 @@ void GameManager::Update()
 			Entity* entity = *it;
 
 			entity->Update();
-
+			
 			if (entity->ToDestroy() == false)
 			{
 				++it;
@@ -185,3 +192,4 @@ void GameManager::Draw()
 
 	mpWindow->display();
 }
+

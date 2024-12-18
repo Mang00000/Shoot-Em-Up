@@ -10,9 +10,9 @@
 #include "Animator.h"
 
 
-void Entity::Initialize(float radius, const sf::Color& color, EntityType type)
+void Entity::Initialize(float radius, const sf::Color& color, EntityType type, int layer)
 {
-	OnInitialize(type);
+	OnInitialize(type, layer);
 
 
 	mWidth = radius * 2;
@@ -33,9 +33,9 @@ void Entity::Initialize(float radius, const sf::Color& color, EntityType type)
 	mCollider = new CircleCollider(this, radius);
 }
 
-void Entity::Initialize(sf::Texture* pTexture, int Width, int Height, EntityType type)
+void Entity::Initialize(sf::Texture* pTexture, int Width, int Height, EntityType type, int layer)
 {
-	OnInitialize(type);
+	OnInitialize(type, layer);
 
 	sf::Sprite* pSprite = new sf::Sprite();
 
@@ -58,9 +58,9 @@ void Entity::Initialize(sf::Texture* pTexture, int Width, int Height, EntityType
 	mCollider = new RectangleCollider(this, mWidth, mHeight);
 }
 
-void Entity::Initialize(sf::Texture* pTexture, int Width, int Height, int nbImage, float duration, EntityType type)
+void Entity::Initialize(sf::Texture* pTexture, int Width, int Height, int nbImage, float duration, EntityType type, int layer)
 {
-	OnInitialize(type);
+	OnInitialize(type, layer);
 
 	sf::Sprite* pSprite = new sf::Sprite();
 	mAnimator = new Animator(pTexture, sf::Vector2f(Width / nbImage, Height / nbImage), pSprite);
@@ -77,9 +77,9 @@ void Entity::Initialize(sf::Texture* pTexture, int Width, int Height, int nbImag
 	mCollider = new RectangleCollider(this, mWidth, mHeight);
 }
 
-void Entity::Initialize(int width, int height, float angle, const sf::Color& color, EntityType type)
+void Entity::Initialize(int width, int height, float angle, const sf::Color& color, EntityType type, int layer)
 {
-	OnInitialize(type);
+	OnInitialize(type, layer);
 
 	if (angle == 0) { //RECTANGLE CASE
 		mWidth = width;
@@ -193,13 +193,14 @@ void Entity::SetDirection(float x, float y, float speed)
 	mTarget.isSet = false;
 }
 
-void Entity::OnInitialize(EntityType type)
+void Entity::OnInitialize(EntityType type, int layer)
 {
 	mDirection = sf::Vector2f(0.0f, 0.0f);
 	mSpeed = 0.0f;
 	mToDestroy = false;
 	mType = type;
 	mTarget.isSet = false;
+	mLayer = layer;
 }
 
 void Entity::Update()

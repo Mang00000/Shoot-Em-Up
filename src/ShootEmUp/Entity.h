@@ -30,7 +30,6 @@ class Entity
 {
 
 protected:
-
     struct Target 
     {
 		sf::Vector2i position;
@@ -46,6 +45,8 @@ protected:
     int mTag;
 
     EntityType mType;
+
+    int mLayer;
 
     int mWidth;
     int mHeight;
@@ -68,6 +69,7 @@ public:
 	void SetSpeed(float speed) { mSpeed = speed; }
 	void SetTag(int tag) { mTag = tag; }
     void SetType(EntityType type) { mType = type; }
+    void SetLayer(int layer) { mLayer = layer; }
 
     sf::Drawable* GetDrawable() { return pDrawable; }
     sf::Transformable* GetTransformable() { return pTransformable; }
@@ -86,6 +88,7 @@ public:
 
 	bool IsTag(int tag) const { return mTag == tag; }
     EntityType GetType() { return mType; }
+    int GetLayer() { return mLayer; }
     bool IsColliding(Entity* other) const;
 	bool IsInside(float x, float y) const;
 
@@ -120,14 +123,14 @@ protected:
 
     virtual void OnUpdate() {};
     virtual void OnCollision(Entity* collidedWith) {};
-	virtual void OnInitialize(EntityType type);
+	virtual void OnInitialize(EntityType type, int layer);
 	
 private:
     void Update();
-	void Initialize(float radius, const sf::Color& color, EntityType type);
-    void Initialize(sf::Texture* pTexture, int Width, int Height, EntityType type);
-    void Initialize(sf::Texture* pTexture, int Width, int Height, int nbImage, float duration, EntityType type);
-    void Initialize(int width, int height, float angle, const sf::Color& color, EntityType type);
+	void Initialize(float radius, const sf::Color& color, EntityType type, int layer = 0);
+    void Initialize(sf::Texture* pTexture, int Width, int Height, EntityType type, int layer = 0);
+    void Initialize(sf::Texture* pTexture, int Width, int Height, int nbImage, float duration, EntityType type, int layer = 0);
+    void Initialize(int width, int height, float angle, const sf::Color& color, EntityType type, int layer = 0);
 
     friend class GameManager;
     friend Scene;

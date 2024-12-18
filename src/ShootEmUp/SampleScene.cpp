@@ -1,9 +1,6 @@
 #include "SampleScene.h"
-
 #include "DummyEntity.h"
-
 #include "Debug.h"
-
 #include <iostream>
 #include "ResourceManager.h"
 #include "Collider.h"
@@ -12,10 +9,10 @@
 
 void SampleScene::OnInitialize()
 {
-	pEntity1 = CreateEntity<DummyEntity>(100, sf::Color::Red, EntityType::Player);
+	pEntity1 = CreateEntity<DummyEntity>(100, sf::Color::Red, EntityType::Player, 1);
 	pEntity1->SetPosition(500, 400);
 
-	pEntity2 = CreateEntity<DummyEntity>("../../../res/TestAnim/monkey.png", 250, 417,4,1, EntityType::Enemy);
+	pEntity2 = CreateEntity<DummyEntity>("../../../res/TestAnim/monkey.png", 250, 417,4,1, EntityType::Enemy, 0);
 	pEntity2->SetPosition(500, 200);
 
 

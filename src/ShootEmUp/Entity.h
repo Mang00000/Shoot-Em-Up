@@ -41,7 +41,7 @@ protected:
 	Target mTarget;
     float mSpeed;
     bool mToDestroy;
-    std::string mTag;
+    int mTag;
 
     EntityType mType;
 

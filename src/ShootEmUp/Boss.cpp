@@ -11,7 +11,7 @@
 
 void Boss::OnCollision(Entity* other)
 {
-    if (other->IsTag("PlayerProj")) {
+    if (other->GetType() == EntityType::AllyProjectile) {
         hp--;
         other->Destroy();
     }
@@ -70,48 +70,48 @@ void Boss::SpawnProjectilePattern(int randomAtk)
         switch (randomAtk) {
         case 1:
             for (int angle : {-20, -10, 0, 10, 20}) {
-                GetScene<GameScene>()->AddProjectile(13, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, angle, 150 * 3);
+                GetScene<GameScene>()->AddProjectile(13, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY,EntityType::EnemyProjectile, angle, 150 * 3);
             }
             break;
         case 2:
             for (int angle : {-20, -15, -10, -5, 5, 10, 15, 20}) {
                 int speed = (abs(angle) > 10) ? 130 : 120;
-                GetScene<GameScene>()->AddProjectile(30, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, angle, speed);
+                GetScene<GameScene>()->AddProjectile(30, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, EntityType::EnemyProjectile, angle, speed);
             }
             break;
         case 3:
             for (int i = -180; i < 180; i += 10) {
-                GetScene<GameScene>()->AddProjectile(6, GetPosition().x, GetPosition().y, sf::Color::Blue, 0, 0, i, 250);
+                GetScene<GameScene>()->AddProjectile(6, GetPosition().x, GetPosition().y, sf::Color::Blue, 0, 0, EntityType::EnemyProjectile, i, 250);
             }
             for (int i = -180; i < 180; i += 15) {
-                GetScene<GameScene>()->AddProjectile(8, GetPosition().x, GetPosition().y, sf::Color::Blue, 0, 0, i, 200);
+                GetScene<GameScene>()->AddProjectile(8, GetPosition().x, GetPosition().y, sf::Color::Blue, 0, 0, EntityType::EnemyProjectile, i, 200);
             }
             for (int i = -180; i < 180; i += 20) {
-                GetScene<GameScene>()->AddProjectile(12, GetPosition().x, GetPosition().y, sf::Color::Blue, 0, 0, i, 150);
+                GetScene<GameScene>()->AddProjectile(12, GetPosition().x, GetPosition().y, sf::Color::Blue, 0, 0, EntityType::EnemyProjectile, i, 150);
             }
             break;
         case 4:
-            GetScene<GameScene>()->AddProjectile(90, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, 0, 160);
+            GetScene<GameScene>()->AddProjectile(90, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, EntityType::EnemyProjectile, 0, 160);
             break;
         }
     }
     else {
         switch (randomAtk) {
         case 1:
-            CreateEntity<GoFast>(60, sf::Color::Yellow)->SetPosition(0, rand() % static_cast<int>(windowHeight));
+            CreateEntity<GoFast>(60, sf::Color::Yellow, EntityType::Enemy)->SetPosition(0, rand() % static_cast<int>(windowHeight));
             break;
         case 2:
             for (int i = 0; i < 3; i++) {
-                CreateEntity<GoFast>(60, sf::Color::Yellow)->SetPosition(0, rand() % static_cast<int>(windowHeight));
+                CreateEntity<GoFast>(60, sf::Color::Yellow, EntityType::Enemy)->SetPosition(0, rand() % static_cast<int>(windowHeight));
             }
             break;
         case 3:
             for (int i = -180; i < 180; i += 10) {
-                GetScene<GameScene>()->AddProjectile(6, GetPosition().x, GetPosition().y, sf::Color::Blue, 0, 0, i, 250);
+                GetScene<GameScene>()->AddProjectile(6, GetPosition().x, GetPosition().y, sf::Color::Blue, 0, 0, EntityType::EnemyProjectile, i, 250);
             }
             break;
         case 4:
-            GetScene<GameScene>()->AddProjectile(90, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, 0, 160);
+            GetScene<GameScene>()->AddProjectile(90, GetPosition().x, GetPosition().y, sf::Color::Blue, playerX, playerY, EntityType::EnemyProjectile, 0, 160);
             break;
         }
     }

@@ -9,7 +9,7 @@
 
 void Pompier::OnCollision(Entity* other)
 {
-    if (other->IsTag("PlayerProj")) {
+    if (other->GetType() == EntityType::AllyProjectile) {
         hp--;
         other->Destroy();
     }

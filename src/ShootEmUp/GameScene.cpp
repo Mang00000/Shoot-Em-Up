@@ -27,10 +27,9 @@ void GameScene::OnInitialize()
 {
     pPlayer = CreateEntity<Player>(20, sf::Color::Green, EntityType::Player);
     pPlayer->SetPosition(100, 500);
-    pPlayer->SetTag("Player");
 
     std::srand(static_cast<unsigned>(std::time(nullptr))); 
-    LoadWave("level.txt");
+    LoadWave("../../../res/level.txt");
 }
 
 void GameScene::LoadWave(const std::string& filename) {
@@ -43,11 +42,11 @@ void GameScene::LoadWave(const std::string& filename) {
 
     std::unordered_map<int, std::tuple<std::function<Entity* ()>, sf::Color>> enemyMap;
 
-    enemyMap[1] = { [this]() { return CreateEntity<GoFast>(60, sf::Color::Yellow); }, sf::Color::Yellow };
-    enemyMap[2] = { [this]() { return CreateEntity<BTP>(30, sf::Color::Green); }, sf::Color::Green };
-    enemyMap[3] = { [this]() { return CreateEntity<Camion>(40, sf::Color::Blue); }, sf::Color::Blue };
-    enemyMap[4] = { [this]() { return CreateEntity<Pompier>(30, sf::Color::Red); }, sf::Color::Red };
-    enemyMap[5] = { [this]() { return CreateEntity<Boss>(90, sf::Color::White); }, sf::Color::White };
+    enemyMap[1] = { [this]() { return CreateEntity<GoFast>(60, sf::Color::Yellow, EntityType::Enemy); }, sf::Color::Yellow };
+    enemyMap[2] = { [this]() { return CreateEntity<BTP>(30, sf::Color::Green, EntityType::Enemy); }, sf::Color::Green };
+    enemyMap[3] = { [this]() { return CreateEntity<Camion>(40, sf::Color::Blue, EntityType::Enemy); }, sf::Color::Blue };
+    enemyMap[4] = { [this]() { return CreateEntity<Pompier>(30, sf::Color::Red, EntityType::Enemy); }, sf::Color::Red };
+    enemyMap[5] = { [this]() { return CreateEntity<Boss>(90, sf::Color::White, EntityType::Enemy); }, sf::Color::White };
 
     std::vector<int> positions = { 100, 300, 500, 700 };
 
@@ -67,7 +66,6 @@ void GameScene::LoadWave(const std::string& filename) {
                         auto [enemyCreator, color] = it->second;
                         Entity* newEnemy = enemyCreator();
                         newEnemy->SetPosition(GetWindowWidth()+newEnemy->GetWidth(), positions[i]);
-                        newEnemy->SetTag("Enemy");
                         pEnemies.push_back(newEnemy);
                     }
                 }
@@ -142,12 +140,11 @@ void GameScene::GenerateEnemies(int count, int maxGoFast, int maxPompier, int ma
 
     if (wave == 2) {
         Entity* boss= nullptr;
-        boss = CreateEntity<Boss>(90, sf::Color::White);
+        boss = CreateEntity<Boss>(90, sf::Color::White, EntityType::Enemy);
         pEnemies.push_back(boss);
         float x = 800;
         float y = 400;
         boss->SetPosition(x, y);
-        boss->SetTag("Enemy");
         return;
     }
 
@@ -191,7 +188,6 @@ void GameScene::GenerateEnemies(int count, int maxGoFast, int maxPompier, int ma
 
         if (newEnemy) {
             newEnemy->SetPosition(x, y);
-            newEnemy->SetTag("Enemy");
             pEnemies.push_back(newEnemy);
         }
     }
@@ -204,15 +200,15 @@ void GameScene::OnUpdate()
     Debug::DrawText(50, 50, "Vague: " + std::to_string(wave), sf::Color::White);
     if (pPlayer->GetIsDead() && !win) {
         running = false;
-        RemoveProjectile("PlayerProj");
-        RemoveProjectile("EnemyProj");
+        RemoveProjectile(EntityType::AllyProjectile);
+        RemoveProjectile(EntityType::EnemyProjectile);
         ClearEntity(2);
         ClearEntity(1);
         Debug::DrawText(GetWindowWidth() / 2, GetWindowHeight() / 2, "PERDU", sf::Color::White);
     }
     else if (!running) {
-        RemoveProjectile("PlayerProj");
-        RemoveProjectile("EnemyProj");
+        RemoveProjectile(EntityType::AllyProjectile);
+        RemoveProjectile(EntityType::EnemyProjectile);
         ClearEntity(2);
         ClearEntity(1);
         win = true;
@@ -226,11 +222,11 @@ void GameScene::OnUpdate()
         [](Entity* enemy) { return enemy->ToDestroy(); }), pEnemies.end());
 
     if (pEnemies.empty() && running) {
-        RemoveProjectile("EnemyProj");
+        RemoveProjectile(EntityType::EnemyProjectile);
         wave++;
         pPlayer->SetFlashed(false);
         pPlayer->AddScore(100);
-        LoadWave("level.txt");
+        LoadWave("../../../res/level.txt");
         if (pEnemies.empty()) {
             running = false;
         }
@@ -263,21 +259,19 @@ void GameScene::AddProjectile(int size, float x, float y, sf::Color color, float
     pProjectile.push_back(p);
 }
 
-void GameScene::AddGuidedProjectile(int size, float x, float y, sf::Color color,float speed,std::string tag, Entity* target,float Vx0, float Vy0) {
+void GameScene::AddGuidedProjectile(int size, float x, float y, sf::Color color,float speed, EntityType type, Entity* target,float Vx0, float Vy0) {
     if (Vx0 == -1) Vx0 = x;
     GuidedProjectile* p = nullptr;
-    p = CreateEntity<GuidedProjectile>(size, color);
+    p = CreateEntity<GuidedProjectile>(size, color, type);
     p->SetTarget(target);
     p->SetPosition(x, y);
     p->GoToDirection(Vx0, Vy0, speed);
-
-    p->SetTag(tag);
     pProjectile.push_back(p);
 }
-void GameScene::RemoveProjectile(std::string tag) {
+void GameScene::RemoveProjectile(EntityType type) {
 
     for (Entity* projectile : pProjectile) {
-        if (projectile->IsTag(tag)) {
+        if (projectile->GetType() == type) {
             projectile->Destroy();
         }
     }

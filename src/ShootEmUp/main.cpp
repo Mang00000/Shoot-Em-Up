@@ -4,6 +4,7 @@
 
 #include "GameManager.h"
 #include "GameScene.h"
+#include "SampleScene.h"
 
 #include <cstdlib>
 #include <crtdbg.h>

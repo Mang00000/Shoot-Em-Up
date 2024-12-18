@@ -13,10 +13,22 @@ protected:
 	static bool CircleRectangle(Collider* Circle, Collider* Rectangle);
 	static bool RectangleCircle(Collider* Circle, Collider* Rectangle);
 
-	inline static std::function<bool(Collider*,Collider*)> CollisionTab[2][2] =
+	static bool OOBBOOBB(Collider* OOBB1, Collider* OOBB2);
+
+	inline static int AllowCollision[4][4] =
 	{
-		{ColliderManager::CircleCircle, ColliderManager::CircleRectangle},
-		{ColliderManager::RectangleCircle, ColliderManager::RectangleRectangle}
+		//Player  Enemy	 AllyProjectile	  EnemyProjectile
+		{0,		    1,		    0,		        1}, // Player
+		{1,			0,			1,				0}, // Enemy
+		{0,			1,			0,				1}, //AllyProjectile
+		{1,			0,			0,				0}, //EnemyProjectile
+	};
+
+	inline static std::function<bool(Collider*,Collider*)> CollisionTab[3][3] =
+	{
+		{ColliderManager::CircleCircle, ColliderManager::CircleRectangle , ColliderManager::OOBBOOBB},
+		{ColliderManager::RectangleCircle, ColliderManager::RectangleRectangle, ColliderManager::OOBBOOBB},
+		{ColliderManager::OOBBOOBB, ColliderManager::OOBBOOBB, ColliderManager::OOBBOOBB},
 	};
 
 public:

@@ -5,6 +5,7 @@
 #include "ResourceManager.h"
 #include "Collider.h"
 #include "Animator.h"
+#include "LevelManager.h"
 
 
 void SampleScene::OnInitialize()
@@ -23,6 +24,10 @@ void SampleScene::OnInitialize()
 	//pEntity3->SetPosition(500, 500);
 
 	pEntitySelected = nullptr;
+
+	LevelManager l;
+
+	l.ReadFile("../../../res/Level1.txt");
 }
 
 void SampleScene::OnEvent(const sf::Event& event)

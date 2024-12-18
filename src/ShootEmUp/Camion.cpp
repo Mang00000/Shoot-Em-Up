@@ -13,11 +13,13 @@ void Camion::OnCollision(Entity* other)
     }
     if (hp < 1) {
         mToDestroy = true;
+        pPlayer->AddScore(5);
     }
 }
 
 void Camion::OnUpdate()
 {
+    float windowWidth = GetScene()->GetWindowWidth();
     if (cooldown > shotspeed) {
         for (int i = 1; i <= shotnum; i++) {
             int randangle = (rand() % 180) - 90;
@@ -33,7 +35,7 @@ void Camion::OnUpdate()
     else {
         cooldown += GetDeltaTime();
     }
-    speed = abs(GetScene<GameScene>()->GetPlayer()->GetPosition().y - GetPosition().y)/2;
+    speed = abs(pPlayer->GetPosition().y - GetPosition().y)/2;
 
-    GoToDirection(GetPosition().x, GetScene<GameScene>()->GetPlayer()->GetPosition().y, speed);
+    GoToDirection(windowWidth*randomX, pPlayer->GetPosition().y, speed);
 }

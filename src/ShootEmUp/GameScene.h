@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Scene.h"
+#include <vector>
 
 class Player;
 class Camion;
@@ -8,15 +9,17 @@ class GoFast;
 class BTP;
 class Pompier;
 
-#include <vector>
-
 class GameScene : public Scene
 {
     Player* pPlayer;
     std::vector<Entity*> pEnemies; // Liste des ennemis
     std::vector<Entity*> pProjectile; // Liste des projectiles
+
+private:
+
     int wave = 1;
     bool running = true;
+    bool win = false;
 
 public:
     void OnInitialize() override;
@@ -33,4 +36,5 @@ public:
     sf::Vector2f GetEntityPosition(Entity* entity, float ratioX = 0.5f, float ratioY = 0.5f) const;
     void ClearEntity(int team);
     void LoadWave(const std::string& filename);
+    bool IsWin() { return win; }
 };

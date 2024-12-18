@@ -9,9 +9,9 @@ class Player : public Entity {
 private:
     // Stats
     struct Stats {
-        int hp = 30;
+        int hp = 3;
         float projectileSpeed = 580.0f;
-        float shotSpeed = 1.2f;
+        float shotSpeed = 8.2f;
         int projectileSize = 3;
     } stats;
 
@@ -35,6 +35,9 @@ private:
     //Player Status / Debuff
     bool isFlashed = false;
 
+    // Score
+    int score = 0;
+
     void DrawCooldownBars();
     void HandleCooldowns();
 
@@ -55,10 +58,11 @@ public:
     // Apply buffs
     void ApplyBuff(int wave);
 
+    // Setter Getter
     bool GetIsDead();
     void SetIsDead(bool value);
     void SetFlashed(bool value);
-
+    void AddScore(int value);
 };
 
 #endif // PLAYER_H

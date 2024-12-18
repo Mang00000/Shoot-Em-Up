@@ -33,8 +33,6 @@ void GameScene::OnInitialize()
     LoadWave("level.txt");
 }
 
-
-
 void GameScene::LoadWave(const std::string& filename) {
     std::ifstream inFile(filename);
     if (!inFile.is_open()) {
@@ -53,21 +51,25 @@ void GameScene::LoadWave(const std::string& filename) {
 
     std::vector<int> positions = { 100, 300, 500, 700 };
 
+    int checkwave = 1;
+
     int e1, e2, e3, e4;
     while (inFile >> e1 >> e2 >> e3 >> e4) {
         std::vector<int> enemies = { e1, e2, e3, e4 };
         for (size_t i = 0; i < enemies.size(); ++i) {
             if (enemies[i] == -1) {
-                return;
+                checkwave++;
             }
-            if (enemies[i] != 0) {
-                auto it = enemyMap.find(enemies[i]);
-                if (it != enemyMap.end()) {
-                    auto [enemyCreator, color] = it->second;
-                    Entity* newEnemy = enemyCreator();
-                    newEnemy->SetPosition(1000, positions[i]); 
-                    newEnemy->SetTag("Enemy");
-                    pEnemies.push_back(newEnemy);
+            if (checkwave == wave) {
+                if (enemies[i] != 0) {
+                    auto it = enemyMap.find(enemies[i]);
+                    if (it != enemyMap.end()) {
+                        auto [enemyCreator, color] = it->second;
+                        Entity* newEnemy = enemyCreator();
+                        newEnemy->SetPosition(GetWindowWidth()+newEnemy->GetWidth(), positions[i]);
+                        newEnemy->SetTag("Enemy");
+                        pEnemies.push_back(newEnemy);
+                    }
                 }
             }
         }
@@ -91,6 +93,7 @@ void GameScene::OnEvent(const sf::Event& event)
         bool isFlashing = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
         bool isKlaxoning = sf::Keyboard::isKeyPressed(sf::Keyboard::E);
         bool isRocketLauncher = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+        bool ENDING = sf::Keyboard::isKeyPressed(sf::Keyboard::X);
 
         float speed = isSlowed ? 400.0f / 3.0f : 400.0f;
         float deltaTime = GetDeltaTime();
@@ -108,6 +111,7 @@ void GameScene::OnEvent(const sf::Event& event)
         if (isFlashing) pPlayer->Flashing();
         if (isRocketLauncher) pPlayer->Rocket();
         if (isClear) ClearEntity(2);
+        if (ENDING) running = false;
 
         if (moveX != 0.0f || moveY != 0.0f ) {
             sf::Vector2f direction(moveX, moveY);
@@ -197,16 +201,22 @@ void GameScene::GenerateEnemies(int count, int maxGoFast, int maxPompier, int ma
 
 void GameScene::OnUpdate()
 {
-
     Debug::DrawText(50, 50, "Vague: " + std::to_string(wave), sf::Color::White);
-    if (pPlayer->GetIsDead()) {
+    if (pPlayer->GetIsDead() && !win) {
         running = false;
         RemoveProjectile("PlayerProj");
         RemoveProjectile("EnemyProj");
         ClearEntity(2);
         ClearEntity(1);
         Debug::DrawText(GetWindowWidth() / 2, GetWindowHeight() / 2, "PERDU", sf::Color::White);
-        pPlayer->Destroy();
+    }
+    else if (!running) {
+        RemoveProjectile("PlayerProj");
+        RemoveProjectile("EnemyProj");
+        ClearEntity(2);
+        ClearEntity(1);
+        win = true;
+        Debug::DrawText(GetWindowWidth() / 2, GetWindowHeight() / 2, "VICTOIRE", sf::Color::White);
     }
 
     sf::Vector2i mousePos = sf::Mouse::getPosition(*GetRenderWindow());
@@ -217,9 +227,13 @@ void GameScene::OnUpdate()
 
     if (pEnemies.empty() && running) {
         RemoveProjectile("EnemyProj");
-        LoadWave("level.txt");
         wave++;
         pPlayer->SetFlashed(false);
+        pPlayer->AddScore(100);
+        LoadWave("level.txt");
+        if (pEnemies.empty()) {
+            running = false;
+        }
     }
 
     for (auto it = pProjectile.begin(); it != pProjectile.end(); ) {
@@ -246,6 +260,7 @@ void GameScene::AddProjectile(int size, float x, float y, sf::Color color, float
     p->RotateDirection(angle);
     pProjectile.push_back(p);
 }
+
 void GameScene::AddGuidedProjectile(int size, float x, float y, sf::Color color,float speed,std::string tag, Entity* target,float Vx0, float Vy0) {
     if (Vx0 == -1) Vx0 = x;
     GuidedProjectile* p = nullptr;

@@ -12,12 +12,13 @@ void BTP::OnCollision(Entity* other)
     }
     if (hp < 1) {
         mToDestroy = true;
+        pPlayer->AddScore(5);
     }
 }
 
 void BTP::OnUpdate()
 {
-    Player* pPlayer = GetScene<GameScene>()->GetPlayer();
+    float windowWidth = GetScene()->GetWindowWidth();
     int x = pPlayer->GetPosition().x;
     int y = pPlayer->GetPosition().y;
 
@@ -26,6 +27,7 @@ void BTP::OnUpdate()
         cooldown = 0; 
     }
     cooldown += GetDeltaTime();
+    GoToPosition(windowWidth*randomX, GetPosition().y, 100);
 }
 
 

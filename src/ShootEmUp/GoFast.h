@@ -13,6 +13,7 @@ private:
 	float flashlightCd = 0.005f;
 	float flashlightTimer = 0.0f;
 public:
+	Player* pPlayer = GetScene<GameScene>()->GetPlayer();
 	void OnCollision(Entity* other) override;
 
 	void OnUpdate() override;

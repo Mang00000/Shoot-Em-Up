@@ -25,6 +25,7 @@ void GoFast::OnUpdate()
 		GoToDirection(GetScene()->GetWindowWidth()+ GetWidth() / 2, GetPosition().y, 1000.0f);
 		if (GetPosition().x > GetScene()->GetWindowWidth() + (GetWidth() / 2) -2) {
 			mToDestroy = true;
+			pPlayer->AddScore(3);
 		}
 
 	}

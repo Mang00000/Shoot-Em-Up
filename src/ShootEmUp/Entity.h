@@ -64,7 +64,7 @@ public:
 	bool IsInside(float x, float y) const;
 
 	void Destroy() { mToDestroy = true; }
-	bool ToDestroy() const { return mToDestroy; }
+    bool ToDestroy() const { return mToDestroy; }
 	
 	template<typename T>
 	T* GetScene() const;

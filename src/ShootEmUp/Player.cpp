@@ -85,8 +85,9 @@ void Player::HandleCooldowns() {
 }
 
 void Player::OnUpdate() {
-    if (isDead) return;
+    if (isDead || GetScene<GameScene>()->IsWin()) return;
     Debug::DrawText(50, 70, "Vie: " + std::to_string(stats.hp), sf::Color::White);
+    Debug::DrawText(50, 90, "Score: " + std::to_string(score), sf::Color::White);
     sf::Vector2f position = GetPosition();
     float radius = GetWidth() / 2;
     float windowWidth = GetScene()->GetWindowWidth();
@@ -167,4 +168,7 @@ void Player::SetIsDead(bool value) {
 }
 void Player::SetFlashed(bool value) {
     isFlashed = value;
+}
+void Player::AddScore(int value) {
+    score += value;
 }

@@ -42,8 +42,8 @@ void GuidedProjectile::OnUpdate()
     if (x - r < 0 || y - r < 0 || x + r > w || y + r > h) mToDestroy = true;
 
     sf::Vector2f currentPos = GetPosition(0.5f, 0.5f);
-
-    if (GetScene<GameScene>()->GetEntityPosition(Target).x == -1) {
+    Player* pPlayer = GetScene<GameScene>()->GetPlayer();
+    if (GetScene<GameScene>()->GetEntityPosition(Target).x == 1 && !pPlayer->GetIsDead()) {
         Target = GetScene<GameScene>()->GetClosestEnemy(this);
     }
 

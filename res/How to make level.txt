@@ -1,0 +1,35 @@
+lane 1 2 3 4
+
+     1 0 2 0 // Nombre d'ennemi a spawn sur la lane
+     1 0 0 0 // 2 Gofast et 1 BTP sur lane 1 / 0 sur lane 2 / 1 BTP sur lane 3 / 0 sur lane 4
+     2 0 0 0
+     -1 // end of wave
+
+Mob ID:
+0 = Vide
+-1 = End of Wave
+1 = Gofast
+2 = BTP
+3 = Camion
+4 = Pompier
+5 = Boss
+
+Exemple:
+
+1 2 5 0 
+3 2 0 2 
+1 2 0 2
+1 2 0 1 
+0 2 0 1 
+-1
+0 2 0 0 
+3 0 0 0 
+0 2 0 4
+0 0 0 1 
+0 0 0 1 
+-1
+1 0 0 0 
+0 5 5 5 
+1 0 0 0
+1 0 0 1 
+0 0 0 1 

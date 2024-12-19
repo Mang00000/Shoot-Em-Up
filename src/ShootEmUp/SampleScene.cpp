@@ -13,8 +13,12 @@ void SampleScene::OnInitialize()
 	pEntity1 = CreateEntity<DummyEntity>(100, sf::Color::Red, EntityType::Player, 1);
 	pEntity1->SetPosition(500, 400);
 
-	pEntity2 = CreateEntity<DummyEntity>("../../../res/TestAnim/monkey.png", 250, 417,4,1, EntityType::Enemy, 0);
-	pEntity2->SetPosition(500, 200);
+	pEntity2 = CreateEntity<DummyEntity>("../../../res/Anim/test0.png", 250, 100,4,1, EntityType::Enemy, 0);
+	pEntity2->SetPosition(100, 200);
+
+	pEntity3 = CreateEntity<DummyEntity>("../../../res/Anim/test0.png", 250, 100, EntityType::Enemy, 2);
+	pEntity3->SetPosition(500, 400);
+
 
 
 	//pEntity1 = CreateEntity<DummyEntity>(100, 60, 50, sf::Color::White);
@@ -24,10 +28,6 @@ void SampleScene::OnInitialize()
 	//pEntity3->SetPosition(500, 500);
 
 	pEntitySelected = nullptr;
-
-	LevelManager l;
-
-	l.ReadFile("../../../res/Level1.txt");
 }
 
 void SampleScene::OnEvent(const sf::Event& event)
@@ -39,7 +39,7 @@ void SampleScene::OnEvent(const sf::Event& event)
 	{
 		TrySetSelectedEntity(pEntity1, event.mouseButton.x, event.mouseButton.y);
 		TrySetSelectedEntity(pEntity2, event.mouseButton.x, event.mouseButton.y);
-		//TrySetSelectedEntity(pEntity3, event.mouseButton.x, event.mouseButton.y);
+		TrySetSelectedEntity(pEntity3, event.mouseButton.x, event.mouseButton.y);
 	}
 
 	if (event.mouseButton.button == sf::Mouse::Button::Left)
@@ -72,7 +72,8 @@ void SampleScene::OnUpdate()
 		}
 		else if (pEntitySelected->GetCollider()->mType == Collider::ColliderType::AABB) {
 			RectangleCollider* Test = (RectangleCollider*)pEntitySelected->GetCollider();
-			Debug::DrawRectangle(Test->mParentEntity->GetPosition(0, 0).x, Test->mParentEntity->GetTopLeft().y, Test->mWidth, Test->mHeight, sf::Color::White);
+			Debug::DrawRectangle(Test->mParentEntity->GetPosition(0, 0).x, Test->mParentEntity->GetPosition(0, 0).y, Test->mWidth, Test->mHeight, sf::Color::White);
+			//Debug::DrawFilledRectangle(Test->mParentEntity->GetPosition(0, 0).x, Test->mParentEntity->GetPosition(0, 0).y, Test->mWidth, Test->mHeight, sf::Color::White);
 		}
 		else if (pEntitySelected->GetCollider()->mType == Collider::ColliderType::OOBB) {
 			OOBBCollider* Test = (OOBBCollider*)pEntitySelected->GetCollider();

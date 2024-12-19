@@ -44,7 +44,7 @@ inline T* Scene::CreateEntity(std::string _Path, int Width, int Height, int nbIm
 
 	Entity* entity = newEntity;
 
-	entity->Initialize(ResourceManager::Get()->GetTexture(_Path), Width, Height, nbImage, duration, type, layer);
+	entity->Initialize(_Path, Width, Height, nbImage, duration, type, layer);
 
 	mpGameManager->mEntitiesToAdd.push_back(newEntity);
 

@@ -15,11 +15,14 @@ class EntityDesign;
 class Collider;
 class Animator;
 
+class Animation;
+
 enum class EntityType {
     Player,
     Enemy,
     AllyProjectile,
     EnemyProjectile,
+    Debug,
 
 
     Count
@@ -49,11 +52,19 @@ protected:
     int mWidth;
     int mHeight;
 
+    int mBaseWidth;
+    int mBaseHeight;
+
+    float mScaleX = 1;
+    float mScaleY = 1;
+
     sf::Vector2f mCenter;
 
     float mAngle = 0;
 
     Animator* mAnimator;
+
+    Animation* mAnimation; //MADE BY LOGAN MY BEBOU
 
     sf::Drawable* pDrawable;
     sf::Transformable* pTransformable;
@@ -67,6 +78,7 @@ public:
 	void SetSpeed(float speed) { mSpeed = speed; }
     void SetType(EntityType type) { mType = type; }
     void SetLayer(int layer) { mLayer = layer; }
+    void Rescale(float scaleX = 1.f, float ScaleY = 1.f);
 
     sf::Drawable* GetDrawable() { return pDrawable; }
     sf::Transformable* GetTransformable() { return pTransformable; }
@@ -80,7 +92,7 @@ public:
 
     sf::Vector2f GetPosition(float ratioX = 0.5f, float ratioY = 0.5f) const;
 
-    sf::Vector2f GetCenter() { return GetPosition(0.5, 0.5); }
+    sf::Vector2f GetCenter() { return GetPosition(); }
     sf::Vector2f GetTopLeft() { return GetPosition(0, 0); }
 
     EntityType GetType() { return mType; }
@@ -126,7 +138,7 @@ private:
     void Update();
 	void Initialize(float radius, const sf::Color& color, EntityType type, int layer = 0);
     void Initialize(sf::Texture* pTexture, int Width, int Height, EntityType type, int layer = 0);
-    void Initialize(sf::Texture* pTexture, int Width, int Height, int nbImage, float duration, EntityType type, int layer = 0);
+    void Initialize(std::string path, int Width, int Height, int nbImage, float duration, EntityType type, int layer = 0);
     void Initialize(int width, int height, float angle, const sf::Color& color, EntityType type, int layer = 0);
 
     friend class GameManager;

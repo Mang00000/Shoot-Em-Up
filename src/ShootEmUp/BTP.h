@@ -1,23 +1,18 @@
 #include "Entity.h"
+#include "Cooldown.h"
 #include <vector>
 
 class Projectile;
 
-
-class BTP : public Entity
-{
+class BTP : public Entity {
 private:
-	float cooldown = 0;
-	float shotspeed = 5.0;
-	float projectilespeed = 180;
-	bool isShooting = false;
-	int hp = 10;
-	float randomX = (rand() % 30) / 100.0f + 0.6f;
+    Cooldown shootCooldown = Cooldown(5.0f); // Temps de recharge pour les tirs (5 secondes)
+    float projectilespeed = 180;
+    int hp = 10;
+    float randomX = (rand() % 30) / 100.0f + 0.6f;
 
 public:
-	Player* pPlayer = GetScene<GameScene>()->GetPlayer();
-	void OnCollision(Entity* other) override;
-
-	void OnUpdate() override;
+    Player* pPlayer = GetScene<GameScene>()->GetPlayer();
+    void OnCollision(Entity* other) override;
+    void OnUpdate() override;
 };
-

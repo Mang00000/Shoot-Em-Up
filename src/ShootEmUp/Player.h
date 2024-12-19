@@ -9,9 +9,9 @@ class Player : public Entity {
 private:
     // Stats
     struct Stats {
-        int hp = 3;
+        int hp = 10;
         float projectileSpeed = 580.0f;
-        float shotSpeed = 8.2f;
+        float shotSpeed = 2.2f;
         int projectileSize = 3;
     } stats;
 

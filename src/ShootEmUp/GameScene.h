@@ -8,7 +8,9 @@ class Camion;
 class GoFast;
 class BTP;
 class Pompier;
-
+class Entity;
+class Boss;
+class Image;
 class GameScene : public Scene
 {
     Player* pPlayer;
@@ -17,9 +19,11 @@ class GameScene : public Scene
 
 private:
 
+    static inline bool isPaused = false;
     int wave = 1;
     bool running = true;
     bool win = false;
+    bool debug = false;
 
 public:
     void OnInitialize() override;
@@ -29,7 +33,6 @@ public:
     void GenerateEnemies(int count, int maxGoFast = 9999, int maxPompier = 9999, int maxCamion = 9999, int maxBTP = 9999);
     Player* GetPlayer();
     int GetWave() { return wave; }
-    //void AddProjectile(int size, float x, float y, sf::Color color, float dx, float dy, float angle = 0, float speed = 0, std::string tag = "EnemyProj");
     void AddGuidedProjectile(int size, float x, float y, sf::Color color, float speed, EntityType type, Entity* target, float Vx0 = -1, float Vy0 = 0);
     void RemoveProjectile(EntityType type);
     Entity* GetClosestEnemy(Entity* fromWho);
@@ -38,5 +41,4 @@ public:
     void LoadWave(const std::string& filename);
     bool IsWin() { return win; }
     void AddProjectile(int size, float x, float y, sf::Color color, float dx, float dy, EntityType type, float angle = 0, float speed = 0, int tag = 2);
-    //void RemoveProjectile(int tag);
 };

@@ -17,6 +17,8 @@ namespace sf
 
 class GameManager
 {
+	std::list<Entity*> mAllEntities;
+
 	std::vector<std::list<Entity*>> mEntities;
 	std::list<Entity*> mEntitiesToDestroy;
 	std::list<Entity*> mEntitiesToAdd;
@@ -32,6 +34,7 @@ class GameManager
 	int mWindowHeight;
 
 private:
+	bool isPaused = false;
 	GameManager();
 
 	void Run();
@@ -53,7 +56,11 @@ public:
 	template<typename T>
 	void LaunchScene();
 
-	float GetDeltaTime() const { return mDeltaTime; }
+	void Pause() {
+		isPaused = !isPaused;
+	}
+
+	float GetDeltaTime(); const
 	Scene* GetScene() const { return mpScene; }
 	sf::Font& GetFont() { return mFont; };
 

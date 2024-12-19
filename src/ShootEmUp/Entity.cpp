@@ -8,6 +8,8 @@
 #include "Collider.h"
 #include "ColliderManager.h"
 #include "Animator.h"
+#include "AnimatorLogan.h"
+#include "Animation.h"
 
 
 void Entity::Initialize(float radius, const sf::Color& color, EntityType type, int layer)
@@ -18,6 +20,8 @@ void Entity::Initialize(float radius, const sf::Color& color, EntityType type, i
 	mWidth = radius * 2;
 	mHeight = radius * 2;
 
+	mBaseHeight = mHeight;
+	mBaseWidth = mWidth;
 
 	sf::CircleShape* circle = new sf::CircleShape();
 
@@ -29,6 +33,7 @@ void Entity::Initialize(float radius, const sf::Color& color, EntityType type, i
 
 	pDrawable = circle;
 	pTransformable = circle;
+
 	
 	mCollider = new CircleCollider(this, radius);
 }
@@ -39,7 +44,6 @@ void Entity::Initialize(sf::Texture* pTexture, int Width, int Height, EntityType
 
 	sf::Sprite* pSprite = new sf::Sprite();
 
-	pSprite->setTexture(*pTexture);
 
 	float RatioScaleX = pTexture->getSize().x / (float)Width;
 	float RatioScaleY = pTexture->getSize().y / (float)Height;
@@ -49,32 +53,79 @@ void Entity::Initialize(sf::Texture* pTexture, int Width, int Height, EntityType
 
 	mWidth = pTexture->getSize().x * FinalRatio;
 	mHeight = pTexture->getSize().y * FinalRatio;
-	pSprite->setOrigin(0.5f * mWidth, 0.5f * mHeight);
+
+	mBaseHeight = mHeight;
+	mBaseWidth = mWidth;
+
+
+
+	sf::Vector2f test = Utils::Normalize2(sf::Vector2f(RatioScaleX, RatioScaleY));
+
+	mScaleX = test.x;
+	mScaleY = test.y;
+
+	pSprite->setOrigin((0.5f * mWidth) / FinalRatio, (0.5f * mHeight)/FinalRatio);
+	pSprite->setTexture(*pTexture);
+	
 
 
 	pDrawable = pSprite;
 	pTransformable = pSprite;
+
+	
 
 	mCollider = new RectangleCollider(this, mWidth, mHeight);
 }
 
-void Entity::Initialize(sf::Texture* pTexture, int Width, int Height, int nbImage, float duration, EntityType type, int layer)
+void Entity::Initialize(std::string path, int Width, int Height, int nbImage, float duration, EntityType type, int layer)
 {
 	OnInitialize(type, layer);
+	sf::Texture* pTexture = ResourceManager::Get()->GetTexture(path);
+
+	std::vector<float> AnimationFrameDelay = {};
+	for (int i = 0; i < nbImage; i++) {
+		AnimationFrameDelay.push_back((float)(duration / nbImage));
+	}
 
 	sf::Sprite* pSprite = new sf::Sprite();
-	mAnimator = new Animator(pTexture, sf::Vector2f(Width / nbImage, Height / nbImage), pSprite);
 
-	mAnimator->SetAnimation(nbImage, duration, sf::Vector2f(pTexture->getSize().x / nbImage, pTexture->getSize().y / nbImage));
+	float RatioScaleX = pTexture->getSize().x / (float)Width;
+	float RatioScaleY = pTexture->getSize().y / (float)Height;
 
-	mWidth =  Width / nbImage;
-	mHeight = Height / nbImage;
-	pSprite->setOrigin(0.5f * mWidth, 0.5f * mHeight);
+	float FinalRatio = 1 / std::max(RatioScaleX, RatioScaleY);
+	pSprite->scale(sf::Vector2f(FinalRatio, FinalRatio));
+
+	mWidth = pTexture->getSize().x * FinalRatio;
+	mHeight = pTexture->getSize().y * FinalRatio;
+
+	sf::Vector2f test = Utils::Normalize2(sf::Vector2f(RatioScaleX, RatioScaleY));
+
+	mScaleX = test.x;
+	mScaleY = test.y;
+
+	mBaseHeight = mHeight;
+	mBaseWidth = mWidth;
+
+	pSprite->setOrigin((0.5f * mWidth) / FinalRatio, (0.5f * mHeight) / FinalRatio);
+
+	mAnimation = AnimatorLogan::CreateAnimation(path, nbImage, AnimationFrameDelay,pSprite);
+
 
 	pDrawable = pSprite;
 	pTransformable = pSprite;
 
 	mCollider = new RectangleCollider(this, mWidth, mHeight);
+
+
+	/*
+	* 
+	* VERSION SI ON A DES SPRITESHEETS MAIS VU QUE ON EN A PAS JAI DU TOUT REWORK, IMPECCABLE LE GC
+	* 
+	mAnimator = new Animator(pTexture, sf::Vector2f(Width / nbImage, Height / nbImage), pSprite);
+
+	mAnimator->SetAnimation(nbImage, duration, sf::Vector2f(pTexture->getSize().x / nbImage, pTexture->getSize().y / nbImage));
+	*/
+
 }
 
 void Entity::Initialize(int width, int height, float angle, const sf::Color& color, EntityType type, int layer)
@@ -84,6 +135,9 @@ void Entity::Initialize(int width, int height, float angle, const sf::Color& col
 	if (angle == 0) { //RECTANGLE CASE
 		mWidth = width;
 		mHeight = height;
+
+		mBaseHeight = mHeight;
+		mBaseWidth = mWidth;
 
 		sf::RectangleShape* rectangle = new sf::RectangleShape();
 
@@ -100,6 +154,10 @@ void Entity::Initialize(int width, int height, float angle, const sf::Color& col
 		mWidth = width;
 		mHeight = height;
 		mAngle = angle;
+
+		mBaseHeight = mHeight;
+		mBaseWidth = mWidth;
+
 		mCenter = sf::Vector2f(mWidth / 2, mHeight / 2);
 
 		sf::RectangleShape* rectangle = new sf::RectangleShape();
@@ -193,6 +251,26 @@ void Entity::SetDirection(float x, float y, float speed)
 	mTarget.isSet = false;
 }
 
+void Entity::Rescale(float scaleX, float scaleY)
+{
+	//DOES NOT WORK
+	mWidth = mBaseWidth * scaleX;
+	mHeight = mBaseHeight * scaleY;
+	mScaleX = scaleX;
+	mScaleY = scaleY;
+	pTransformable->setScale(scaleX, scaleY);
+
+	if (mCollider->mType == Collider::ColliderType::AABB) {
+		RectangleCollider* Rect = (RectangleCollider*)mCollider;
+		Rect->SetWidth(Rect->GetWidth() * scaleX);
+		Rect->SetHeight(Rect->GetHeight() * scaleY);
+	}
+	else if(mCollider->mType == Collider::ColliderType::Circle){
+		CircleCollider* Circle = (CircleCollider*)mCollider;
+		Circle->SetRadius(Circle->GetRadius() * scaleX);
+	}
+}
+
 void Entity::OnInitialize(EntityType type, int layer)
 {
 	mDirection = sf::Vector2f(0.0f, 0.0f);
@@ -213,6 +291,25 @@ void Entity::Update()
 		mAnimator->Update(dt);
 	}
 
+	if (mAnimation != nullptr) {
+		mAnimation->AnimationUpdate(dt);
+	}
+
+	//float WHeight = GetScene()->GetWindowHeight();
+
+	//float Scale = (this->GetPosition().y + (WHeight / 4) * abs(this->GetPosition().y / WHeight - 1)) / WHeight;
+
+
+	//if (mScaleX == Scale) {
+	//	Rescale(mScaleX, mScaleY);
+	//}
+	//else {
+	//	Rescale(mScaleX + Scale, mScaleY + Scale);
+	//}
+
+	//
+
+
 	if (mTarget.isSet) 
 	{
 		mTarget.distance -= distance;
@@ -230,7 +327,7 @@ void Entity::Update()
 
 Scene* Entity::GetScene() const
 {
-	return GameManager::Get()->GetScene();
+	return (Scene*)GameManager::Get()->GetScene();
 }
 
 float Entity::GetDeltaTime() const

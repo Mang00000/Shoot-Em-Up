@@ -19,7 +19,7 @@ int main()
 
 	pInstance->CreateWindow(1280, 720, "SampleScene", 240);
 	
-	pInstance->LaunchScene<SampleScene>();
+	pInstance->LaunchScene<GameScene>();
 
 
 	return 0;

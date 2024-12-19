@@ -327,7 +327,7 @@ void Entity::Update()
 
 Scene* Entity::GetScene() const
 {
-	return GameManager::Get()->GetScene();
+	return (Scene*)GameManager::Get()->GetScene();
 }
 
 float Entity::GetDeltaTime() const

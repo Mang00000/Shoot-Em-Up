@@ -132,6 +132,16 @@ void GameManager::Update()
 		}
 	}
 
+	for (auto it = mAllEntities.begin(); it != mAllEntities.end(); ) {
+		Entity* entity = *it;
+		if (entity->ToDestroy() == false)
+		{
+			++it;
+			continue;
+		}
+		it = mAllEntities.erase(it);
+	}
+
     
 	for (auto it1 = mAllEntities.begin(); it1 != mAllEntities.end(); ++it1)
 	{

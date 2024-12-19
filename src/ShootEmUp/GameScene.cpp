@@ -28,7 +28,7 @@
 void GameScene::OnInitialize()
 {
     //pPlayer = CreateEntity<Player>("../../../res/TestAnim/monkey.png",20, sf::Color::Green, EntityType::Player);
-    pPlayer = CreateEntity<Player>("../../../res/TestAnim/monkey.png", 250, 417, 4, 1, EntityType::Player, 3);
+    pPlayer = CreateEntity<Player>("../../../res/Anim/PlayerAnim/player0.png", 250/2, 417/2, 4, 1, EntityType::Player, 3);
     pPlayer->SetPosition(100, 500);
 
     std::srand(static_cast<unsigned>(std::time(nullptr))); 
@@ -129,7 +129,7 @@ void GameScene::OnEvent(const sf::Event& event)
         float radius = 0;
 
         if (pause) {
-            GameManager::Pause();
+            GameManager::Get()->Pause();
         }
 
         if (isMovingUp)    moveY -= 1.0f;
@@ -234,8 +234,14 @@ void GameScene::OnUpdate()
 
         for (auto& projectile : pProjectile) {
             if (!projectile->ToDestroy()) {
-                RectangleCollider* projCollider = (RectangleCollider*)projectile->GetCollider();
-                Debug::DrawRectangle(projCollider->mParentEntity->GetPosition(0, 0).x, projCollider->mParentEntity->GetPosition(0, 0).y, projCollider->mWidth, projCollider->mHeight, sf::Color::Cyan);
+                if (projectile->GetCollider()->mType == Collider::ColliderType::Circle) {
+                    CircleCollider* projCollider = (CircleCollider*)projectile->GetCollider();
+                    Debug::DrawCircle(projCollider->mParentEntity->GetPosition(0.5f, 0.5f).x, projCollider->mParentEntity->GetPosition(0.5f, 0.5f).y, projCollider->GetRadius(), sf::Color::Cyan);
+                }
+                else if (projectile->GetCollider()->mType == Collider::ColliderType::AABB) {
+                    RectangleCollider* projCollider = (RectangleCollider*)projectile->GetCollider();
+                    Debug::DrawRectangle(projCollider->mParentEntity->GetPosition(0, 0).x, projCollider->mParentEntity->GetPosition(0, 0).y, projCollider->mWidth, projCollider->mHeight, sf::Color::Cyan);
+                }
             }
 
         }

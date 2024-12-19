@@ -7,6 +7,7 @@
 #include "BTP.h"
 #include "Pompier.h"
 #include "Boss.h"
+#include "Entity.h"
 
 #include "Debug.h"
 
@@ -25,11 +26,14 @@
 
 void GameScene::OnInitialize()
 {
-    pPlayer = CreateEntity<Player>(20, sf::Color::Green, EntityType::Player);
+    //pPlayer = CreateEntity<Player>("../../../res/TestAnim/monkey.png",20, sf::Color::Green, EntityType::Player);
+    pPlayer = CreateEntity<Player>("../../../res/TestAnim/monkey.png", 250, 417, 4, 1, EntityType::Player, 3);
     pPlayer->SetPosition(100, 500);
 
     std::srand(static_cast<unsigned>(std::time(nullptr))); 
     LoadWave("../../../res/level.txt");
+
+    Entity* asset1 = CreateEntity<Entity>("../../../res/Common/ENVIRO ASSETS/ENV_CIEL.png", 250, 417, 4, 1, EntityType::Player, 0);
 }
 
 void GameScene::LoadWave(const std::string& filename) {
@@ -42,11 +46,11 @@ void GameScene::LoadWave(const std::string& filename) {
 
     std::unordered_map<int, std::tuple<std::function<Entity* ()>, sf::Color>> enemyMap;
 
-    enemyMap[1] = { [this]() { return CreateEntity<GoFast>(60, sf::Color::Yellow, EntityType::Enemy); }, sf::Color::Yellow };
-    enemyMap[2] = { [this]() { return CreateEntity<BTP>(30, sf::Color::Green, EntityType::Enemy); }, sf::Color::Green };
-    enemyMap[3] = { [this]() { return CreateEntity<Camion>(40, sf::Color::Blue, EntityType::Enemy); }, sf::Color::Blue };
-    enemyMap[4] = { [this]() { return CreateEntity<Pompier>(30, sf::Color::Red, EntityType::Enemy); }, sf::Color::Red };
-    enemyMap[5] = { [this]() { return CreateEntity<Boss>(90, sf::Color::White, EntityType::Enemy); }, sf::Color::White };
+    enemyMap[1] = { [this]() { return CreateEntity<GoFast>(60, sf::Color::Yellow, EntityType::Enemy,3); }, sf::Color::Yellow };
+    enemyMap[2] = { [this]() { return CreateEntity<BTP>(30, sf::Color::Green, EntityType::Enemy,3); }, sf::Color::Green };
+    enemyMap[3] = { [this]() { return CreateEntity<Camion>(40, sf::Color::Blue, EntityType::Enemy,3); }, sf::Color::Blue };
+    enemyMap[4] = { [this]() { return CreateEntity<Pompier>(30, sf::Color::Red, EntityType::Enemy,3); }, sf::Color::Red };
+    enemyMap[5] = { [this]() { return CreateEntity<Boss>(90, sf::Color::White, EntityType::Enemy,3); }, sf::Color::White };
 
     std::vector<int> positions = { 100, 300, 500, 700 };
 
@@ -91,10 +95,8 @@ void GameScene::OnEvent(const sf::Event& event)
         bool isFlashing = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
         bool isKlaxoning = sf::Keyboard::isKeyPressed(sf::Keyboard::E);
         bool isRocketLauncher = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
-        bool ENDING = sf::Keyboard::isKeyPressed(sf::Keyboard::X);
 
         float speed = isSlowed ? 400.0f / 3.0f : 400.0f;
-        float deltaTime = GetDeltaTime();
 
         float moveX = 0.0f;
         float moveY = 0.0f;
@@ -109,22 +111,19 @@ void GameScene::OnEvent(const sf::Event& event)
         if (isFlashing) pPlayer->Flashing();
         if (isRocketLauncher) pPlayer->Rocket();
         if (isClear) ClearEntity(2);
-        if (ENDING) running = false;
 
-        if (moveX != 0.0f || moveY != 0.0f ) {
+        if (moveX != 0.0f || moveY != 0.0f) {
             sf::Vector2f direction(moveX, moveY);
             if (Utils::Normalize(direction)) {
                 pPlayer->SetDirection(direction.x, direction.y, speed); // Mouvement
             }
-                
+
         }
         else {
             pPlayer->SetSpeed(0); pPlayer->SetDirection(0, 0); // Stopper le mouvement
-        }                    
+        }
     }
 }
-#include <cstdlib>
-#include <ctime>
 
 void GameScene::GenerateEnemies(int count, int maxGoFast, int maxPompier, int maxCamion, int maxBTP)
 {
@@ -140,7 +139,7 @@ void GameScene::GenerateEnemies(int count, int maxGoFast, int maxPompier, int ma
 
     if (wave == 2) {
         Entity* boss= nullptr;
-        boss = CreateEntity<Boss>(90, sf::Color::White, EntityType::Enemy);
+        boss = CreateEntity<Boss>(90, sf::Color::White, EntityType::Enemy, 3);
         pEnemies.push_back(boss);
         float x = 800;
         float y = 400;
@@ -162,25 +161,25 @@ void GameScene::GenerateEnemies(int count, int maxGoFast, int maxPompier, int ma
         switch (enemyType) {
         case 0:
             if (goFastCount < maxGoFast) {
-                newEnemy = CreateEntity<GoFast>(60, sf::Color::Yellow, EntityType::Enemy);
+                newEnemy = CreateEntity<GoFast>(60, sf::Color::Yellow, EntityType::Enemy, 3);
                 goFastCount++;
             } 
             break;
         case 1:
             if (pompierCount < maxPompier) {
-                newEnemy = CreateEntity<Pompier>(30, sf::Color::Red, EntityType::Enemy);
+                newEnemy = CreateEntity<Pompier>(30, sf::Color::Red, EntityType::Enemy, 3);
                 pompierCount++;
             }
             break;
         case 2:
             if (camionCount < maxCamion) {
-                newEnemy = CreateEntity<Camion>(40, sf::Color::Blue, EntityType::Enemy);
+                newEnemy = CreateEntity<Camion>(40, sf::Color::Blue, EntityType::Enemy, 3);
                 camionCount++;
             }
             break;
         case 3:
             if (btpCount < maxBTP) {
-                newEnemy = CreateEntity<BTP>(30, sf::Color::Green, EntityType::Enemy);
+                newEnemy = CreateEntity<BTP>(30, sf::Color::Green, EntityType::Enemy, 3);
                 btpCount++;
             }
             break;
@@ -251,7 +250,8 @@ Player* GameScene::GetPlayer()
 //void GameScene::AddProjectile(int size, float x, float y, sf::Color color, float dx, float dy, float angle, float speed, std::string tag) {
 void GameScene::AddProjectile(int size, float x, float y, sf::Color color, float dx, float dy, EntityType type, float angle, float speed, int tag) {
     Entity* p = nullptr;
-    p = CreateEntity<Projectile>(size, color, type);
+    size *= 50;
+    p = CreateEntity<Projectile>("../../../res/TestAnim/projectile4.png", size, size, 4, 0.2, type, 3);
     p->SetPosition(x, y);
     p->GoToDirection(dx, dy, speed);
     p->RotateDirection(angle);
@@ -261,7 +261,7 @@ void GameScene::AddProjectile(int size, float x, float y, sf::Color color, float
 void GameScene::AddGuidedProjectile(int size, float x, float y, sf::Color color,float speed, EntityType type, Entity* target,float Vx0, float Vy0) {
     if (Vx0 == -1) Vx0 = x;
     GuidedProjectile* p = nullptr;
-    p = CreateEntity<GuidedProjectile>(size, color, type);
+    p = CreateEntity<GuidedProjectile>(size, color, type, 3);
     p->SetTarget(target);
     p->SetPosition(x, y);
     p->GoToDirection(Vx0, Vy0, speed);
@@ -304,7 +304,7 @@ void GameScene::ClearEntity(int team) {
         pEnemies.clear();
     }
     else if (team == 1) {
-
+        pPlayer->Destroy();
     }
 
 }

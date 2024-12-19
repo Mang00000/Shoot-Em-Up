@@ -2,10 +2,9 @@
 #include "Projectile.h"
 #include <iostream>
 #include "Player.h"
-#include "Utils.h" 
+#include "Utils.h"
 
-void BTP::OnCollision(Entity* other)
-{
+void BTP::OnCollision(Entity* other) {
     if (other->GetType() == EntityType::AllyProjectile) {
         hp--;
         other->Destroy();
@@ -16,16 +15,20 @@ void BTP::OnCollision(Entity* other)
     }
 }
 
-void BTP::OnUpdate()
-{
+void BTP::OnUpdate() {
     float windowWidth = GetScene()->GetWindowWidth();
     int x = pPlayer->GetPosition().x;
     int y = pPlayer->GetPosition().y;
 
-    if (cooldown > shotspeed) {
+    // Mise à jour du cooldown
+    shootCooldown.Update(GetDeltaTime());
+
+    // Tir si prêt
+    if (shootCooldown.IsReady()) {
         GetScene<GameScene>()->AddGuidedProjectile(7, GetPosition().x, GetPosition().y, sf::Color::Red, projectilespeed, EntityType::EnemyProjectile, GetScene<GameScene>()->GetPlayer(), x, y);
-        cooldown = 0;
+        shootCooldown.Reset();
     }
-    cooldown += GetDeltaTime();
+
+    // Déplacement
     GoToPosition(windowWidth * randomX, GetPosition().y, 100);
 }

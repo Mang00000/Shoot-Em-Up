@@ -96,8 +96,9 @@ void Player::OnUpdate() {
     float windowHeight = GetScene()->GetWindowHeight();
 
     // Show invincible debug
+    sf::Color shield(255, 250, 235, 100);
     if (invincibleCooldown.isActive) {
-        Debug::DrawCircle(position.x, position.y, 15, sf::Color::Red);
+        Debug::DrawCircle(position.x, position.y, 60, shield);
     }
 
     // Window Collision

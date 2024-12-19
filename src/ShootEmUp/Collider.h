@@ -30,7 +30,7 @@ struct RectangleCollider : public Collider {
 	int mWidth;
 	int mHeight;
 	std::string mName = "Rectangle";
-
+public:
 	void SetWidth(int width) { mWidth = width; }
 	void SetHeight(int height) { mHeight = height; }
 	

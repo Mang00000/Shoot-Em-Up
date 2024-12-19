@@ -20,6 +20,8 @@ void Entity::Initialize(float radius, const sf::Color& color, EntityType type, i
 	mWidth = radius * 2;
 	mHeight = radius * 2;
 
+	mBaseHeight = mHeight;
+	mBaseWidth = mWidth;
 
 	sf::CircleShape* circle = new sf::CircleShape();
 
@@ -51,6 +53,16 @@ void Entity::Initialize(sf::Texture* pTexture, int Width, int Height, EntityType
 
 	mWidth = pTexture->getSize().x * FinalRatio;
 	mHeight = pTexture->getSize().y * FinalRatio;
+
+	mBaseHeight = mHeight;
+	mBaseWidth = mWidth;
+
+
+
+	sf::Vector2f test = Utils::Normalize2(sf::Vector2f(RatioScaleX, RatioScaleY));
+
+	mScaleX = test.x;
+	mScaleY = test.y;
 
 	pSprite->setOrigin((0.5f * mWidth) / FinalRatio, (0.5f * mHeight)/FinalRatio);
 	pSprite->setTexture(*pTexture);
@@ -86,6 +98,14 @@ void Entity::Initialize(std::string path, int Width, int Height, int nbImage, fl
 	mWidth = pTexture->getSize().x * FinalRatio;
 	mHeight = pTexture->getSize().y * FinalRatio;
 
+	sf::Vector2f test = Utils::Normalize2(sf::Vector2f(RatioScaleX, RatioScaleY));
+
+	mScaleX = test.x;
+	mScaleY = test.y;
+
+	mBaseHeight = mHeight;
+	mBaseWidth = mWidth;
+
 	pSprite->setOrigin((0.5f * mWidth) / FinalRatio, (0.5f * mHeight) / FinalRatio);
 
 	mAnimation = AnimatorLogan::CreateAnimation(path, nbImage, AnimationFrameDelay,pSprite);
@@ -116,6 +136,9 @@ void Entity::Initialize(int width, int height, float angle, const sf::Color& col
 		mWidth = width;
 		mHeight = height;
 
+		mBaseHeight = mHeight;
+		mBaseWidth = mWidth;
+
 		sf::RectangleShape* rectangle = new sf::RectangleShape();
 
 		rectangle->setFillColor(color);
@@ -131,6 +154,10 @@ void Entity::Initialize(int width, int height, float angle, const sf::Color& col
 		mWidth = width;
 		mHeight = height;
 		mAngle = angle;
+
+		mBaseHeight = mHeight;
+		mBaseWidth = mWidth;
+
 		mCenter = sf::Vector2f(mWidth / 2, mHeight / 2);
 
 		sf::RectangleShape* rectangle = new sf::RectangleShape();
@@ -224,6 +251,26 @@ void Entity::SetDirection(float x, float y, float speed)
 	mTarget.isSet = false;
 }
 
+void Entity::Rescale(float scaleX, float scaleY)
+{
+	//DOES NOT WORK
+	mWidth = mBaseWidth * scaleX;
+	mHeight = mBaseHeight * scaleY;
+	mScaleX = scaleX;
+	mScaleY = scaleY;
+	pTransformable->setScale(scaleX, scaleY);
+
+	if (mCollider->mType == Collider::ColliderType::AABB) {
+		RectangleCollider* Rect = (RectangleCollider*)mCollider;
+		Rect->SetWidth(Rect->GetWidth() * scaleX);
+		Rect->SetHeight(Rect->GetHeight() * scaleY);
+	}
+	else if(mCollider->mType == Collider::ColliderType::Circle){
+		CircleCollider* Circle = (CircleCollider*)mCollider;
+		Circle->SetRadius(Circle->GetRadius() * scaleX);
+	}
+}
+
 void Entity::OnInitialize(EntityType type, int layer)
 {
 	mDirection = sf::Vector2f(0.0f, 0.0f);
@@ -247,6 +294,21 @@ void Entity::Update()
 	if (mAnimation != nullptr) {
 		mAnimation->AnimationUpdate(dt);
 	}
+
+	//float WHeight = GetScene()->GetWindowHeight();
+
+	//float Scale = (this->GetPosition().y + (WHeight / 4) * abs(this->GetPosition().y / WHeight - 1)) / WHeight;
+
+
+	//if (mScaleX == Scale) {
+	//	Rescale(mScaleX, mScaleY);
+	//}
+	//else {
+	//	Rescale(mScaleX + Scale, mScaleY + Scale);
+	//}
+
+	//
+
 
 	if (mTarget.isSet) 
 	{

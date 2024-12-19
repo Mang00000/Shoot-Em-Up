@@ -52,6 +52,12 @@ protected:
     int mWidth;
     int mHeight;
 
+    int mBaseWidth;
+    int mBaseHeight;
+
+    float mScaleX = 1;
+    float mScaleY = 1;
+
     sf::Vector2f mCenter;
 
     float mAngle = 0;
@@ -72,6 +78,7 @@ public:
 	void SetSpeed(float speed) { mSpeed = speed; }
     void SetType(EntityType type) { mType = type; }
     void SetLayer(int layer) { mLayer = layer; }
+    void Rescale(float scaleX = 1.f, float ScaleY = 1.f);
 
     sf::Drawable* GetDrawable() { return pDrawable; }
     sf::Transformable* GetTransformable() { return pTransformable; }

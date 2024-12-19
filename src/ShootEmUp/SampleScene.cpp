@@ -21,7 +21,6 @@ void SampleScene::OnInitialize()
 
 
 
-
 	//pEntity1 = CreateEntity<DummyEntity>(100, 60, 50, sf::Color::White);
 	//pEntity1->SetPosition(100, 100);
 
@@ -69,7 +68,7 @@ void SampleScene::OnUpdate()
 
 		if (pEntitySelected->GetCollider()->mType == Collider::ColliderType::Circle) {
 			CircleCollider* Test = (CircleCollider*)pEntitySelected->GetCollider();
-			//Debug::DrawCircle(Test->mParentEntity->GetPosition().x, Test->mParentEntity->GetPosition().y, Test->mRadius, sf::Color::White);
+			Debug::DrawCircle(Test->mParentEntity->GetPosition().x, Test->mParentEntity->GetPosition().y, Test->mRadius, sf::Color::White);
 		}
 		else if (pEntitySelected->GetCollider()->mType == Collider::ColliderType::AABB) {
 			RectangleCollider* Test = (RectangleCollider*)pEntitySelected->GetCollider();

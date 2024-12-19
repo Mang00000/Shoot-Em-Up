@@ -13,8 +13,10 @@ void SampleScene::OnInitialize()
 	pEntity1 = CreateEntity<DummyEntity>(100, sf::Color::Red, EntityType::Player, 1);
 	pEntity1->SetPosition(500, 400);
 
-	pEntity2 = CreateEntity<DummyEntity>("../../../res/TestAnim/monkey.png", 250, 417,4,1, EntityType::Enemy, 0);
+	pEntity2 = CreateEntity<DummyEntity>("../../../res/Anim/test0.png", 0, 0,4,1, EntityType::Enemy, 0);
 	pEntity2->SetPosition(500, 200);
+
+
 
 
 	//pEntity1 = CreateEntity<DummyEntity>(100, 60, 50, sf::Color::White);
@@ -24,10 +26,6 @@ void SampleScene::OnInitialize()
 	//pEntity3->SetPosition(500, 500);
 
 	pEntitySelected = nullptr;
-
-	LevelManager l;
-
-	l.ReadFile("../../../res/Level1.txt");
 }
 
 void SampleScene::OnEvent(const sf::Event& event)

@@ -8,6 +8,8 @@
 #include "Collider.h"
 #include "ColliderManager.h"
 #include "Animator.h"
+#include "AnimatorLogan.h"
+#include "Animation.h"
 
 
 void Entity::Initialize(float radius, const sf::Color& color, EntityType type, int layer)
@@ -29,6 +31,7 @@ void Entity::Initialize(float radius, const sf::Color& color, EntityType type, i
 
 	pDrawable = circle;
 	pTransformable = circle;
+
 	
 	mCollider = new CircleCollider(this, radius);
 }
@@ -55,20 +58,38 @@ void Entity::Initialize(sf::Texture* pTexture, int Width, int Height, EntityType
 	pDrawable = pSprite;
 	pTransformable = pSprite;
 
+	
+
 	mCollider = new RectangleCollider(this, mWidth, mHeight);
 }
 
-void Entity::Initialize(sf::Texture* pTexture, int Width, int Height, int nbImage, float duration, EntityType type, int layer)
+void Entity::Initialize(std::string path, int Width, int Height, int nbImage, float duration, EntityType type, int layer)
 {
 	OnInitialize(type, layer);
+	sf::Texture* pTexture = ResourceManager::Get()->GetTexture(path);
+
+	std::vector<float> AnimationFrameDelay = {};
+	for (int i = 0; i < nbImage; i++) {
+		AnimationFrameDelay.push_back((float)(duration / nbImage));
+	}
 
 	sf::Sprite* pSprite = new sf::Sprite();
+
+	mAnimation = AnimatorLogan::CreateAnimation(path, nbImage, AnimationFrameDelay,pSprite);
+
+
+
+	/*
+	* 
+	* VERSION SI ON A DES SPRITESHEETS MAIS VU QUE ON EN A PAS JAI DU TOUT REWORK, IMPECCABLE LE GC
+	* 
 	mAnimator = new Animator(pTexture, sf::Vector2f(Width / nbImage, Height / nbImage), pSprite);
 
 	mAnimator->SetAnimation(nbImage, duration, sf::Vector2f(pTexture->getSize().x / nbImage, pTexture->getSize().y / nbImage));
+	*/
 
-	mWidth =  Width / nbImage;
-	mHeight = Height / nbImage;
+	mWidth = pTexture->getSize().x;
+	mHeight = pTexture->getSize().y;
 	pSprite->setOrigin(0.5f * mWidth, 0.5f * mHeight);
 
 	pDrawable = pSprite;
@@ -211,6 +232,10 @@ void Entity::Update()
 	pTransformable->move(translation);
 	if (mAnimator != nullptr) {
 		mAnimator->Update(dt);
+	}
+
+	if (mAnimation != nullptr) {
+		mAnimation->AnimationUpdate(dt);
 	}
 
 	if (mTarget.isSet) 

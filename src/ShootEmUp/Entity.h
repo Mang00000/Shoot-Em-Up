@@ -15,6 +15,8 @@ class EntityDesign;
 class Collider;
 class Animator;
 
+class Animation;
+
 enum class EntityType {
     Player,
     Enemy,
@@ -54,6 +56,8 @@ protected:
     float mAngle = 0;
 
     Animator* mAnimator;
+
+    Animation* mAnimation;
 
     sf::Drawable* pDrawable;
     sf::Transformable* pTransformable;
@@ -126,7 +130,7 @@ private:
     void Update();
 	void Initialize(float radius, const sf::Color& color, EntityType type, int layer = 0);
     void Initialize(sf::Texture* pTexture, int Width, int Height, EntityType type, int layer = 0);
-    void Initialize(sf::Texture* pTexture, int Width, int Height, int nbImage, float duration, EntityType type, int layer = 0);
+    void Initialize(std::string path, int Width, int Height, int nbImage, float duration, EntityType type, int layer = 0);
     void Initialize(int width, int height, float angle, const sf::Color& color, EntityType type, int layer = 0);
 
     friend class GameManager;

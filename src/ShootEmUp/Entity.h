@@ -22,6 +22,7 @@ enum class EntityType {
     Enemy,
     AllyProjectile,
     EnemyProjectile,
+    Debug,
 
 
     Count
@@ -57,7 +58,7 @@ protected:
 
     Animator* mAnimator;
 
-    Animation* mAnimation;
+    Animation* mAnimation; //MADE BY LOGAN MY BEBOU
 
     sf::Drawable* pDrawable;
     sf::Transformable* pTransformable;
@@ -84,7 +85,7 @@ public:
 
     sf::Vector2f GetPosition(float ratioX = 0.5f, float ratioY = 0.5f) const;
 
-    sf::Vector2f GetCenter() { return GetPosition(0.5, 0.5); }
+    sf::Vector2f GetCenter() { return GetPosition(); }
     sf::Vector2f GetTopLeft() { return GetPosition(0, 0); }
 
     EntityType GetType() { return mType; }

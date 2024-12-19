@@ -42,7 +42,6 @@ void Entity::Initialize(sf::Texture* pTexture, int Width, int Height, EntityType
 
 	sf::Sprite* pSprite = new sf::Sprite();
 
-	pSprite->setTexture(*pTexture);
 
 	float RatioScaleX = pTexture->getSize().x / (float)Width;
 	float RatioScaleY = pTexture->getSize().y / (float)Height;
@@ -52,7 +51,10 @@ void Entity::Initialize(sf::Texture* pTexture, int Width, int Height, EntityType
 
 	mWidth = pTexture->getSize().x * FinalRatio;
 	mHeight = pTexture->getSize().y * FinalRatio;
-	pSprite->setOrigin(0.5f * mWidth, 0.5f * mHeight);
+
+	pSprite->setOrigin((0.5f * mWidth) / FinalRatio, (0.5f * mHeight)/FinalRatio);
+	pSprite->setTexture(*pTexture);
+	
 
 
 	pDrawable = pSprite;
@@ -75,8 +77,24 @@ void Entity::Initialize(std::string path, int Width, int Height, int nbImage, fl
 
 	sf::Sprite* pSprite = new sf::Sprite();
 
+	float RatioScaleX = pTexture->getSize().x / (float)Width;
+	float RatioScaleY = pTexture->getSize().y / (float)Height;
+
+	float FinalRatio = 1 / std::max(RatioScaleX, RatioScaleY);
+	pSprite->scale(sf::Vector2f(FinalRatio, FinalRatio));
+
+	mWidth = pTexture->getSize().x * FinalRatio;
+	mHeight = pTexture->getSize().y * FinalRatio;
+
+	pSprite->setOrigin((0.5f * mWidth) / FinalRatio, (0.5f * mHeight) / FinalRatio);
+
 	mAnimation = AnimatorLogan::CreateAnimation(path, nbImage, AnimationFrameDelay,pSprite);
 
+
+	pDrawable = pSprite;
+	pTransformable = pSprite;
+
+	mCollider = new RectangleCollider(this, mWidth, mHeight);
 
 
 	/*
@@ -88,14 +106,6 @@ void Entity::Initialize(std::string path, int Width, int Height, int nbImage, fl
 	mAnimator->SetAnimation(nbImage, duration, sf::Vector2f(pTexture->getSize().x / nbImage, pTexture->getSize().y / nbImage));
 	*/
 
-	mWidth = pTexture->getSize().x;
-	mHeight = pTexture->getSize().y;
-	pSprite->setOrigin(0.5f * mWidth, 0.5f * mHeight);
-
-	pDrawable = pSprite;
-	pTransformable = pSprite;
-
-	mCollider = new RectangleCollider(this, mWidth, mHeight);
 }
 
 void Entity::Initialize(int width, int height, float angle, const sf::Color& color, EntityType type, int layer)

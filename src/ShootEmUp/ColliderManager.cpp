@@ -118,5 +118,25 @@ bool ColliderManager::ResolveCollision(Collider* pCollider1, Collider* pCollider
         return false;
     }
 
-    return CollisionTab[(int)pCollider1->mType][(int)pCollider2->mType](pCollider1, pCollider2);
+
+    if (CollisionTab[(int)pCollider1->mType][(int)pCollider2->mType](pCollider1, pCollider2) == true) {
+        std::cout << "Collision Betwwen : "  << PrintName(pCollider1->mType) << " and " << PrintName(pCollider2->mType) <<  std::endl;
+        return true;
+    }
+    else {
+        return false;
+    }
+    //return CollisionTab[(int)pCollider1->mType][(int)pCollider2->mType](pCollider1, pCollider2);
+}
+
+std::string ColliderManager::PrintName(Collider::ColliderType type)
+{
+    switch (type) {
+    case Collider::ColliderType::AABB:
+        return "Rectangle";
+    case Collider::ColliderType::Circle:
+        return "Circle";
+    case Collider::ColliderType::OOBB:
+        return "OOBB";
+   }
 }

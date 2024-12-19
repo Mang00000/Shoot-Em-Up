@@ -20,13 +20,20 @@ struct Collider {
 
 struct CircleCollider : public Collider {
 	int mRadius;
+	void SetRadius(int radius) { mRadius = radius; }
+	int GetRadius() { return mRadius; }
+	std::string mName = "Circle";
 	CircleCollider(Entity* pParent, int radius);
 };
 
 struct RectangleCollider : public Collider {
 	int mWidth;
 	int mHeight;
-
+	std::string mName = "Rectangle";
+public:
+	void SetWidth(int width) { mWidth = width; }
+	void SetHeight(int height) { mHeight = height; }
+	
 	int GetWidth() { return mWidth; }
 	int GetHeight() { return mHeight; }
 	RectangleCollider(Entity* pParent, int Width, int Height);

@@ -1,7 +1,7 @@
 #ifndef COLLIDERMANAGER_H__
 #define COLLIDERMANAGER_H__
 
-class Collider;
+#include "Collider.h"
 #include <functional>
 #include <iostream>
 
@@ -15,13 +15,14 @@ protected:
 
 	static bool OOBBOOBB(Collider* OOBB1, Collider* OOBB2);
 
-	inline static int AllowCollision[4][4] =
+	inline static int AllowCollision[5][5] =
 	{
-		//Player  Enemy	 AllyProjectile	  EnemyProjectile
-		{0,		    1,		    0,		        1}, // Player
-		{1,			0,			1,				0}, // Enemy
-		{0,			1,			0,				1}, //AllyProjectile
-		{1,			0,			0,				0}, //EnemyProjectile
+		//Player  Enemy	 AllyProjectile	  EnemyProjectile Debug
+		{0,		    1,		    0,		        1,			0}, // Player
+		{1,			0,			1,				0,			0}, // Enemy
+		{0,			1,			0,				1,			0}, //AllyProjectile
+		{1,			0,			0,				0,			0}, //EnemyProjectile
+		{0,			0,			0,				0,			0}, //Debug
 	};
 
 	inline static std::function<bool(Collider*,Collider*)> CollisionTab[3][3] =
@@ -33,6 +34,7 @@ protected:
 
 public:
 	static bool ResolveCollision(Collider* pCollider1, Collider* pCollider2);
+	static std::string PrintName(Collider::ColliderType type);
 
 };
 

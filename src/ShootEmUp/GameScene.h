@@ -10,7 +10,7 @@ class BTP;
 class Pompier;
 class Entity;
 class Boss;
-
+class Image;
 class GameScene : public Scene
 {
     Player* pPlayer;
@@ -22,6 +22,7 @@ private:
     int wave = 1;
     bool running = true;
     bool win = false;
+    bool debug = false;
 
 public:
     void OnInitialize() override;

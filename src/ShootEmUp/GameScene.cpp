@@ -25,19 +25,23 @@
 #include <vector>
 #include <tuple>
 #include "Collider.h"
+#include "ResourceManager.h"
+
 void GameScene::OnInitialize()
 {
+    //ResourceManager::Get()->LoadAllSounds("../../../res/sfx/");
+
     //pPlayer = CreateEntity<Player>("../../../res/TestAnim/monkey.png",20, sf::Color::Green, EntityType::Player);
-    pPlayer = CreateEntity<Player>("../../../res/Anim/PlayerAnim/player0.png", 250/2, 417/2, 4, 1, EntityType::Player, 3);
+    pPlayer = CreateEntity<Player>("../../../res/Anim/PlayerAnim/player0.png", 250/3, 417/3, 4, 1, EntityType::Player, 3);
     pPlayer->SetPosition(100, 500);
 
     std::srand(static_cast<unsigned>(std::time(nullptr))); 
-    LoadWave("../../../res/level.txt");
+    LoadWave("../../../res/Levels/level.txt");
 
     const int numImages = 11;
     const std::string basePath = "../../../res/Common/art2/";
     const std::string fileExtension = ".png";
-    float parallaxValues[numImages] = { 700, 600, 200, 200, 200, 100, 100, 0, 0, 0, 0 }; // Parallax personnalisées
+    float parallaxValues[numImages] = { 1800, 1000, 200, 200, 200, 100, 100, 0, 0, 0, 0 }; // Parallax personnalisées
 
     for (int i = numImages - 1; i >= 0; --i) // Boucle inversée, 1.png = top 11.png = bottom
     {
@@ -51,11 +55,6 @@ void GameScene::OnInitialize()
         assetLeft->SetPosition(-640, 360);
         assetLeft->SetParallax(parallaxValues[i]); 
     }
-
-
-
-
-
 
 }
 
@@ -75,7 +74,7 @@ void GameScene::LoadWave(const std::string& filename) {
     enemyMap[4] = { [this]() { return CreateEntity<Pompier>("../../../res/Common/art/Pompier.png",2062 / 12, 910 / 12, EntityType::Enemy,3); }, sf::Color::Red };
     enemyMap[5] = { [this]() { return CreateEntity<Boss>("../../../res/Common/art/Boss.png",1821 / 4,934 / 4, EntityType::Enemy,3); }, sf::Color::White };
 
-    std::vector<int> positions = { 100, 300, 500, 700 };
+    std::vector<int> positions = { 300, 400, 500, 600 };
 
     int checkwave = 1;
 
@@ -88,6 +87,12 @@ void GameScene::LoadWave(const std::string& filename) {
             }
             if (checkwave == wave) {
                 if (enemies[i] != 0) {
+                    if (enemies[i] == 5) {
+                        if (!mMusic.openFromFile("../../../res/Music/At the Speed of Light.wav"))
+                            return; // error
+                        mMusic.setVolume(5.f);
+                        mMusic.play();
+                    }
                     auto it = enemyMap.find(enemies[i]);
                     if (it != enemyMap.end()) {
                         auto [enemyCreator, color] = it->second;
@@ -226,6 +231,7 @@ void GameScene::GenerateEnemies(int count, int maxGoFast, int maxPompier, int ma
 
 void GameScene::OnUpdate()
 {
+
     if (debug) {
         if (!pPlayer->ToDestroy()) {
             RectangleCollider* Testp = (RectangleCollider*)pPlayer->GetCollider();
@@ -310,11 +316,8 @@ Player* GameScene::GetPlayer()
 }
 
 
-//void GameScene::AddProjectile(int size, float x, float y, sf::Color color, float dx, float dy, float angle, float speed, std::string tag) {
-void GameScene::AddProjectile(int size, float x, float y, sf::Color color, float dx, float dy, EntityType type, float angle, float speed, int tag) {
+void GameScene::AddProjectile(int size, float x, float y, sf::Color color, float dx, float dy, EntityType type, float angle, float speed) {
     Entity* p = nullptr;
-    //size *= 20;
-    //p = CreateEntity<Projectile>("../../../res/TestAnim/projectile4.png", size, size, 4, 0.2, type, 3);
     p = CreateEntity<Projectile>(size, color, type, 3);
     p->SetPosition(x, y);
     p->GoToDirection(dx, dy, speed);
@@ -322,7 +325,27 @@ void GameScene::AddProjectile(int size, float x, float y, sf::Color color, float
     pProjectile.push_back(p);
 }
 
-void GameScene::AddGuidedProjectile(int size, float x, float y, sf::Color color,float speed, EntityType type, Entity* target,float Vx0, float Vy0) {
+void GameScene::AddProjectile(int Width, int Height, float x, float y, std::string path, float dx, float dy, EntityType type, float angle, float speed)
+{
+    Entity* p = nullptr;
+    p = CreateEntity<Projectile>(path, Width, Height, type, 3);
+    p->SetPosition(x, y);
+    p->GoToDirection(dx, dy, speed);
+    p->RotateDirection(angle);
+    pProjectile.push_back(p);
+}
+
+void GameScene::AddProjectile(int Width, int Height, float x, float y, std::string path, int nbImage, float duration, float dx, float dy, EntityType type, float angle, float speed)
+{
+    Entity* p = nullptr;
+    p = CreateEntity<Projectile>(path, Width, Height, nbImage, duration, type, 3);
+    p->SetPosition(x, y);
+    p->GoToDirection(dx, dy, speed);
+    p->RotateDirection(angle);
+    pProjectile.push_back(p);
+}
+
+void GameScene::AddGuidedProjectile(int size, float x, float y, sf::Color color, float speed, EntityType type, Entity* target, float Vx0, float Vy0) {
     if (Vx0 == -1) Vx0 = x;
     //size *= 20;
     GuidedProjectile* p = nullptr;
@@ -333,6 +356,29 @@ void GameScene::AddGuidedProjectile(int size, float x, float y, sf::Color color,
     p->GoToDirection(Vx0, Vy0, speed);
     pProjectile.push_back(p);
 }
+
+void GameScene::AddGuidedProjectile(int Width, int Height, float x, float y, std::string path, float speed, EntityType type, Entity* target, float Vx0, float Vy0)
+{
+    if (Vx0 == -1) Vx0 = x;
+    GuidedProjectile* p = nullptr;
+    p = CreateEntity<GuidedProjectile>(path, Width, Height, type, 3);
+    p->SetTarget(target);
+    p->SetPosition(x, y);
+    p->GoToDirection(Vx0, Vy0, speed);
+    pProjectile.push_back(p);
+}
+
+void GameScene::AddGuidedProjectile(int Width, int Height, float x, float y, std::string path, int nbImage, float duration, float speed, EntityType type, Entity* target, float Vx0, float Vy0)
+{
+    if (Vx0 == -1) Vx0 = x;
+    GuidedProjectile* p = nullptr;
+    p = CreateEntity<GuidedProjectile>(path, Width, Height, nbImage, duration, type, 3);
+    p->SetTarget(target);
+    p->SetPosition(x, y);
+    p->GoToDirection(Vx0, Vy0, speed);
+    pProjectile.push_back(p);
+}
+
 void GameScene::RemoveProjectile(EntityType type) {
 
     for (Entity* projectile : pProjectile) {

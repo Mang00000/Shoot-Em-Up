@@ -27,7 +27,8 @@ void Camion::OnUpdate() {
     if (shootCooldown.IsReady()) {
         for (int i = 1; i <= shotnum; i++) {
             int randangle = (rand() % 180) - 90; 
-            GetScene<GameScene>()->AddProjectile(15, GetPosition().x, GetPosition().y, sf::Color::Magenta, 0, GetPosition().y, EntityType::EnemyProjectile, randangle, projectilespeed);
+            //GetScene<GameScene>()->AddProjectile(15, GetPosition().x, GetPosition().y, sf::Color::Magenta, 0, GetPosition().y, EntityType::EnemyProjectile, randangle, projectilespeed);
+            GetScene<GameScene>()->AddProjectile(100, 70, GetPosition().x, GetPosition().y, "../../../res/Anim/ColisAnim/colis0.png",4,1, 0, GetPosition().y, EntityType::EnemyProjectile, randangle, projectilespeed);
         }
 
         shootCooldown.Reset();

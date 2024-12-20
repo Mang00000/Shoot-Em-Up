@@ -12,7 +12,14 @@ Player::Player() {
 }
 void Player::OnCollision(Entity* other) {
     if ((other->GetType() == EntityType::EnemyProjectile || other->GetType() == EntityType::Enemy) && !invincibleCooldown.isActive) { // Si projectile ennemi
+        sf::SoundBuffer* buffer = ResourceManager::Get()->GetSound("../../../res/sfx/hit.wav");
+
+
+        mSound.setBuffer(*buffer);
+        mSound.play();
+
         stats.hp--;
+
         if (other->GetType() == EntityType::EnemyProjectile) {
             other->Destroy();
         }
@@ -101,11 +108,17 @@ void Player::OnUpdate() {
         Debug::DrawCircle(position.x, position.y, 60, shield);
     }
 
-    // Window Collision
-    if (position.x - radius < 0) SetPosition(radius, position.y);
-    if (position.y - radius < 0) SetPosition(position.x, radius);
-    if (position.x + radius > windowWidth) SetPosition(windowWidth - radius, position.y);
-    if (position.y + radius > windowHeight) SetPosition(position.x, windowHeight - radius);
+    const float mapTop = 200.0f;     
+    const float mapBottom = 720.0f; 
+
+    // Window Collision avec limite de hauteur
+    if (position.x - radius < 0) SetPosition(radius, position.y); // Bloque à gauche
+    if (position.x + radius > windowWidth) SetPosition(windowWidth - radius, position.y); // Bloque à droite
+
+    if (position.y - radius < mapTop) SetPosition(position.x, mapTop + radius); // Bloque en haut
+    if (position.y + radius > mapBottom) SetPosition(position.x, mapBottom - radius); // Bloque en bas
+
+
 
     if (isFlashed) return;
     // Auto Mode

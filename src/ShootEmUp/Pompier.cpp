@@ -41,8 +41,10 @@ void Pompier::OnUpdate() {
     float newX = GetPosition().x + (xDelta > 0 ? xSpeed : -xSpeed) * GetDeltaTime();
 
     if (std::abs(targetY - GetPosition().y) < 5.0f) {
-        targetY = rand() % GetScene()->GetWindowHeight();
+        int windowHeight = GetScene()->GetWindowHeight();
+        targetY = 200 + (rand() % (windowHeight -200));
     }
+
 
     float yDelta = targetY - GetPosition().y;
     float ySpeed = std::clamp(std::abs(yDelta) * 2.0f, 10.0f, 50.0f);

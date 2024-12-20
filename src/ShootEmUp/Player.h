@@ -11,7 +11,7 @@ private:
     struct Stats {
         int hp = 10;
         float projectileSpeed = 580.0f;
-        float shotSpeed = 2.2f;
+        float shotSpeed = 1.2f;
         int projectileSize = 3;
     } stats;
 
@@ -21,6 +21,8 @@ private:
     Cooldown klaxonCooldown{ 10.0f };
     Cooldown rocketCooldown{ 15.0f };
     Cooldown invincibleCooldown{ 3.0f };
+
+    sf::Sound mSound;
 
     // Buffs
     bool buffSpeed = false;

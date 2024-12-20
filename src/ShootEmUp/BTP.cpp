@@ -25,7 +25,8 @@ void BTP::OnUpdate() {
 
     // Tir si prêt
     if (shootCooldown.IsReady()) {
-        GetScene<GameScene>()->AddGuidedProjectile(7, GetPosition().x, GetPosition().y, sf::Color::Red, projectilespeed, EntityType::EnemyProjectile, GetScene<GameScene>()->GetPlayer(), x, y);
+        //GetScene<GameScene>()->AddGuidedProjectile(7, GetPosition().x, GetPosition().y, sf::Color::Red, projectilespeed, EntityType::EnemyProjectile, GetScene<GameScene>()->GetPlayer(), x, y);
+        GetScene<GameScene>()->AddGuidedProjectile(50, 30, GetPosition().x, GetPosition().y, "../../../res/Anim/BriqueAnim/brique0.png",4,0.5, projectilespeed, EntityType::EnemyProjectile, GetScene<GameScene>()->GetPlayer(), x, y);
         shootCooldown.Reset();
     }
 

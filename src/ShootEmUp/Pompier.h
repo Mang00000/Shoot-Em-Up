@@ -7,7 +7,7 @@ private:
     Cooldown shootCooldown = Cooldown(1.0f); 
     float projectilespeed = 180;
 
-    int targetY = rand() % GetScene()->GetWindowHeight();
+    int targetY = 200 + (rand() % (720 - 200));
     float targetX = 0; 
     float movementSpeed = 100; 
     int hp = 5;

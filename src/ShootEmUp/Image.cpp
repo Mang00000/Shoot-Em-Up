@@ -8,10 +8,6 @@ void Image::OnUpdate()
 	}
 	else {
 		SetPosition(1280, 0, 0, 0);
-		std::cout << "parallax";
 	}
-
-
-
 }
 
